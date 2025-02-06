@@ -52,7 +52,7 @@ const MainContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(10), // Added margin for spacing
   padding: theme.spacing(4, 2),
   textAlign: "center",
-  background:"black"
+  
 }));
 
 const features = [
