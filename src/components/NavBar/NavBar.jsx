@@ -2,27 +2,7 @@
 import React from "react";
 import { AppBar, Toolbar, Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-const NavBarContainer = styled(AppBar)(({ theme }) => ({
-  background: "rgba(0, 0, 0, 0.5)",
-  backdropFilter: "blur(10px)",
-  boxShadow: "none",
-  padding: theme.spacing(1, 2),
-  borderRadius: "10px",
-  marginTop: theme.spacing(2),
-  width: "90%",
-}));
-
-const StyledButton = styled(Button)({
-  background: "linear-gradient(45deg, #ff9800, #ff5722)",
-  borderRadius: 25,
-  color: "white",
-  padding: "8px 20px",
-  transition: "transform 0.2s ease-in-out",
-  "&:hover": {
-    transform: "scale(1.05)",
-  },
-});
+import { NavBarContainer, StyledButton, LogoContainer, NavLinksContainer } from "@/style/NavBar";
 
 const NavBar = () => {
   return (
