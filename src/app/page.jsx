@@ -8,15 +8,19 @@ import { StyledContainer, ContentWrapper } from "@/style/HomePage";
 
 const Homepage = () => {
   return (
+    <>
     <StyledContainer>
-      <NavBar />
+      <NavBar activePage={"Home"} />
       <Container>
         <ContentWrapper>
           <MainContent />
         </ContentWrapper>
       </Container>
-      <Footer />
+    
     </StyledContainer>
+    <Footer />
+    </>
+    
   );
 };
 

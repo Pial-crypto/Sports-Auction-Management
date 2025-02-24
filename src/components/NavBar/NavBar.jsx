@@ -1,10 +1,19 @@
 "use client";
 import React from "react";
 import { AppBar, Toolbar, Box, Button, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { NavBarContainer, StyledButton } from "@/style/NavBar";
 
-const NavBar = () => {
+const NavBar = ({ activePage }) => {
+
+  console.log(activePage)
+  // Define the menu items in an array
+  const menuItems = [
+    { label: "Home", path: "/" },
+    { label: "Tournaments", path: "/TournamentManagement" },
+    { label: "Auctions", path: "/auctions" },
+    { label: "About", path: "/about" },
+  ];
+
   return (
     <NavBarContainer position="static">
       <Toolbar>
@@ -12,16 +21,43 @@ const NavBar = () => {
           <img src="https://pngimg.com/d/baseball_PNG19056.png" alt="Logo" style={{ height: 40 }} />
           <Typography variant="h6" sx={{ color: "#fff" }}>Player Management</Typography>
         </Box>
+
+        {/* Navigation Buttons */}
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Button color="inherit">Home</Button>
-          <Button color="inherit">Tournaments</Button>
-          <Button color="inherit">Auctions</Button>
-          <Button color="inherit">About</Button>
-          <StyledButton variant="contained">Get Started</StyledButton>
+          {menuItems.map((item) => (
+            <Button
+            
+              key={item.path}
+              color="inherit"
+              href={item.path}
+              sx={{
+                backgroundColor: activePage === item.label ? "#ffffff" : "transparent",
+                color: activePage === item.label ? "black" : "inherit",
+                "&:hover": {
+                  color: "black",
+                  backgroundColor: "#ffffff",
+                },
+              }}
+            >
+              {item.label}
+            </Button>
+          ))}
+
+          {/* Get Started Button */}
+          <StyledButton
+            variant="contained"
+            sx={{
+              "&:hover": {
+                backgroundColor: "#ffeb3b",
+              },
+            }}
+          >
+            Get Started
+          </StyledButton>
         </Box>
       </Toolbar>
     </NavBarContainer>
   );
 };
 
-export default NavBar; 
+export default NavBar;
