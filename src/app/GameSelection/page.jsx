@@ -1,57 +1,19 @@
 "use client";
 
 import React, { useState } from 'react';
-import {
-  Box,
-  Typography,
-  IconButton,
-  Grid,
-  Button,
-  Paper,
-  Fade,
-  Zoom,
-  Slide,
-  Tooltip,
-  Chip,
-  TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Card,
-  CardMedia,
-  CardContent,
-} from '@mui/material';
-import { styled, alpha } from '@mui/material/styles';
-import {
-  SportsCricket,
-  SportsTennis,
-  SportsSoccer,
-  AddCircle,
-  Save,
-  Publish,
-  EmojiEvents,
-  AttachMoney,
-  Rule,
-  Schedule,
-  Preview,
-  Groups,
-  CheckCircle,
-  Cancel,
-  AccessTime,
-} from '@mui/icons-material';
 
 import activeTournaments from '@/constants/GameSelection/activeTournaments';
 import createTournamentSteps from '@/constants/GameSelection/createTournamentSteps';
 import tournamentHistory from '@/constants/GameSelection/tournamentHistory';
 
-import {MainContainer,ContentArea,Sidebar,Header,TournamentCard,StatusChip} from '../../style/GameSelection'
+import {MainContainer,ContentArea} from '../../style/GameSelection'
 import sidebarItems from '@/constants/GameSelection/sidebarItems';
 import ActiveTournaments from '@/components/GameSelection/ActiveTournaments';
 import TournamentHistory from '@/components/GameSelection/TournamentHistory';
 import CreateTournament from '@/components/GameSelection/CreateTournament';
 import SideBarItem from '@/components/GameSelection/SideBarItem';
 import HeaderComponents from '@/components/GameSelection/Header';
+import dayjs from 'dayjs';
 
   export default function TournamentManagement() {
     const [selectedView, setSelectedView] = useState('CREATE');
@@ -60,9 +22,9 @@ import HeaderComponents from '@/components/GameSelection/Header';
       rules: '',
       registrationFee: '',
       prizeMoney: '',
-      otherExpenses: '',
       numberOfTeams: '',
-      startDate: '',
+      tournamentDate: dayjs(),
+      tournamentIcon: null,
     });
   
 
@@ -83,7 +45,7 @@ import HeaderComponents from '@/components/GameSelection/Header';
      <SideBarItem sidebarItems={sidebarItems} selectedView={selectedView} setSelectedView={setSelectedView}></SideBarItem>
   
         <ContentArea>
-       <HeaderComponents selectedView={selectedView}></HeaderComponents>
+       <HeaderComponents selectedView={selectedView} formData={formData}></HeaderComponents>
   
           {selectedView === 'CREATE' && renderCreateTournament()}
           {selectedView === 'CRICKET' && renderActiveTournaments('CRICKET')}

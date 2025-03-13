@@ -2,9 +2,9 @@ import { Grid, Box, Typography, Button } from '@mui/material';
 import { motion } from 'framer-motion';
 import { StatsCard } from '@/style/TournamentManagementStyle'; // Assuming you have this component
 import { GradientButton } from '@/style/TournamentManagementStyle';// Assuming you have this component
-import scheduleCards from '@/constants/TournamentManagement/scheduleCards'; // Assuming the scheduleCards array is in this file
+//import cardItems from '@/constants/TournamentManagement/cardItems'; // Assuming the cardItems array is in this file
 //import itemVariants from '@/constants/TournamentManagement/itemVariants';
-export const StatsCards = () => {
+export const StatsCards = ({cardItems}) => {
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
         visible: {
@@ -18,7 +18,7 @@ export const StatsCards = () => {
 
   return (
     <Grid container spacing={3} sx={{ mt: 3, mb: 5 }}>
-      {scheduleCards.map((card, index) => (
+      {cardItems.map((card, index) => (
         <Grid item xs={12} sm={6} md={3} key={index}>
           <StatsCard
             variants={itemVariants} // Make sure itemVariants is defined elsewhere in your code

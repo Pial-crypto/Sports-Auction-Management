@@ -3,24 +3,17 @@
 import React from 'react';
 import {
   Box,
-  Typography,
-  Grid,
-  Avatar,
-  IconButton,
   Container,
-  Tooltip,
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import CloseIcon from '@mui/icons-material/Close';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NavBar from '@/components/NavBar/NavBar';
-import { PageWrapper, MainCard, PlayerCard, GradientButton } from '../../style/TournamentManagementStyle';
 import PlayerCards from '@/components/TournamentManagement/PlayerCards';
 import { StatsCards } from '@/components/TournamentManagement/StatsCards';
 import { HeaderCard } from '@/components/TournamentManagement/HeaderCard';
 import { ContentWrapper, StyledContainer } from '@/style/HomePage';
+import teamManagerCards from '@/constants/TournamentManagement/TeamManagerCards';
+import scheduleCards from '@/constants/TournamentManagement/scheduleCards';
+import playerTournamentCards from '@/constants/TournamentManagement/PlayerCards';
 
 
 const TournamentManagement = () => {
@@ -52,7 +45,7 @@ const TournamentManagement = () => {
           <HeaderCard></HeaderCard>
 
             {/* Stats Cards */}
-         <StatsCards></StatsCards>
+         <StatsCards cardItems={playerTournamentCards}></StatsCards>
 
             {/* Player Cards */}
            <PlayerCards></PlayerCards>

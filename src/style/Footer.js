@@ -1,27 +1,10 @@
 
-import React from "react";
 import { 
   Box, 
-  Typography, 
-  Link, 
-  Grid, 
-  Container, 
   IconButton, 
-  Divider, 
   Card 
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { 
-  GitHub, 
-  LinkedIn, 
-  Twitter, 
-  Facebook, 
-  Instagram,
-  Email,
-  Phone,
-  LocationOn,
-  ArrowUpward
-} from "@mui/icons-material";
 import { motion } from "framer-motion"; // Make sure to install framer-motion
 
 export const FooterContainer = styled(Box)(({ theme }) => ({

@@ -39,6 +39,7 @@ const scheduleCards = [
     title: 'Rules',
     value: '15/15',
     subtitle: 'Updated: 2hrs ago',
+    path:'/TournamentRules',
     icon: <RuleIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb'
   },
@@ -53,6 +54,7 @@ const scheduleCards = [
     title: 'Budget',
     value: '৳50K',
     subtitle: 'Expense: 60%',
+    path:'/Budget',
     icon: <MonetizationOnIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb'
   },
@@ -66,6 +68,7 @@ const scheduleCards = [
   { 
     title: 'Statistics',
     value: 'Quarter',
+    path:'/Statistics',
     subtitle: 'Progress: 45%',
     icon: <TimelineIcon sx={{ fontSize: 32, color: '#dc2626' }} />,
     color: '#dc2626'
@@ -79,6 +82,7 @@ const scheduleCards = [
   }, */
   { 
     title: 'Matches',
+    path:'/Matches',
     value: 'Today: 3',
     subtitle: 'Next: 9:30',
     icon: <EmojiEventsIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
@@ -88,6 +92,7 @@ const scheduleCards = [
 
     { 
     title: 'Overview',
+    path:'/Overview',
     value: 'Live',
     subtitle: 'Quick Access Dashboard',
     icon: <DashboardIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
@@ -95,6 +100,7 @@ const scheduleCards = [
   },
   { 
     title: 'Approval System',
+    path:'/Approval',
     value: '⌛ 5' ,// (Hourglass emoji with number)
     subtitle: 'Teams & Scores',
     icon: <VerifiedIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
@@ -103,6 +109,7 @@ const scheduleCards = [
   { 
     title: 'Announcements',
     value: 'New',
+    path:'/Announcements',
     subtitle: 'Updates & Notices',
     icon: <CampaignIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb'

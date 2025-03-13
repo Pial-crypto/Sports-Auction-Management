@@ -1,33 +1,53 @@
-import { styled, alpha } from "@mui/material/styles";
+// style/Register.js
+import { styled } from "@mui/material/styles";
 import { TextField, Paper, Button } from "@mui/material";
 
 export const StyledPaper = styled(Paper)(({ theme }) => ({
-  background: "rgba(255, 255, 255, 0.1)",
-  backdropFilter: "blur(10px)",
   padding: theme.spacing(4),
   borderRadius: theme.spacing(2),
-  color: "white",
+  transition: "all 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-5px)",
+    boxShadow: "0 20px 30px rgba(0,0,0,0.2)",
+  },
 }));
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
-    color: "white",
-    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.3)" },
-    "&:hover fieldset": { borderColor: theme.palette.primary.main },
-    "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main },
+    borderRadius: theme.spacing(1),
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    transition: "all 0.3s ease-in-out",
+    "&:hover": {
+      backgroundColor: "rgba(255, 255, 255, 1)",
+      transform: "translateY(-2px)",
+      boxShadow: "0 4px 20px 0 rgba(0,0,0,0.12)",
+    },
+    "&.Mui-focused": {
+      transform: "translateY(-2px)",
+      boxShadow: "0 4px 20px 0 rgba(0,0,0,0.12)",
+    },
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderColor: "rgba(0,0,0,0.1)",
   },
   "& .MuiInputLabel-root": {
-    color: "rgba(255, 255, 255, 0.7)",
-    "&.Mui-focused": { color: theme.palette.primary.main },
+    color: theme.palette.text.secondary,
+  },
+  "& .MuiInputAdornment-root": {
+    color: theme.palette.primary.main,
   },
 }));
 
 export const SocialButton = styled(Button)(({ theme }) => ({
   color: "white",
-  borderColor: alpha(theme.palette.primary.main, 0.3),
-  background: "rgba(255, 255, 255, 0.05)",
-  backdropFilter: "blur(10px)",
-  "&:hover": { borderColor: theme.palette.primary.main, background: "rgba(255, 255, 255, 0.1)" },
+  padding: theme.spacing(1.5),
+  borderRadius: theme.spacing(1),
+  textTransform: "none",
+  fontSize: "1rem",
+  transition: "all 0.3s ease-in-out",
+  boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .15)",
+  "&:hover": {
+    transform: "translateY(-2px)",
+    boxShadow: "0 6px 10px 4px rgba(0, 0, 0, .15)",
+  },
 }));
-
-export default StyledTextField;
