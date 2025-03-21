@@ -2,8 +2,13 @@
 import { motion } from "framer-motion";
 import { Controller, useForm } from "react-hook-form";
 import { Visibility, VisibilityOff, Lock, LockOpen } from "@mui/icons-material";
+import { validateForm } from "@/function/validateForm";
 import { Person, AdminPanelSettings, Work } from "@mui/icons-material";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
+  Snackbar,
   Grid,
   Box,
   Typography,
@@ -17,11 +22,13 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Alert,
 } from "@mui/material";
 import { Google, Facebook } from "@mui/icons-material";
 import { FaUserPlus } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { StyledTextField, StyledPaper, SocialButton } from "@/style/Register";
+import { data } from "react-router-dom";
 
 // Animation variants
 const containerVariants = {
@@ -38,9 +45,49 @@ const itemVariants = {
   visible: { opacity: 1, x: 0 }
 };
 
-const RegisterFormComponent = ({ onSubmit }) => {
-  // Initialize react-hook-form with default values
+const RegisterFormComponent = () => {
+
+   const router=useRouter()
+   const [message, setMessage] = useState(null); // Alert message
+   const [severity, setSeverity] = useState("success"); // "success" | "error"
+   const [loading, setLoading] = useState(false); // Loading state
+   const onSubmit = async (data) => {
+    console.log(data);
+    const newUser={name:data.fullName,email:data.email,password:data.password,role:data.role}
+
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser), // ✅ Use `data` instead of `formData`
+      });
+
+      console.log("Hey guys");
+
+      const responseData = await res.json();
+
+      if (res.ok) {
+        setSeverity("success");
+        setMessage("Registration successful!");
+       router.push('/')
+      } else {
+        setSeverity("error");
+        setMessage(responseData.error);
+        
+       // setMessage(responseData.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setSeverity("error");
+      setMessage("Registration failed. Please try again.");
+     
+
+    }finally{
+      setLoading(false); // Stop loading
+    }
+  };
   const { control, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(validateForm),
     defaultValues: {
       fullName: "",
       email: "",
@@ -68,7 +115,7 @@ const RegisterFormComponent = ({ onSubmit }) => {
             p: 4,
           }}
         >
-          <form onSubmit={handleSubmit(onSubmit)}>
+   <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               
               {/* Full Name Field */}
@@ -223,7 +270,8 @@ const RegisterFormComponent = ({ onSubmit }) => {
                     boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
                   }}
                 >
-                  🚀 Create Account
+                      {loading ? <CircularProgress size={24} /> : " 🚀 Create Account"}
+                 
                 </Button>
               </motion.div>
             </Box>
@@ -263,12 +311,24 @@ const RegisterFormComponent = ({ onSubmit }) => {
 
           <Typography variant="body1" sx={{ mt: 4, textAlign: "center" }}>
             Already have an account?{" "}
-            <Link href="/signin" sx={{ fontWeight: "bold", color: "#1a237e", textDecoration: "none" }}>
+            <Link href="/auth/login" sx={{ fontWeight: "bold", color: "#1a237e", textDecoration: "none" }}>
               Sign In
             </Link>
           </Typography>
         </StyledPaper>
       </motion.div>
+
+       {/* Snackbar for Success/Error Messages */}
+       <Snackbar open={!!message} autoHideDuration={4000} onClose={() => setMessage(null)}>
+  <Alert 
+    severity={severity} 
+    onClose={() => setMessage(null)} 
+    sx={{ maxWidth: "400px" }} // ⬅️ Increase width for readability
+  >
+    {message}
+  </Alert>
+</Snackbar>
+
     </Grid>
   );
 };
