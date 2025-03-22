@@ -8,6 +8,13 @@ import { Google, Facebook, Sports, SportsBasketball, SportsSoccer, SportsVolleyb
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import SocialOptions from "@/components/LoginForm/SocialOptions";
+import AuthFooter from "@/components/LoginForm/AuthFooter";
+import storage from "@/class/storage";
+import AuthHeader from "@/components/LoginForm/AuthHeader";
+import FloatingIcons from "@/components/SignUp/FloatingSportsIcons";
+import { ValidateLogin } from "@/function/validateLogin";
+import SnackbarAlert from "@/components/LoginForm/SnackBarComponent";
 
 const Login = () => {
   console.log(process.env.GOOGLE_CLIENT_ID,"process.env.GOOGLE_CLIENT_ID")
@@ -18,6 +25,28 @@ const Login = () => {
   const [message, setMessage] = useState(null); // Alert message
   const [severity, setSeverity] = useState("success"); // "success" | "error"
   
+
+  const containerStyles = {
+    minHeight: "100vh",
+    width: "100vw",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%)",
+    position: "relative",
+    overflow: "hidden",
+  };
+
+
+  const paperContainer={
+    background: "rgba(255, 255, 255, 0.1)",
+    backdropFilter: "blur(10px)",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    maxWidth: "450px",
+    width: "100%",
+    p: 4,
+    borderRadius: "20px",
+  }
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -25,42 +54,14 @@ const Login = () => {
 
 
   const onSubmit = async (data) => {
-    setLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log(data);
-      const loggedUser={email:data.email,password:data.password}
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loggedUser), // ✅ Use `data` instead of `formData`
-      });
-
-      console.log("Hey guys");
-
-      const responseData = await res.json();
-
-      if (res.ok) {
-        console.log(responseData,"responseData")
-        setSeverity("success");
-        setMessage("Logged in successful!");
-       router.push('/')
-       
-      } else {
-        setSeverity("error");
-        console.log(responseData.error,"responseData.error")
-        setMessage(responseData.error);
-        
-        
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setSeverity("error");
-        setMessage(responseData.error);
-        
-    }finally{
-      setLoading(false); // Stop loading
-    }
+    await ValidateLogin({
+      data,
+      setLoading,
+      setSeverity,
+      setMessage,
+      router,
+    });
+   
   };
 
   const floatingIcons = [
@@ -72,18 +73,10 @@ const Login = () => {
 
   return (
     <Box
-      sx={{
-        minHeight: "100vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%)",
-        position: "relative",
-        overflow: "hidden",
-      }}
+      sx={containerStyles}
     >
       {mounted && (
+        //  <FloatingIcons floatingIcons={floatingIcons}></FloatingIcons>
         <AnimatePresence>
           {floatingIcons.map(({ Icon, delay, color }, index) => (
             <motion.div
@@ -121,44 +114,14 @@ const Login = () => {
       >
         <StyledPaper 
           elevation={4}
-          sx={{
-            background: "rgba(255, 255, 255, 0.1)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            maxWidth: "450px",
-            width: "100%",
-            p: 4,
-            borderRadius: "20px",
-          }}
+          sx={paperContainer}
         >
           <motion.div
             initial={{ scale: 0.5 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <Box sx={{ mb: 4, textAlign: "center" }}>
-              <Typography 
-                variant="h4" 
-                sx={{ 
-                  color: "white",
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                  letterSpacing: "2px",
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
-                }}
-              >
-                Welcome Back
-              </Typography>
-              <Typography 
-                variant="subtitle1" 
-                sx={{ 
-                  color: "rgba(255,255,255,0.7)",
-                  mt: 1 
-                }}
-              >
-                Sign in to continue to Sports Auction
-              </Typography>
-            </Box>
+         <AuthHeader></AuthHeader>
           </motion.div>
 
           <LoginForm 
@@ -167,87 +130,18 @@ const Login = () => {
             showPassword={showPassword}
             setShowPassword={setShowPassword}
           />
+          <SocialOptions></SocialOptions>
 
-          <Box sx={{ mt: 4 }}>
-            <Divider sx={{ 
-              my: 3, 
-              color: "rgba(255, 255, 255, 0.7)",
-              "&::before, &::after": {
-                borderColor: "rgba(255, 255, 255, 0.2)",
-              },
-            }}>
-              or continue with
-            </Divider>
+        <AuthFooter></AuthFooter>
 
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Button onClick={()=>signIn("google")}
-                  variant="outlined" 
-                  fullWidth
-                  startIcon={<Google />}
-                  sx={{
-                    color: "white",
-                    borderColor: "rgba(255,255,255,0.3)",
-                    "&:hover": {
-                      borderColor: "white",
-                      backgroundColor: "rgba(255,255,255,0.1)",
-                    },
-                  }}
-                >
-                  Google
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Button 
-                  variant="outlined" 
-                  fullWidth
-                  startIcon={<Facebook />}
-                  sx={{
-                    color: "white",
-                    borderColor: "rgba(255,255,255,0.3)",
-                    "&:hover": {
-                      borderColor: "white",
-                      backgroundColor: "rgba(255,255,255,0.1)",
-                    },
-                  }}
-                >
-                  Facebook
-                </Button>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Box sx={{ mt: 3, textAlign: "center" }}>
-            <Typography sx={{ color: "rgba(255,255,255,0.7)" }}>
-              Don't have an account?{" "}
-              <Link href="/auth/register" passHref>
-                <Button 
-                  sx={{ 
-                    textTransform: "none",
-                    color: "#4FC3F7",
-                    "&:hover": {
-                      color: "#81D4FA",
-                    },
-                  }}
-                >
-                  Sign Up
-                </Button>
-              </Link>
-            </Typography>
-          </Box>
+        
         </StyledPaper>
       </motion.div>
 
+
              {/* Snackbar for Success/Error Messages */}
-             <Snackbar open={!!message} autoHideDuration={4000} onClose={() => setMessage(null)}>
-  <Alert 
-    severity={severity} 
-    onClose={() => setMessage(null)} 
-    sx={{ maxWidth: "400px" }} // ⬅️ Increase width for readability
-  >
-    {message}
-  </Alert>
-</Snackbar>
+             <SnackbarAlert message={message} severity={severity} setMessage={setMessage}></SnackbarAlert>
+
     </Box>
   );
 };

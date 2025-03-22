@@ -1,11 +1,33 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { AppBar, Toolbar, Box, Button, Typography } from "@mui/material";
 import { NavBarContainer, StyledButton } from "@/style/NavBar";
-
+import { useEffect } from "react";
+import { LoginStatus } from "@/function/checekLoginStatus";
 const NavBar = ({ activePage }) => {
 
   console.log(activePage)
+
+  const [isLoggedIn,setIsLoggedIn]=useState(false);
+  console.log("Is logged in",isLoggedIn)
+
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      const isLoggedIn = await LoginStatus();
+      if (isLoggedIn) {
+       setIsLoggedIn(true)
+      } else {
+        // Handle logged-out behavior
+        console.log("User is not logged in");
+        
+      }
+    };
+
+    checkLogin();  // Call the function on page load
+  }, []);
+
+
   // Define the menu items in an array
   const menuItems = [
     { label: "Home", path: "/" },
@@ -30,7 +52,7 @@ const NavBar = ({ activePage }) => {
             
               key={item.path}
               color="inherit"
-              href={item.path}
+              href={ item.path!='Home' && !isLoggedIn?"/auth/login":item.path}
               sx={{
                 backgroundColor: activePage === item.label ? "#ffffff" : "transparent",
                 color: activePage === item.label ? "black" : "inherit",

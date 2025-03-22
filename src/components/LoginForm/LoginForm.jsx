@@ -27,7 +27,20 @@ const LoginForm = ({ onSubmit, loading, showPassword, setShowPassword }) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-
+const submitButtonContainer={
+  mt: 2,
+  py: 1.5,
+  bgcolor: "#4FC3F7",
+  fontSize: "1rem",
+  fontWeight: "bold",
+  textTransform: "none",
+  borderRadius: "10px",
+  boxShadow: "0 4px 15px rgba(79, 195, 247, 0.3)",
+  "&:hover": {
+    bgcolor: "#81D4FA",
+    boxShadow: "0 6px 20px rgba(79, 195, 247, 0.4)",
+  },
+}
   const textFieldSx = {
     "& .MuiOutlinedInput-root": {
       color: "white",
@@ -146,20 +159,7 @@ const LoginForm = ({ onSubmit, loading, showPassword, setShowPassword }) => {
             variant="contained"
             fullWidth
             disabled={loading}
-            sx={{
-              mt: 2,
-              py: 1.5,
-              bgcolor: "#4FC3F7",
-              fontSize: "1rem",
-              fontWeight: "bold",
-              textTransform: "none",
-              borderRadius: "10px",
-              boxShadow: "0 4px 15px rgba(79, 195, 247, 0.3)",
-              "&:hover": {
-                bgcolor: "#81D4FA",
-                boxShadow: "0 6px 20px rgba(79, 195, 247, 0.4)",
-              },
-            }}
+            sx={submitButtonContainer}
           >
             {loading ? (
               <CircularProgress size={24} color="inherit" />

@@ -1,10 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+import React from "react";
 import { motion } from "framer-motion";
-import { Box, Grid, Container } from "@mui/material";
+import { Grid, Container } from "@mui/material";
 import FloatingIcons from "@/components/SignUp/FloatingSportsIcons";
 import TitleAndStats from "@/components/SignUp/TitleAndStats";
 import RegisterFormComponent from "@/components/SignUp/Form";

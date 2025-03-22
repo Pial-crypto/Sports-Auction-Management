@@ -1,21 +1,19 @@
 "use client";
 import { motion } from "framer-motion";
 import { Controller, useForm } from "react-hook-form";
-import { Visibility, VisibilityOff, Lock, LockOpen } from "@mui/icons-material";
+import { Lock, LockOpen } from "@mui/icons-material";
 import { validateForm } from "@/function/validateForm";
 import { Person, AdminPanelSettings, Work } from "@mui/icons-material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 import {
   Snackbar,
   Grid,
   Box,
   Typography,
-  TextField,
   Button,
   InputAdornment,
-  IconButton,
   Divider,
   Link,
   FormControl,
@@ -23,12 +21,14 @@ import {
   FormControlLabel,
   Radio,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import { Google, Facebook } from "@mui/icons-material";
 import { FaUserPlus } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { StyledTextField, StyledPaper, SocialButton } from "@/style/Register";
-import { data } from "react-router-dom";
+import { validateSignUp } from "@/function/validateSignUp";
+//import CircularProgress from "@mui/material";
 
 // Animation variants
 const containerVariants = {
@@ -53,38 +53,18 @@ const RegisterFormComponent = () => {
    const [loading, setLoading] = useState(false); // Loading state
    const onSubmit = async (data) => {
     console.log(data);
-    const newUser={name:data.fullName,email:data.email,password:data.password,role:data.role}
-
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser), // ✅ Use `data` instead of `formData`
-      });
-
-      console.log("Hey guys");
-
-      const responseData = await res.json();
-
-      if (res.ok) {
-        setSeverity("success");
-        setMessage("Registration successful!");
-       router.push('/')
-      } else {
-        setSeverity("error");
-        setMessage(responseData.error);
-        
-       // setMessage(responseData.error);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setSeverity("error");
-      setMessage("Registration failed. Please try again.");
-     
-
-    }finally{
-      setLoading(false); // Stop loading
-    }
+    const newUser = {
+      name: data.fullName,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+    };
+  
+   
+    
+  
+    // Call validateSignUp
+    await validateSignUp(newUser, setSeverity, setMessage, setLoading, router);
   };
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(validateForm),
