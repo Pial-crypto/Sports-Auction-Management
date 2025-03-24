@@ -8,7 +8,7 @@ export async function GET(req) {
   const result = verifyToken(req);
   console.log("The big result",result)
   if (result) {
-    console.log("inside null")
+    console.log("inside not null")
     // যদি কোনো সমস্যা থাকে, যেমন টোকেন ভ্যালিড না হয়, তবে error রিটার্ন হবে
     return result;
   }

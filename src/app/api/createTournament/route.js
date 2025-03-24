@@ -1,0 +1,63 @@
+import prisma from "@/lib/prisma";
+import { NextResponse } from "next/server";
+
+export async function POST(req) {
+  try {
+    console.log("Request is going on");
+  
+    const body = await req.json();
+    console.log(body)
+    const {
+      name,
+      tournamentDate,
+      registrationFee,
+      prizeMoney,
+      numberOfTeams,
+      rules,
+      tournamentIcon,
+      gameType,
+      match,
+      winner,
+      createdBy
+    } = body;
+   // console.log(body,"body")
+    
+console.log(createdBy,"createdBy")
+  
+
+    //Create a new tournament
+    const newTournament = await prisma.tournament.create({
+      data: {
+        name:name||"",
+        tournamentDate: new Date(tournamentDate), // Ensure date is in correct format
+        registrationFee:registrationFee||0,
+        prizeMoney:prizeMoney||0,
+        numberOfTeams:numberOfTeams||0,
+        rules:rules||"N/A",
+        tournamentIcon:tournamentIcon||"",
+        gameType:gameType||"",
+        match:match||0,
+        status:"active",
+        winner:winner||"",
+        createdBy:createdBy||"",
+      }
+    });
+
+    const updatedUser = await prisma.user.update({
+      where: { id: createdBy },  // Find user by `createdBy` (user id)
+      data: {
+        tournaments: {
+          connect: { id: newTournament.id }  // Connect user with the new tournament by its id
+        },
+        activeStatus: true  // Set the active status to true for the user
+      }
+    });
+    
+
+    return NextResponse.json({ message: "Tournament created successfully",newTournament,updatedUser }, { status: 201 });
+
+  } catch (error) {
+   // console.log(error);
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
+}

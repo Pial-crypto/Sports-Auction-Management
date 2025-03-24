@@ -6,8 +6,9 @@ export const ValidateLogin = async ({ data, setLoading, setSeverity, setMessage,
   try {
     // Simulate loading (you can replace this with an actual API call)
     await new Promise((resolve) => setTimeout(resolve, 2000));
+    console.log("inside validate login",data)
 
-    const loggedUser = { email: data.email, password: data.password };
+    let loggedUser = { email: data.email, password: data.password };
 
     // Send login request
     const res = await fetch("/api/auth/login", {
@@ -17,8 +18,8 @@ export const ValidateLogin = async ({ data, setLoading, setSeverity, setMessage,
     });
 
     const responseData = await res.json();
-    
-    console.log("Logged user" ,loggedUser)
+    loggedUser=responseData.user;
+    console.log("Logged user" ,responseData)
 
 
     if (res.ok) {

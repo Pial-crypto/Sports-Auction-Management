@@ -20,7 +20,7 @@ const scheduleCards = [
     color: '#2563eb'
   }, */
   { 
-    title: 'Create Tournament',
+    title: 'Current Tournament',
     path:'/GameSelection',
     value: 'Ready', // বা 'Active' যখন টুর্নামেন্ট চলবে
     subtitle: 'Start New Tournament', // বা 'Tournament in progress' যখন চলবে

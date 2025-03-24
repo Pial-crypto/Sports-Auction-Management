@@ -56,16 +56,19 @@ export const PlayerCard = styled(motion(Card))(({ theme }) => ({
   },
 }));
 
-export const GradientButton = styled(Button)(({ theme, color = '#2563eb' }) => ({
-  background: `linear-gradient(45deg, ${color}, ${color}CC)`,
+export const GradientButton = styled(Button)(({ theme, color = '#2563eb',disabled }) => ({
+  background:disabled ? '#ccc' : `linear-gradient(45deg, ${color}, ${color}CC)`,
   borderRadius: '12px',
-  color: 'white',
+  color: disabled ? '#666' : 'white',
   padding: '8px 24px',
   transition: 'all 0.3s ease',
   textTransform: 'none',
+  pointerEvents: disabled ? 'none' : 'auto',
   fontWeight: 600,
   '&:hover': {
     transform: 'translateY(-2px)',
     boxShadow: `0 4px 12px ${color}40`,
   },
 }));
+
+

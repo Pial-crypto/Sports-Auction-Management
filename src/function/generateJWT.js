@@ -21,7 +21,10 @@ export const generateJWT=async(loggedUser,setSeverity,setMessage,router)=>{
               const token=jwtData.token;
     console.log("logged user",loggedUser)
               storage.set("token",token)
+              console.log("Before login email",loggedUser.email)
               storage.set("email",loggedUser.email)
+              console.log("before login user",loggedUser)
+              storage.set("user",loggedUser)
               console.log("Token",token)
               setSeverity("success");
               setMessage("Logged in successfully!");

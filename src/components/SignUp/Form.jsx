@@ -52,16 +52,17 @@ const RegisterFormComponent = () => {
    const [severity, setSeverity] = useState("success"); // "success" | "error"
    const [loading, setLoading] = useState(false); // Loading state
    const onSubmit = async (data) => {
-    console.log(data);
+    console.log("inside submit",data);
     const newUser = {
       name: data.fullName,
       email: data.email,
       password: data.password,
       role: data.role,
+      activeStatus:false,
     };
   
    
-    
+    console.log("newUser",newUser);
   
     // Call validateSignUp
     await validateSignUp(newUser, setSeverity, setMessage, setLoading, router);

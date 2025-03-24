@@ -6,10 +6,10 @@ import { useEffect } from "react";
 import { LoginStatus } from "@/function/checekLoginStatus";
 const NavBar = ({ activePage }) => {
 
-  console.log(activePage)
+ // console.log(activePage)
 
   const [isLoggedIn,setIsLoggedIn]=useState(false);
-  console.log("Is logged in",isLoggedIn)
+ // console.log("Is logged in",isLoggedIn)
 
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const NavBar = ({ activePage }) => {
        setIsLoggedIn(true)
       } else {
         // Handle logged-out behavior
-        console.log("User is not logged in");
+        //console.log("User is not logged in");
         
       }
     };

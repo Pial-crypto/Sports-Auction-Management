@@ -14,10 +14,30 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  role      String   
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  password     String
+  createdAt    DateTime     @default(now())
+  role         String   
+  activeStatus Boolean      @default(false)
+  tournaments  Tournament[] // Relation field
+}
+
+model Tournament {
+  id             String   @id @default(cuid())
+  name           String
+  createdAt      DateTime @default(now())
+  tournamentDate DateTime
+  registrationFee Int
+  prizeMoney     Int
+  numberOfTeams  Int
+  rules          String @default("N/A")
+  tournamentIcon String
+  gameType       String
+  match          Int
+  status         String   @default("active")
+  winner         String   @default("N/A")
+  createdBy      String
+  user           User     @relation(fields: [createdBy], references: [id])
 }

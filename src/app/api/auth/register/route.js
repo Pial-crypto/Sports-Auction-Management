@@ -5,7 +5,7 @@ export async function POST(req) {
     try{
         console.log("requst is going on")
 const body=await req.json();
-const {name,email,password,role}=body;
+const {name,email,password,role,activeStatus}=body;
 const existingUser=await prisma.user.findUnique({where:{email}})
 
 if(existingUser){
@@ -18,11 +18,11 @@ const hashedPassowrd=await bcrypt.hash(password,10);
 const newUser=await prisma.user.create(
     {
         data:{
-            name,email,password:hashedPassowrd,role
+            name,email,password:hashedPassowrd,role,activeStatus
         }
     }
 )
-return NextResponse.json({message:"Registration successfull",user:newUser},{status:201});
+return NextResponse.json({message:"Registration successfull",user:{newUser,id:newUser.id}},{status:201});
 
      }catch(error){
         console.log(error)

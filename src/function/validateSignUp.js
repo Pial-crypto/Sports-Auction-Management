@@ -1,9 +1,11 @@
+
 import { generateJWT } from "./generateJWT";
 
 export const validateSignUp = async (newUser, setSeverity, setMessage, setLoading, router) => {
     setLoading(true); // Start loading
   
     try {
+      console.log("newUserinseideValidateSignUp",newUser);
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -11,9 +13,13 @@ export const validateSignUp = async (newUser, setSeverity, setMessage, setLoadin
       });
   
       const responseData = await res.json();
-  
+      console.log(responseData,"responseData")
       if (res.ok) {
-       generateJWT(newUser,setSeverity,setMessage,router)
+        console.log("Response is ok")
+        console.log("res.ok",responseData);
+        console.log(responseData,"responseData")
+        console.log(newUser,"newUser")
+       generateJWT(responseData.user.newUser,setSeverity,setMessage,router)
       } else {
         setSeverity("error");
         setMessage(responseData.error || "Registration failed.");

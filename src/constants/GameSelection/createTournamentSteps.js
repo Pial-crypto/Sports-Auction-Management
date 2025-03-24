@@ -24,7 +24,7 @@ const createTournamentSteps = [
     },
     {
       id: 2,
-      name: "Tournament Rules",
+      name: "Basic info",
       icon: <Rule sx={{ fontSize: 40 }} />,
       component: "RulesEditor",
       image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20",
@@ -51,7 +51,7 @@ const createTournamentSteps = [
       name: "Team Setup",
       icon: <Groups sx={{ fontSize: 40 }} />,
       component: "TeamSetup",
-      image: "https://images.unsplash.com/photo-1526232373978-df229b3d8b63",
+      image: "https://images.unsplash.com/photo-1551434678-e076c223a692", // Image of a team working together
       teamOptions: Array.from({ length: 32 }, (_, i) => i + 1)
     }
   ];

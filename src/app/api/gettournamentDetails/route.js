@@ -4,12 +4,12 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    console.log("Login request is going on");
+    console.log("Tournament info  request is going on");
     const body = await req.json();
-    const { email, password } = body;
+    const {id} = body;
 
     // Find the user by email
-    const user = await prisma.user.findUnique({
+    const user = await prisma.tournament.findUnique({
       where: { email },
     });
     console.log(user,"user")
@@ -22,20 +22,12 @@ export async function POST(req) {
       );
     }
 
-    // Compare the provided password with the stored hashed password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    // If password is incorrect
-    if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: "Wrong password" },
-        { status: 400 }
-      );
-    }
+ 
+   
 
     // Return a success response if login is successful
     return NextResponse.json(
-      { message: "Login successful", user },
+      user,
       { status: 200 }
     );
   } catch (error) {

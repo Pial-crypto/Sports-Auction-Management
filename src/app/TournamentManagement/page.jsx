@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { use } from 'react';
 import {
   Box,
   Container,
@@ -14,9 +14,17 @@ import { ContentWrapper, StyledContainer } from '@/style/HomePage';
 import teamManagerCards from '@/constants/TournamentManagement/TeamManagerCards';
 import scheduleCards from '@/constants/TournamentManagement/scheduleCards';
 import playerTournamentCards from '@/constants/TournamentManagement/PlayerCards';
-
+import storage from '@/class/storage';
+import playerCardInactive from '@/constants/TournamentManagement/playerCardsInactive';
+import scheduleCardsDisabled from '@/constants/TournamentManagement/scheduleCardsDisabled';
 
 const TournamentManagement = () => {
+  const user=storage.get("user")
+  const {role}=user
+  const {activeStatus}=user;
+  console.log("activeStatus",activeStatus);
+  console.log(user,"I am the user","My role is ",role)
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -26,6 +34,20 @@ const TournamentManagement = () => {
       }
     }
   };
+
+  const getCardItems = (role) => {
+    switch (role) {
+      case "player":
+        return activeStatus ? playerTournamentCards : playerCardInactive;
+      case "manager":
+        return teamManagerCards;
+      default:
+        return activeStatus?scheduleCards:scheduleCardsDisabled;
+    }
+  };
+  
+  const cardItems = getCardItems(role);
+  
 
 
   return (<StyledContainer>
@@ -45,7 +67,7 @@ const TournamentManagement = () => {
           <HeaderCard></HeaderCard>
 
             {/* Stats Cards */}
-         <StatsCards cardItems={playerTournamentCards}></StatsCards>
+         <StatsCards cardItems={cardItems}></StatsCards>
 
             {/* Player Cards */}
            <PlayerCards></PlayerCards>

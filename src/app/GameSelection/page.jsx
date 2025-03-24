@@ -15,44 +15,44 @@ import SideBarItem from '@/components/GameSelection/SideBarItem';
 import HeaderComponents from '@/components/GameSelection/Header';
 import dayjs from 'dayjs';
 
-  export default function TournamentManagement() {
-    const [selectedView, setSelectedView] = useState('CREATE');
-    const [formData, setFormData] = useState({
-      gameType: '',
-      rules: '',
-      registrationFee: '',
-      prizeMoney: '',
-      numberOfTeams: '',
-      tournamentDate: dayjs(),
-      tournamentIcon: null,
-    });
-  
+export default function TournamentManagement() {
+  const [selectedView, setSelectedView] = useState('CREATE');
+  const [formData, setFormData] = useState({
+    gameType: '',
+    rules: '',
+    registrationFee: '',
+    name: '',
+    prizeMoney: '',
+    numberOfTeams: '',
+    tournamentDate: dayjs(),
+    tournamentIcon: null,
+  });
 
-    const renderActiveTournaments = (sportType) => (
-<ActiveTournaments activeTournaments={activeTournaments} sportType={sportType}></ActiveTournaments>
-    );
-  
-    const renderTournamentHistory = () => (
+  const renderActiveTournaments = (sportType) => (
+    <ActiveTournaments activeTournaments={activeTournaments} sportType={sportType}></ActiveTournaments>
+  );
+
+  const renderTournamentHistory = () => (
     <TournamentHistory tournamentHistory={tournamentHistory}></TournamentHistory>
-    );
-  
-    const renderCreateTournament = () => (
+  );
+
+  const renderCreateTournament = () => (
     <CreateTournament createTournamentSteps={createTournamentSteps} formData={formData} setFormData={setFormData}></CreateTournament>
-    );
-  
-    return (
-      <MainContainer>
-     <SideBarItem sidebarItems={sidebarItems} selectedView={selectedView} setSelectedView={setSelectedView}></SideBarItem>
-  
-        <ContentArea>
-       <HeaderComponents selectedView={selectedView} formData={formData}></HeaderComponents>
-  
-          {selectedView === 'CREATE' && renderCreateTournament()}
-          {selectedView === 'CRICKET' && renderActiveTournaments('CRICKET')}
-          {selectedView === 'FOOTBALL' && renderActiveTournaments('FOOTBALL')}
-          {selectedView === 'BADMINTON' && renderActiveTournaments('BADMINTON')}
-          {selectedView === 'HISTORY' && renderTournamentHistory()}
-        </ContentArea>
-      </MainContainer>
-    );
-  }
+  );
+
+  return (
+    <MainContainer>
+      <SideBarItem sidebarItems={sidebarItems} selectedView={selectedView} setSelectedView={setSelectedView}></SideBarItem>
+
+      <ContentArea>
+        <HeaderComponents selectedView={selectedView} formData={formData}></HeaderComponents>
+
+        {selectedView === 'CREATE' && renderCreateTournament()}
+        {selectedView === 'CRICKET' && renderActiveTournaments('CRICKET')}
+        {selectedView === 'FOOTBALL' && renderActiveTournaments('FOOTBALL')}
+        {selectedView === 'BADMINTON' && renderActiveTournaments('BADMINTON')}
+        {selectedView === 'HISTORY' && renderTournamentHistory()}
+      </ContentArea>
+    </MainContainer>
+  );
+}

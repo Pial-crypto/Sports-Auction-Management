@@ -3,46 +3,12 @@
 
 
 
-import React, { useState } from 'react';
 import {
   Box,
-  Typography,
-  IconButton,
-  Grid,
-  Button,
-  Paper,
-  Fade,
-  Zoom,
-  Slide,
-  Tooltip,
   Chip,
-  TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
   Card,
-  CardMedia,
-  CardContent,
 } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
-import {
-  SportsCricket,
-  SportsTennis,
-  SportsSoccer,
-  AddCircle,
-  Save,
-  Publish,
-  EmojiEvents,
-  AttachMoney,
-  Rule,
-  Schedule,
-  Preview,
-  Groups,
-  CheckCircle,
-  Cancel,
-  AccessTime,
-} from '@mui/icons-material';
 
 
 
@@ -115,3 +81,63 @@ export const StatusChip = styled(Chip)(({ status }) => {
   };
 });
 
+export const publishStyle={ 
+  background: 'linear-gradient(45deg, #06b6d4, #0891b2)',
+  '&:hover': {
+    background: 'linear-gradient(45deg, #0891b2, #06b6d4)',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(6, 182, 212, 0.3)',
+  },
+  transition: 'all 0.3s ease',
+}
+
+export const previewStyle={
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  },
+  transition: 'all 0.3s ease',
+}
+
+export const saveDraftStyle={
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  },
+  transition: 'all 0.3s ease',
+}
+
+export const UploadBox = styled(Box)(({ theme }) => ({
+  border: `2px dashed ${theme.palette.primary.main}`,
+  borderRadius: '12px',
+  padding: theme.spacing(2),
+  textAlign: 'center',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease-in-out',
+  backgroundColor: theme.palette.background.paper,
+  '&:hover': {
+    backgroundColor: theme.palette.primary.light,
+    borderColor: theme.palette.primary.dark,
+  },
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+}));
+
+export const rulesTextFieldStyle={
+  '& .MuiOutlinedInput-root': {
+    backgroundColor: 'background.paper',
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+      backgroundColor: 'background.default',
+      '& fieldset': {
+        borderColor: 'primary.main',
+      },
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: 'primary.main',
+  },
+  maxHeight: '120px',
+}

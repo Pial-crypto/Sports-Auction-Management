@@ -2,9 +2,10 @@ import { Grid, Box, Typography, Button } from '@mui/material';
 import { motion } from 'framer-motion';
 import { StatsCard } from '@/style/TournamentManagementStyle'; // Assuming you have this component
 import { GradientButton } from '@/style/TournamentManagementStyle';// Assuming you have this component
+
 //import cardItems from '@/constants/TournamentManagement/cardItems'; // Assuming the cardItems array is in this file
 //import itemVariants from '@/constants/TournamentManagement/itemVariants';
-export const StatsCards = ({cardItems}) => {
+export const StatsCards = ({cardItems,activeStatus}) => {
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
         visible: {
@@ -21,7 +22,7 @@ export const StatsCards = ({cardItems}) => {
       {cardItems.map((card, index) => (
         <Grid item xs={12} sm={6} md={3} key={index}>
           <StatsCard
-            variants={itemVariants} // Make sure itemVariants is defined elsewhere in your code
+            variants={itemVariants} 
             whileHover={{
               scale: 1.03,
               boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
@@ -44,14 +45,14 @@ export const StatsCards = ({cardItems}) => {
             <a href={card.path}>
             <GradientButton
           
-          
+          disabled={index!==0 && !activeStatus}
           fullWidth
           color={card.color}
           component={motion.button}
           whileTap={{ scale: 0.98 }}
         >
           {index === 4 ? 'SETTLE' : 'MANAGE'}
-        </GradientButton>
+        </GradientButton >
             </a>
           </StatsCard>
         </Grid>
