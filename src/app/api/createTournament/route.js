@@ -37,7 +37,7 @@ console.log(createdBy,"createdBy")
         tournamentIcon:tournamentIcon||"",
         gameType:gameType||"",
         match:match||0,
-        status:"active",
+        status:"Upcoming",
         winner:winner||"",
         createdBy:createdBy||"",
       }

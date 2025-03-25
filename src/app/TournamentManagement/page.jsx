@@ -22,6 +22,7 @@ const TournamentManagement = () => {
   const user=storage.get("user")
   const {role}=user
   const {activeStatus}=user;
+
   console.log("activeStatus",activeStatus);
   console.log(user,"I am the user","My role is ",role)
 
@@ -67,7 +68,7 @@ const TournamentManagement = () => {
           <HeaderCard></HeaderCard>
 
             {/* Stats Cards */}
-         <StatsCards cardItems={cardItems}></StatsCards>
+         <StatsCards activeStatus={activeStatus} cardItems={cardItems}></StatsCards>
 
             {/* Player Cards */}
            <PlayerCards></PlayerCards>

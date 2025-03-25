@@ -70,10 +70,12 @@ export const TournamentCard = styled(Card)(({ theme }) => ({
 export const StatusChip = styled(Chip)(({ status }) => {
   const colors = {
     LIVE: '#10b981',
+    active: '#10b981',
     UPCOMING: '#f59e0b',
     COMPLETED: '#6366f1',
     CANCELLED: '#ef4444',
   };
+  
   return {
     backgroundColor: alpha(colors[status], 0.1),
     color: colors[status],

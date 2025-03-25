@@ -33,9 +33,9 @@ const {activeStatus} = storage.get("user");
 
   return (
     <>
-      <Typography variant="h5" fontWeight="bold" color="primary">
+      <Typography sx={{marginBottom:3}}variant="h5" fontWeight="bold" color="primary">
         {selectedView === 'CREATE' ? 'Create Tournament' :
-         selectedView === 'HISTORY' ? 'Tournament History' :
+         selectedView === 'HISTORY' ? 'Your Tournament History' :
          `${selectedView.charAt(0) + selectedView.slice(1).toLowerCase()} Tournaments`}
       </Typography>
       {selectedView === 'CREATE' && (

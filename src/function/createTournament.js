@@ -1,6 +1,5 @@
 import storage from '@/class/storage';
-import prisma from '@/lib/prisma';
-
+const DEFAULT_TOURNAMENT_ICON = "https://images.unsplash.com/photo-1522778119026-d647f0596c20";
 const createTournament = async (formData) => {
   try {
     const user = storage.get("user");
@@ -11,7 +10,7 @@ const createTournament = async (formData) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({...formData,createdBy:user.id}),
+      tournamentIcon: (formData.tournamentIcon && formData.tournamentIcon !== 'https://example.com/icon.png') ? formData.tournamentIcon : DEFAULT_TOURNAMENT_ICON
     });
 
     const data = await response.json();

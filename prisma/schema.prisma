@@ -36,7 +36,7 @@ model Tournament {
   tournamentIcon String
   gameType       String
   match          Int
-  status         String   @default("active")
+  status         String   @default("Upcoming")
   winner         String   @default("N/A")
   createdBy      String
   user           User     @relation(fields: [createdBy], references: [id])

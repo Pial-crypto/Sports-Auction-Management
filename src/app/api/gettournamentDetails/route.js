@@ -1,35 +1,44 @@
 import prisma from "@/lib/prisma";
-import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
-export async function POST(req) {
+export async function GET(req) {
   try {
-    console.log("Tournament info  request is going on");
-    const body = await req.json();
-    const {id} = body;
+    console.log("Tournament info request is going on");
 
-    // Find the user by email
-    const user = await prisma.tournament.findUnique({
-      where: { email },
-    });
-    console.log(user,"user")
+    // বর্তমান তারিখ
+    const currentDate = new Date();
 
-    // If user doesn't exist
-    if (!user) {
+    // টুর্নামেন্টের তালিকা পেতে
+    let tournaments = await prisma.tournament.findMany();
+
+    console.log(tournaments, "tournament");
+
+    if (!tournaments || tournaments.length == 0) {
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { error: "No tournament exists" },
         { status: 400 }
       );
     }
 
- 
-   
+    // ডাটাবেস আপডেট করার জন্য
+    await prisma.tournament.updateMany({
+      where: {
+        tournamentDate: {
+          gt: currentDate, // যদি tournamentDate বর্তমান তারিখের থেকে বড় হয়
+        },
+        status: {
+          not: "COMPLETED", // যদি status "COMPLETED" না হয়
+        },
+      },
+      data: {
+        status: "LIVE", // status আপডেট হবে
+      },
+    });
 
-    // Return a success response if login is successful
-    return NextResponse.json(
-      user,
-      { status: 200 }
-    );
+    // আপডেটের পর টুর্নামেন্ট তালিকা আবার রিটার্ন করা
+    const updatedTournaments = await prisma.tournament.findMany(); // পুরো টেবিলের ডেটা নেবো
+
+    return NextResponse.json(updatedTournaments, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
