@@ -10,7 +10,8 @@ const createTournament = async (formData) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      tournamentIcon: (formData.tournamentIcon && formData.tournamentIcon !== 'https://example.com/icon.png') ? formData.tournamentIcon : DEFAULT_TOURNAMENT_ICON
+      body: JSON.stringify({...formData,createdBy:user.id,tournamentIcon: (formData.tournamentIcon && formData.tournam)}),
+     // tournamentIcon: (formData.tournamentIcon && formData.tournamentIcon !== 'https://example.com/icon.png') ? formData.tournamentIcon : DEFAULT_TOURNAMENT_ICON
     });
 
     const data = await response.json();

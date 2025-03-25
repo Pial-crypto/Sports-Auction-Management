@@ -11,9 +11,8 @@ import {
   TrendingDown,
 } from '@mui/icons-material';
 
-
-import { StyledCard,StatBox, } from '../../style/Budget';
-
+import { StyledCard, StatBox } from '@/style/Budget';
+import { COLORS } from '@/style/Budget';
 
 const BudgetOverview = ({budgetData}) => (
     <Grid container spacing={3}>
@@ -70,4 +69,4 @@ const BudgetOverview = ({budgetData}) => (
     </Grid>
   );
 
-  export default BudgetOverview;
+export default BudgetOverview;

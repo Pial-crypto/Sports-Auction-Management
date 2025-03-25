@@ -25,6 +25,7 @@ const TournamentManagement = () => {
 
   console.log("activeStatus",activeStatus);
   console.log(user,"I am the user","My role is ",role)
+  
 
   const containerVariants = {
     hidden: { opacity: 0 },

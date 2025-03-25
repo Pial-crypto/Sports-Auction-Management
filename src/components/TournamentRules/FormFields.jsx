@@ -1,8 +1,10 @@
 import React from 'react';
 import { TextField, Box, Typography, Chip } from '@mui/material';
-import RULE_TYPES from '@/constants/TournamentRules/tournamentRules';// Ensure this is the correct path
+import RULE_TYPES from '@/constants/TournamentRules/tournamentRules';
 
-const FormFields = ({ newRule, setNewRule, handleTemplateSelect }) => {
+const FormFields = ({ newRule, setNewRule, handleTemplateSelect, tournament }) => {
+  const gameType = tournament?.gameType?.toUpperCase() || 'CRICKET'; // Default to CRICKET if no game type
+
   return (
     <>
       <TextField
@@ -26,15 +28,20 @@ const FormFields = ({ newRule, setNewRule, handleTemplateSelect }) => {
       {newRule.category && (
         <Box>
           <Typography variant="subtitle2" gutterBottom>
-            Quick Templates
+            Quick Templates for {gameType.toLowerCase()}
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {RULE_TYPES[newRule.category].templates.map((template, index) => (
+            {RULE_TYPES[newRule.category].getTemplates(gameType).map((template, index) => (
               <Chip
                 key={index}
                 label={template}
                 onClick={() => handleTemplateSelect(template)}
-                sx={{ cursor: 'pointer' }}
+                sx={{ 
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: RULE_TYPES[newRule.category].color + '.lighter',
+                  }
+                }}
               />
             ))}
           </Box>

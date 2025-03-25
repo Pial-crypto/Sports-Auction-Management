@@ -23,7 +23,7 @@ const scheduleCards = [
     title: 'Current Tournament',
     path:'/GameSelection',
     value: 'Ready', // বা 'Active' যখন টুর্নামেন্ট চলবে
-    subtitle: 'Start New Tournament', // বা 'Tournament in progress' যখন চলবে
+    subtitle: 'See all tournamets', // বা 'Tournament in progress' যখন চলবে
     icon: <EmojiEventsIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb',
     disabled: false // টুর্নামেন্ট চলাকালীন true হবে

@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import { StatsCard } from '@/style/TournamentManagementStyle'; // Assuming you have this component
 import { GradientButton } from '@/style/TournamentManagementStyle';// Assuming you have this component
 
-//import cardItems from '@/constants/TournamentManagement/cardItems'; // Assuming the cardItems array is in this file
-//import itemVariants from '@/constants/TournamentManagement/itemVariants';
 export const StatsCards = ({cardItems,activeStatus}) => {
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },

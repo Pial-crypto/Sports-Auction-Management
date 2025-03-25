@@ -41,3 +41,11 @@ model Tournament {
   createdBy      String
   user           User     @relation(fields: [createdBy], references: [id])
 }
+
+model Rules {
+  id          String  @id @default(cuid()) 
+  title       String
+  description String
+  category    String
+  tournamentId String  // This is just a foreign key, but no relation is defined
+}
