@@ -18,11 +18,13 @@ import { StyledCard } from '@/style/Budget';
 import { alpha } from '@mui/material/styles';
 import { COLORS } from '@/style/Budget';
 import { Zoom } from '@mui/material';
+import { toast } from 'react-toastify';
 
 const CategoryBreakdown = ({ 
   categories, 
   onUpdateCategory,
-  onAddTransaction
+  onAddTransaction,
+  mainBudget
 }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedCategory, setSelectedCategory] = React.useState(null);
@@ -36,9 +38,13 @@ const CategoryBreakdown = ({
     setOpenDialog(true);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = ({budgetData}) => {
     if (!amount || isNaN(amount) || amount <= 0) return;
-
+if(mainBudget.remaining<amount){
+  alert("You don't have enough budget to spend")
+  //toast.success("You don't have enough budget to spend")
+  return
+}
     const transaction = {
       id: Date.now(),
       description: `${type === 'expense' ? 'Spent on' : 'Refunded from'} ${selectedCategory.name}`,
@@ -136,12 +142,17 @@ const CategoryBreakdown = ({
             autoFocus
             margin="dense"
             label="Amount"
+            
             type="number"
             fullWidth
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             InputProps={{
+              
               startAdornment: <Typography>৳</Typography>
+            }}
+            inputProps={{
+              min: 1
             }}
           />
         </DialogContent>

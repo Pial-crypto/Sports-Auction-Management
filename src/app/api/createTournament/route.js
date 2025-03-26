@@ -18,7 +18,11 @@ export async function POST(req) {
       gameType,
       match,
       winner,
-      createdBy
+      createdBy,
+      budget,
+      venueBudget,
+      equipmentBudget,
+      staffBudget
     } = body;
    // console.log(body,"body")
     
@@ -40,6 +44,10 @@ console.log(createdBy,"createdBy")
         status:"Upcoming",
         winner:winner||"",
         createdBy:createdBy||"",
+        budget:budget||5000,
+        venueBudget:venueBudget||0,
+        equipmentBudget:equipmentBudget||0,
+        staffBudget:staffBudget||0
       }
     });
 

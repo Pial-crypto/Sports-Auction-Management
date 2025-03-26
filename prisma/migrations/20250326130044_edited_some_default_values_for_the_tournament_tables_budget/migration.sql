@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Tournament" ALTER COLUMN "equipmentBudget" SET DEFAULT 1000,
+ALTER COLUMN "remainingBudget" SET DEFAULT 5000,
+ALTER COLUMN "staffBudget" SET DEFAULT 1000,
+ALTER COLUMN "venueBudget" SET DEFAULT 1000;

@@ -129,6 +129,23 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                     )}
                     {step.component === 'BudgetPlanner' && (
                       <Grid container spacing={2}>
+
+<Grid item xs={12}>
+                          <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Total Budget"
+                            value={formData.budget}
+                            onChange={(e) => setFormData({ ...formData, budget: Number(e.target.value) })}
+                            InputProps={{
+                              startAdornment: <AttachMoney />,
+                              inputProps: { min: 500 }
+                            }}
+                           // helperText="Minimum fee: 100"
+                          />
+                        </Grid>
+                        
                         <Grid item xs={12}>
                           <TextField
                             fullWidth
@@ -158,6 +175,58 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                             }}
                           />
                         </Grid>
+
+
+
+                        <Grid item xs={12}>
+                          <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Venue Budget"
+                            value={formData.venueBudget}
+                            onChange={(e) => setFormData({ ...formData, venueBudget: Number(e.target.value) })}
+                            InputProps={{
+                              startAdornment: <AttachMoney />,
+                              inputProps: { min: 50}
+                            }}
+                          />
+                        </Grid>
+
+                        
+                        <Grid item xs={12}>
+                          <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Staff Budget"
+                            value={formData.staffBudget}
+                            onChange={(e) => setFormData({ ...formData, staffBudget: Number(e.target.value) })}
+                            InputProps={{
+                              startAdornment: <AttachMoney />,
+                              inputProps: { min: 50}
+                            }}
+                          />
+                        </Grid>
+
+                             
+                        <Grid item xs={12}>
+                          <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Equipment Budget"
+                            value={formData.equipmentBudget}
+                            onChange={(e) => setFormData({ ...formData, equipmentBudget: Number(e.target.value) })}
+                            InputProps={{
+                              startAdornment: <AttachMoney />,
+                              inputProps: { min: 50}
+                            }}
+                          />
+                        </Grid>
+
+
+
                       </Grid>
                     )}
                     {step.component === 'TeamSetup' && (

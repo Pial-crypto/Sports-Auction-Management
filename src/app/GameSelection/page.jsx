@@ -26,6 +26,10 @@ export default function TournamentManagement() {
     numberOfTeams: '',
     tournamentDate: dayjs(),
     tournamentIcon: null,
+    budget: 5000,
+    venueBudget:1000,
+    equipmentBudget:1000,
+    staffBudget:1000,
   });
 
   const renderActiveTournaments = (sportType) => (

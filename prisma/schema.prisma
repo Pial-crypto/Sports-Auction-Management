@@ -40,6 +40,19 @@ model Tournament {
   winner         String   @default("N/A")
   createdBy      String
   user           User     @relation(fields: [createdBy], references: [id])
+  budget         Int @default(5000)
+  budgetSpent    Int @default(0)
+  remainingBudget Int @default(5000)
+ 
+  prizeMoneySpent Int @default(0)
+  venueSpent      Int @default(0)
+  venueBudget     Int @default(1000)
+  equipmentSpent      Int @default(0)
+  equipmentBudget Int @default(1000)
+  staffSpent          Int @default(0)
+  staffBudget     Int @default(1000)
+  
+  
 }
 
 model Rules {
@@ -48,4 +61,44 @@ model Rules {
   description String
   category    String
   tournamentId String  // This is just a foreign key, but no relation is defined
+}
+model Transaction {
+  id          String  @id @default(cuid()) 
+  description String
+  amount      Int
+  type        String
+  date        DateTime
+  category    String
+  tournamentId String
+}
+
+model MonthlyBudget {
+  id          String  @id @default(cuid()) 
+  jan          Int @default(50000)
+  feb          Int @default(50000)
+  mar          Int @default(50000)
+  apr          Int @default(50000)
+  may          Int @default(50000)
+  jun          Int @default(50000)
+  jul          Int @default(50000)
+  aug          Int @default(50000)
+  sep          Int @default(50000)
+  oct          Int @default(50000)
+  nov          Int @default(50000)
+  dec          Int @default(50000)
+}
+model MonthlyExpense {
+  id          String  @id @default(cuid()) 
+  jan          Int @default(25000 )
+  feb          Int @default(25000)
+  mar          Int @default(25000)
+  apr          Int @default(25000)
+  may          Int @default(25000)
+  jun          Int @default(25000)
+  jul          Int @default(25000)
+  aug          Int @default(25000)
+  sep          Int @default(25000)
+  oct          Int @default(25000)
+  nov          Int @default(25000)
+  dec          Int @default(25000)
 }

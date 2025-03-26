@@ -8,18 +8,18 @@ import { COLORS } from '@/style/Budget';
 const ExpenseChart = ({ budgetData }) => {
   // Monthly expense data
   const monthlyExpenses = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
         label: 'Expenses',
-        data: [30000, 25000, 35000, 28000, 30000, 32000],
+        data: [30000, 25000, 35000, 28000, 30000, 32000, 30000, 25000, 35000, 28000, 30000, 32000],
         borderColor: COLORS.primary,
         backgroundColor: alpha(COLORS.primary, 0.5),
         fill: true,
       },
       {
         label: 'Budget',
-        data: [50000, 50000, 50000, 50000, 50000, 50000],
+        data: [50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000],
         borderColor: COLORS.success,
         backgroundColor: alpha(COLORS.success, 0.5),
         borderDash: [5, 5],

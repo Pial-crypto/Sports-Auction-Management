@@ -42,3 +42,25 @@ export const StatBox = styled(Box)(({ theme, colortype }) => ({
     background: alpha(COLORS[colortype], 0.15),
   },
 }));
+export const downLoadButton={
+  position: 'fixed',
+  bottom: 20,
+  right: 20,
+  bgcolor: COLORS.primary,
+  color: 'white',
+  '&:hover': {
+    bgcolor: alpha(COLORS.primary, 0.8),
+  },
+  width: 56,
+  height: 56,
+  boxShadow: 3,
+}
+
+export const titleStyle={
+  fontWeight: 800,
+  mb: 4,
+  background: 'linear-gradient(45deg, #1a237e, #0d47a1)',
+  backgroundClip: 'text',
+  WebkitBackgroundClip: 'text',
+  color: 'transparent',
+}

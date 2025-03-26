@@ -31,5 +31,22 @@ if (selectedDate <= today) {
       setError("Please select number of teams");
       return false;
     }
+    if (!formData.venueBudget || formData.venueBudget <= 0) {
+      setError("Please enter venue budget");
+      return false;
+    }
+    if (!formData.equipmentBudget || formData.equipmentBudget <= 0) {
+      setError("Please enter equipment budget");
+      return false;
+    }
+    if (!formData.staffBudget || formData.staffBudget <= 0) {
+      setError("Please enter staff budget");
+      return false;
+    }
+
+    if(formData.prizeMoney + formData.venueBudget + formData.equipmentBudget + formData.staffBudget < formData.budget){
+      setError("Total budget should be less than or equal to the total budget");
+      return false;
+    }
     return true;
   };

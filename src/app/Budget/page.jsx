@@ -8,9 +8,9 @@ import {
   IconButton,
   Tooltip as MuiTooltip,
   Fade,
+  CircularProgress,
 } from '@mui/material';
 import { Assessment } from '@mui/icons-material';
-import { alpha } from '@mui/material/styles';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,13 +24,16 @@ import {
   Legend,
 } from 'chart.js';
 
-import { MainContainer, COLORS } from '@/style/Budget';
+import { MainContainer, downLoadButton, titleStyle } from '@/style/Budget';
 import BudgetOverview from '@/components/Budget/BudgetOverview';
 import CategoryBreakdown from '@/components/Budget/CategoryBreakdown';
 import RecentTransactions from '@/components/Budget/RecentTransactions';
 import ExpenseChart from '@/components/Budget/ExpenseChart';
 import { initialBudgetData } from '@/constants/Budget/budgetData';
-
+import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
+import { handleAddTransaction, handleUpdateCategory, generateBudgetReport } from '@/function/handleBudgetPage';
+import { fetchCurrentTransactionHook } from '@/hook/fetchCurrentTransactionHook';
+import getTransactionList from '@/function/getTransactionList';
 // Register ChartJS components
 ChartJS.register(
   CategoryScale,
@@ -46,37 +49,22 @@ ChartJS.register(
 
 const BudgetManagement = () => {
   const [budgetData, setBudgetData] = useState(initialBudgetData);
+  const [tournament,setTournament]=useState(null)
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
-  const handleUpdateCategory = (categoryId, type, amount) => {
-    setBudgetData(prev => {
-      const newCategories = prev.categories.map(cat => {
-        if (cat.id === categoryId) {
-          return {
-            ...cat,
-            spent: type === 'expense' 
-              ? cat.spent + amount 
-              : cat.spent - amount
-          };
-        }
-        return cat;
-      });
+  fetchCurrentTournamentHook(setTournament,setBudgetData)
 
-      const newSpent = newCategories.reduce((sum, cat) => sum + cat.spent, 0);
+  fetchCurrentTransactionHook(tournament,setBudgetData)
 
-      return {
-        ...prev,
-        categories: newCategories,
-        spent: newSpent,
-        remaining: prev.totalBudget - newSpent
-      };
-    });
-  };
-
-  const handleAddTransaction = (transaction) => {
-    setBudgetData(prev => ({
-      ...prev,
-      recentTransactions: [transaction, ...prev.recentTransactions].slice(0, 10)
-    }));
+  const handleDownloadReport = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      await generateBudgetReport(budgetData);
+    } catch (error) {
+      console.error('Error generating report:', error);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   return (
@@ -86,14 +74,7 @@ const BudgetManagement = () => {
           <Typography 
             variant="h3" 
             gutterBottom 
-            sx={{
-              fontWeight: 800,
-              mb: 4,
-              background: 'linear-gradient(45deg, #1a237e, #0d47a1)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              color: 'transparent',
-            }}
+            sx={titleStyle}
           >
             Budget Management
           </Typography>
@@ -110,8 +91,11 @@ const BudgetManagement = () => {
             <Grid item xs={12}>
               <CategoryBreakdown 
                 categories={budgetData.categories}
-                onUpdateCategory={handleUpdateCategory}
-                onAddTransaction={handleAddTransaction}
+                mainBudget={budgetData}
+                onUpdateCategory={(categoryId, type, amount)=>
+                  handleUpdateCategory(setBudgetData,categoryId, type, amount)
+                }
+                onAddTransaction={(transaction)=>handleAddTransaction(transaction,setBudgetData,budgetData,tournament.id)}
               />
             </Grid>
 
@@ -124,21 +108,15 @@ const BudgetManagement = () => {
 
       <MuiTooltip title="Download Report">
         <IconButton
-          sx={{
-            position: 'fixed',
-            bottom: 20,
-            right: 20,
-            bgcolor: COLORS.primary,
-            color: 'white',
-            '&:hover': {
-              bgcolor: alpha(COLORS.primary, 0.8),
-            },
-            width: 56,
-            height: 56,
-            boxShadow: 3,
-          }}
+          sx={downLoadButton}
+          onClick={handleDownloadReport}
+          disabled={isGeneratingPDF}
         >
-          <Assessment />
+          {isGeneratingPDF ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            <Assessment />
+          )}
         </IconButton>
       </MuiTooltip>
     </MainContainer>
