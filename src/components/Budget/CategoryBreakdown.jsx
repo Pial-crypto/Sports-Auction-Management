@@ -38,13 +38,27 @@ const CategoryBreakdown = ({
     setOpenDialog(true);
   };
 
-  const handleSubmit = ({budgetData}) => {
+  const handleSubmit = () => {
     if (!amount || isNaN(amount) || amount <= 0) return;
-if(mainBudget.remaining<amount){
-  alert("You don't have enough budget to spend")
-  //toast.success("You don't have enough budget to spend")
-  return
-}
+
+    // Check if trying to refund more than spent
+    if (type === 'income' && Number(amount) > selectedCategory.spent) {
+      alert(`You can't refund more than spent amount (৳${selectedCategory.spent.toLocaleString()}) in ${selectedCategory.name}`);
+      return;
+    }
+
+    // Check if trying to spend more than remaining budget
+    if (type === 'expense' && Number(amount) > mainBudget.remaining) {
+      alert(`You don't have enough budget to spend. Remaining budget: ৳${mainBudget.remaining.toLocaleString()}`);
+      return;
+    }
+
+    // Check if trying to refund more than total budget
+    if (type === 'income' && Number(amount) > mainBudget.totalBudget) {
+      alert(`Refund amount cannot exceed total budget (৳${mainBudget.totalBudget.toLocaleString()})`);
+      return;
+    }
+
     const transaction = {
       id: Date.now(),
       description: `${type === 'expense' ? 'Spent on' : 'Refunded from'} ${selectedCategory.name}`,

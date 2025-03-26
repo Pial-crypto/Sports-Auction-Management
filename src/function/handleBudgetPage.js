@@ -3,72 +3,84 @@ import updateBudget from "./updateBudget";
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-export const handleUpdateCategory = (setBudgetData,categoryId, type, amount) => {
-    setBudgetData(prev => {
-      const newCategories = prev.categories.map(cat => {
-        if (cat.id === categoryId) {
-          return {
-            ...cat,
-            spent: type === 'expense' 
-              ? cat.spent + amount 
-              : cat.spent - amount
-          };
-        }
-        return cat;
-      });
+export const handleUpdateCategory = (setBudgetData, categoryId, type, amount) => {
+  setBudgetData(prev => {
+    const category = prev.categories.find(cat => cat.id === categoryId);
+    
+    // Check if trying to refund more than spent
+    if (type === 'income' && amount > category.spent) {
+      return prev; // Don't update if trying to refund more than spent
+    }
 
-      const newSpent = newCategories.reduce((sum, cat) => sum + cat.spent, 0);
+    const newCategories = prev.categories.map(cat => {
+      if (cat.id === categoryId) {
+        const newSpent = type === 'expense' 
+          ? cat.spent + amount 
+          : cat.spent - amount;
 
-      return {
-        ...prev,
-        categories: newCategories,
-        spent: newSpent,
-        remaining: prev.totalBudget - newSpent
-      };
+        // Don't allow negative spent values
+        if (newSpent < 0) return cat;
+
+        return {
+          ...cat,
+          spent: newSpent
+        };
+      }
+      return cat;
     });
-  };
 
- export const handleAddTransaction = (transaction,setBudgetData,budgetData,id  ) => {
-  console.log("I am calling save transaction")
-  saveTransaction({...transaction,tournamentId:id})
-    setBudgetData(prev =>{ 
-      
-      
-      
-     const updatedBudget= ({
+    const newSpent = newCategories.reduce((sum, cat) => sum + cat.spent, 0);
+    const newRemaining = prev.totalBudget - newSpent;
+
+    // Don't allow negative remaining budget
+    if (newRemaining < 0) return prev;
+
+    return {
+      ...prev,
+      categories: newCategories,
+      spent: newSpent,
+      remaining: newRemaining
+    };
+  });
+};
+
+export const handleAddTransaction = (transaction, setBudgetData, budgetData, id) => {
+  // Check if this is a valid transaction
+  const category = budgetData.categories.find(cat => cat.name === transaction.category);
+  
+  if (transaction.type === 'income' && transaction.amount > category.spent) {
+    alert(`Cannot refund more than spent amount in ${category.name}`);
+    return;
+  }
+
+  console.log("I am calling save transaction");
+  saveTransaction({...transaction, tournamentId: id});
+  
+  setBudgetData(prev => {
+    const updatedBudget = {
       ...prev,
       recentTransactions: [transaction, ...prev.recentTransactions].slice(0, 10)
-    })
+    };
 
-    
+    const budget = {
+      id: id,
+      budgetSpent: updatedBudget.spent,
+      remainingBudget: updatedBudget.remaining,
+      prizeMoneySpent: updatedBudget.categories[0].spent,
+      venueSpent: updatedBudget.categories[1].spent,
+      equipmentSpent: updatedBudget.categories[2].spent,
+      staffSpent: updatedBudget.categories[3].spent
+    };
 
-
-    const budget={
-      id:id,
-    
-      budgetSpent:updatedBudget.spent,
-      remainingBudget:updatedBudget.remaining,
-      prizeMoneySpent:updatedBudget.categories[0].spent,
-      venueSpent:updatedBudget.categories[1].spent,
-     
-      equipmentSpent:updatedBudget.categories[2].spent,
-    
-      staffSpent:updatedBudget.categories[3].spent
+    if (budget.remainingBudget < 0) {
+      alert("No budget available");
+      return prev;
     }
 
-    if(budget.remainingBudget<0){
-      //alert("No budget available")
-    }
-    else updateBudget(budget)
-    //console.log(budget,"budget from handle add transaction")
-
-  
-    return updatedBudget
-  }
-  
-  );
-  
-  };
+    updateBudget(budget);
+    return updatedBudget;
+  });
+};
 
 export const generateBudgetReport = async (budgetData) => {
   // Create new document
