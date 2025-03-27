@@ -102,3 +102,15 @@ model MonthlyExpense {
   nov          Int @default(25000)
   dec          Int @default(25000)
 }
+
+model Announcement {
+  id          String   @id @default(cuid()) 
+  title       String
+  content     String
+  priority    String
+  type        String
+  timestamp   DateTime
+  author      String
+  
+  tournamentId String
+}
