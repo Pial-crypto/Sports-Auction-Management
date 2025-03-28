@@ -22,7 +22,9 @@ export async function POST(req) {
       budget,
       venueBudget,
       equipmentBudget,
-      staffBudget
+      staffBudget,
+      registrationDeadline,
+      auctionDate
     } = body;
    // console.log(body,"body")
     
@@ -47,7 +49,9 @@ console.log(createdBy,"createdBy")
         budget:budget||5000,
         venueBudget:venueBudget||0,
         equipmentBudget:equipmentBudget||0,
-        staffBudget:staffBudget||0
+        staffBudget:staffBudget||0,
+        registrationDeadline:registrationDeadline||new Date(),
+        auctionDate:auctionDate||new Date()
       }
     });
 

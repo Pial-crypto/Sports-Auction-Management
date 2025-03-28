@@ -51,6 +51,9 @@ model Tournament {
   equipmentBudget Int @default(1000)
   staffSpent          Int @default(0)
   staffBudget     Int @default(1000)
+  registrationDeadline DateTime @default(now())
+  auctionDate DateTime @default(now())
+
   
   
 }

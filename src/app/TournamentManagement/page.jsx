@@ -17,6 +17,7 @@ import playerTournamentCards from '@/constants/TournamentManagement/PlayerCards'
 import storage from '@/class/storage';
 import playerCardInactive from '@/constants/TournamentManagement/playerCardsInactive';
 import scheduleCardsDisabled from '@/constants/TournamentManagement/scheduleCardsDisabled';
+import Footer from '@/components/Footer/Footer';
 
 const TournamentManagement = () => {
   const user=storage.get("user")
@@ -52,7 +53,9 @@ const TournamentManagement = () => {
   
 
 
-  return (<StyledContainer>
+  return (
+  <>
+  <StyledContainer>
     <NavBar activePage={"Tournaments"}></NavBar>
     <Container>
       <ContentWrapper>
@@ -80,6 +83,8 @@ const TournamentManagement = () => {
     </ContentWrapper>
     </Container>
     </StyledContainer>
+    <Footer></Footer>
+    </>
   );
 };
 

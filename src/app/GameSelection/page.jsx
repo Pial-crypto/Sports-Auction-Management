@@ -30,6 +30,9 @@ export default function TournamentManagement() {
     venueBudget:1000,
     equipmentBudget:1000,
     staffBudget:1000,
+    registrationDeadline: dayjs(),
+    auctionDate: dayjs(),
+    
   });
 
   const renderActiveTournaments = (sportType) => (

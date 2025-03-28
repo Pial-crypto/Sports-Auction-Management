@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
 import { 
   Grid, 
   CardMedia, 
@@ -16,13 +17,27 @@ import {
 import { 
   AttachMoney,
   AddPhotoAlternate} from '@mui/icons-material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { rulesTextFieldStyle, TournamentCard } from '@/style/GameSelection';
 import { UploadBox } from '@/style/GameSelection';
 
 const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
+  const defaultDates = {
+    tournamentDate: formData.tournamentDate || null,
+    registrationDeadline: formData.registrationDeadline || null,
+    auctionDate: formData.auctionDate || null
+  };
+
+  const handleDateChange = (field) => (newValue) => {
+    if (newValue && dayjs.isDayjs(newValue)) {
+      setFormData(prev => ({
+        ...prev,
+        [field]: newValue
+      }));
+    }
+  };
+
   return (
     <Fade in={true} timeout={500}>
       <Box>
@@ -59,17 +74,52 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                     {step.component === 'RulesEditor' && (
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              label="Tournament Date"
-                              value={formData.tournamentDate}
-                              onChange={(newDate) => setFormData({ ...formData, tournamentDate: newDate })}
-                              sx={{ width: '100%', mb: 2 }}
-                              required
-                            />
-                          </LocalizationProvider>
+                          <Typography variant="subtitle1" color="primary" gutterBottom>
+                            Tournament Schedule
+                          </Typography>
+                          <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                  label="Tournament Start Date"
+                                  value={defaultDates.tournamentDate}
+                                  onChange={handleDateChange('tournamentDate')}
+                                  sx={{ width: '100%', mb: 2 }}
+                                  slotProps={{ textField: { required: true } }}
+                                  minDate={dayjs()}
+                                />
+                              </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12}>
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                  label="Registration Deadline"
+                                  value={defaultDates.registrationDeadline}
+                                  onChange={handleDateChange('registrationDeadline')}
+                                  sx={{ width: '100%', mb: 2 }}
+                                  slotProps={{ textField: { required: true } }}
+                                  minDate={defaultDates.tournamentDate || dayjs()}
+                                />
+                              </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12}>
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                  label="Auction Date"
+                                  value={defaultDates.auctionDate}
+                                  onChange={handleDateChange('auctionDate')}
+                                  sx={{ width: '100%', mb: 2 }}
+                                  slotProps={{ textField: { required: true } }}
+                                  minDate={defaultDates.registrationDeadline || dayjs()}
+                                />
+                              </LocalizationProvider>
+                            </Grid>
+                          </Grid>
                         </Grid>
                         <Grid item xs={12}>
+                          <Typography variant="subtitle1" color="primary" gutterBottom>
+                            Tournament Media
+                          </Typography>
                           <Grid container spacing={2}>
                             <Grid item xs={12} md={4}>
                               <input
@@ -111,10 +161,10 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                                 </UploadBox>
                               </label>
                             </Grid>
-                            <Grid item xs={10} md={8}>
+                            <Grid item xs={12} md={8}>
                               <TextField
                                 fullWidth
-                               
+                                required
                                 multiline
                                 rows={3}
                                 label="Tournament Name"
@@ -129,8 +179,7 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                     )}
                     {step.component === 'BudgetPlanner' && (
                       <Grid container spacing={2}>
-
-<Grid item xs={12}>
+                        <Grid item xs={12}>
                           <TextField
                             fullWidth
                             required
@@ -142,10 +191,8 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                               startAdornment: <AttachMoney />,
                               inputProps: { min: 500 }
                             }}
-                           // helperText="Minimum fee: 100"
                           />
                         </Grid>
-                        
                         <Grid item xs={12}>
                           <TextField
                             fullWidth
@@ -175,9 +222,6 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                             }}
                           />
                         </Grid>
-
-
-
                         <Grid item xs={12}>
                           <TextField
                             fullWidth
@@ -192,8 +236,6 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                             }}
                           />
                         </Grid>
-
-                        
                         <Grid item xs={12}>
                           <TextField
                             fullWidth
@@ -208,8 +250,6 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                             }}
                           />
                         </Grid>
-
-                             
                         <Grid item xs={12}>
                           <TextField
                             fullWidth
@@ -224,26 +264,37 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                             }}
                           />
                         </Grid>
-
-
-
                       </Grid>
                     )}
                     {step.component === 'TeamSetup' && (
-                      <FormControl fullWidth required>
-                        <InputLabel>Number of Teams</InputLabel>
-                        <Select
-                          value={formData.numberOfTeams}
-                          inputProps={{ min: 6 }}
-                          onChange={(e) => setFormData({ ...formData, numberOfTeams: e.target.value })}
-                          label="Number of Teams"
-                        >
-                          {step.teamOptions.map((num) => (
-                            num >= 6 &&
-                            <MenuItem value={num} key={num}>{num} Teams</MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <FormControl fullWidth required>
+                            <InputLabel>Number of Teams</InputLabel>
+                            <Select
+                              value={formData.numberOfTeams}
+                              onChange={(e) => setFormData({ ...formData, numberOfTeams: e.target.value })}
+                              label="Number of Teams"
+                            >
+                              {step.teamOptions.map((num) => (
+                                num >= 6 &&
+                                <MenuItem value={num} key={num}>{num} Teams</MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Players Per Team"
+                            value={formData.playersPerTeam}
+                            onChange={(e) => setFormData({ ...formData, playersPerTeam: Number(e.target.value) })}
+                            inputProps={{ min: 1 }}
+                          />
+                        </Grid>
+                      </Grid>
                     )}
                   </CardContent>
                 </TournamentCard>
@@ -255,8 +306,6 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
     </Fade>
   );
 };
-
-
 
 CreateTournament.propTypes = {
   createTournamentSteps: PropTypes.array.isRequired,

@@ -6,10 +6,10 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 const playerCardInactive = [
   { 
-    title: 'Look for a Team',
+    title: 'Join tournament',
     value: 'Join',
     subtitle: '',
-    path: '/JoinTeam',
+    path: '/JoinTournament',
     icon: <CalendarTodayIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb',
     viewOnly: true

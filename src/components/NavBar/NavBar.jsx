@@ -33,7 +33,7 @@ const NavBar = ({ activePage }) => {
     { label: "Home", path: "/" },
     { label: "Tournaments", path: "/TournamentManagement" },
     { label: "Auctions", path: "/Auction" },
-    { label: "About", path: "/about" },
+    
     { label: "Profile", path: "/UserDashboard" },
   ];
 
