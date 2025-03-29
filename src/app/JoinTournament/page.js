@@ -9,6 +9,7 @@ import PlayerInfoDialog from '@/components/JoinTournament/PlayerInfoDialog';
 import { LoadingState, ErrorState } from '@/components/Common/States';
 import { mockTournaments } from '@/constants/JoinTournament/mockData';
 import { fetchAllTournamentsforjoininghook } from '@/hook/fetchAllTournamentsforjoininghook';
+import { handleJoinRequest, handleSubmitRequest } from '@/function/handleJoinTournament';
 
 const MotionContainer = motion(Container);
 const MotionTypography = motion(Typography);
@@ -24,31 +25,10 @@ const JoinTournament = () => {
   const [selectedTournament, setSelectedTournament] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
 
+  // Fetch tournaments
+  fetchAllTournamentsforjoininghook(setTournaments, setFilteredTournaments, setIsLoading, filterStatus);
 
-
-  
-fetchAllTournamentsforjoininghook(setTournaments,setFilteredTournaments,setIsLoading,filterStatus)
-
-
-  const handleJoinRequest = (tournamentId) => {
-    const tournament = tournaments.find(t => t.id === tournamentId);
-    setSelectedTournament(tournament);
-    setOpenDialog(true);
-  };
-
-  const handleSubmitRequest = (playerData) => {
-    // Frontend logic for handling the player request
-    setTournaments(prev => 
-      prev.map(tournament => 
-        tournament.id === playerData.tournamentId 
-          ? { ...tournament, hasRequested: true }
-          : tournament
-      )
-    );
-    setOpenDialog(false);
-    setSelectedTournament(null);
-  };
-
+  // Handle filter change
   const handleFilterChange = (status) => {
     setFilterStatus(status);
     const filtered = tournaments.filter(tournament => tournament.status === status);
@@ -102,7 +82,14 @@ fetchAllTournamentsforjoininghook(setTournaments,setFilteredTournaments,setIsLoa
       ) : (
         <TournamentList 
           tournaments={filteredTournaments}
-          onJoinRequest={handleJoinRequest}
+          onJoinRequest={(tournamentId) => 
+            handleJoinRequest(
+              tournamentId,
+              tournaments,
+              setSelectedTournament,
+              setOpenDialog
+            )
+          }
         />
       )}
 
@@ -112,7 +99,17 @@ fetchAllTournamentsforjoininghook(setTournaments,setFilteredTournaments,setIsLoa
           setOpenDialog(false);
           setSelectedTournament(null);
         }}
-        onSubmit={handleSubmitRequest}
+        onSubmit={(playerData) => 
+          handleSubmitRequest(
+            playerData,
+            selectedTournament,
+            setTournaments,
+            setFilteredTournaments,
+            setOpenDialog,
+            setSelectedTournament,
+            setError
+          )
+        }
         tournament={selectedTournament}
       />
     </MotionContainer>

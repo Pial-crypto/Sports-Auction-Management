@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.sportIcons = exports.mockTournaments = void 0;
 var mockTournaments = [{
-  id: 1,
+  id: '1',
   name: "IPL Style Cricket League 2024",
   status: "active",
   startDate: "June 1, 2024",
@@ -20,7 +20,7 @@ var mockTournaments = [{
     positions: ["Batsman", "Bowler", "All-rounder", "Wicket Keeper"]
   }
 }, {
-  id: 2,
+  id: '2',
   name: "Champions Football Cup",
   registrationDeadline: "July 15, 2024",
   status: "active",
@@ -35,7 +35,7 @@ var mockTournaments = [{
     positions: ["Forward", "Midfielder", "Defender", "Goalkeeper"]
   }
 }, {
-  id: 3,
+  id: '3',
   name: "Badminton Championship",
   status: "upcoming",
   startDate: "August 1, 2024",

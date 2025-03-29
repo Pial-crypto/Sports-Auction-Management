@@ -1,6 +1,6 @@
 export const mockTournaments = [
   {
-    id: 1,
+    id: '1',
     name: "IPL Style Cricket League 2024",
     status: "active",
     startDate: "June 1, 2024",
@@ -16,7 +16,7 @@ export const mockTournaments = [
     }
   },
   {
-    id: 2,
+    id: '2',
     name: "Champions Football Cup",
     registrationDeadline: "July 15, 2024",
     status: "active",
@@ -32,7 +32,7 @@ export const mockTournaments = [
     }
   },
   {
-    id: 3,
+    id: '3',
     name: "Badminton Championship",
     status: "upcoming",
     startDate: "August 1, 2024",

@@ -17,6 +17,10 @@ var _handleJoinTournament = require("@/function/handleJoinTournament");
 
 var _positionMap = require("@/constants/JoinTournament/positionMap");
 
+var _getAllreq = _interopRequireDefault(require("@/function/getAllreq"));
+
+var _storage = _interopRequireDefault(require("@/class/storage"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -36,7 +40,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var fetchAllTournamentsforjoininghook = function fetchAllTournamentsforjoininghook(setTournaments, setFilteredTournaments, setIsLoading, filterStatus) {
   (0, _react.useEffect)(function () {
     var fetchData = function fetchData() {
-      var response, formattedData;
+      var response;
       return regeneratorRuntime.async(function fetchData$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -50,28 +54,35 @@ var fetchAllTournamentsforjoininghook = function fetchAllTournamentsforjoiningho
               response = _context.sent;
 
               if (response && Array.isArray(response)) {
-                console.log(response, "I am the response");
-                formattedData = response.map(function (tournament) {
-                  return _objectSpread({}, tournament, {
-                    startDate: (0, _formateDatewithTime["default"])(tournament.tournamentDate),
-                    totalTeams: tournament.numberOfTeams,
-                    prizeMoney: tournament.prizeMoney,
-                    entryFee: tournament.registrationFee,
-                    hasRequested: false,
-                    sport: tournament.gameType.toLowerCase(),
-                    status: (0, _handleJoinTournament.getStatus)(tournament),
-                    image: tournament.tournamenIcon == 'https://example.com/icon.png' || tournament.tournamenIcon == null ? "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea" : tournament.tournamenIcon,
-                    playerRequirements: _objectSpread({}, tournament.playerRequirements, {
-                      positions: _positionMap.positionsMap[tournament.gameType.toLowerCase()] || []
-                    })
+                (0, _getAllreq["default"])().then(function (data) {
+                  console.log(data, "data from fetch all requests");
+                  var allReq = data.allPlayerReq;
+                  console.log(response, "I am the response");
+                  var formattedData = response.map(function (tournament) {
+                    var hasRequested = allReq.find(function (req) {
+                      return req.tournamentId === tournament.id && req.approved !== true && req.playerId === _storage["default"].get("user").id;
+                    });
+                    return _objectSpread({}, tournament, {
+                      startDate: (0, _formateDatewithTime["default"])(tournament.tournamentDate),
+                      totalTeams: tournament.numberOfTeams,
+                      prizeMoney: tournament.prizeMoney,
+                      entryFee: tournament.registrationFee,
+                      hasRequested: hasRequested ? true : false,
+                      sport: tournament.gameType.toLowerCase(),
+                      status: (0, _handleJoinTournament.getStatus)(tournament),
+                      image: tournament.tournamenIcon == 'https://example.com/icon.png' || tournament.tournamenIcon == null ? "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea" : tournament.tournamenIcon,
+                      playerRequirements: _objectSpread({}, tournament.playerRequirements, {
+                        positions: _positionMap.positionsMap[tournament.gameType.toLowerCase()] || []
+                      })
+                    });
                   });
+                  setTournaments(function (prev) {
+                    return [].concat(_toConsumableArray(formattedData), _toConsumableArray(_mockData.mockTournaments));
+                  });
+                  setFilteredTournaments([].concat(_toConsumableArray(formattedData), _toConsumableArray(_mockData.mockTournaments)).filter(function (t) {
+                    return t.status === filterStatus;
+                  }));
                 });
-                setTournaments(function (prev) {
-                  return [].concat(_toConsumableArray(formattedData), _toConsumableArray(prev));
-                });
-                setFilteredTournaments([].concat(_toConsumableArray(formattedData), _toConsumableArray(_mockData.mockTournaments)).filter(function (t) {
-                  return t.status === filterStatus;
-                }));
               }
 
               _context.next = 12;

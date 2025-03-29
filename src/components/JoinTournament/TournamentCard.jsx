@@ -113,6 +113,12 @@ const TournamentCard = ({ tournament, onJoinRequest }) => {
                 ? 'linear-gradient(45deg, #047857, #059669)'
                 : `linear-gradient(45deg, ${COLORS[tournament.sport].secondary}, ${COLORS[tournament.sport].primary})`,
             },
+            '&:disabled': {
+              background: tournament.hasRequested 
+                ? 'linear-gradient(45deg, #059669, #10b981)'
+                : 'rgba(0, 0, 0, 0.12)',
+              color: tournament.hasRequested ? 'white' : 'rgba(0, 0, 0, 0.26)',
+            }
           }}
         >
           {tournament.hasRequested ? 'Request Sent' : 'Join Tournament'}

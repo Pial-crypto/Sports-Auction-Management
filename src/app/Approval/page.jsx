@@ -56,6 +56,7 @@ import {
   Comment,
   Close,
 } from '@mui/icons-material';
+import { fetchReqHook } from '@/hook/fetchReqHook';
 
 // Update color theme for better visibility
 const COLORS = {
@@ -201,9 +202,14 @@ const initialRequests = [
 
 
 const ApprovalSystem = () => {
+
+  fetchReqHook()
   // States
+
+
   const [requests, setRequests] = useState(initialRequests);
   const [selectedRequest, setSelectedRequest] = useState(null);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
   const [snackbar, setSnackbar] = useState({

@@ -117,3 +117,19 @@ model Announcement {
   
   tournamentId String
 }
+
+model PlayerRequest {
+  id          String  @id @default(cuid()) 
+  tournamentId String
+  name String @default("N/A")
+  playerId String @default("N/A")
+  achievements String @default("N/A")
+  age String @default("N/A")
+ 
+  experience String @default("N/A")
+  previousTeam String @default("N/A")
+  role String 
+  approved Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+

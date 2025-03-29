@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -23,16 +23,27 @@ import { motion } from 'framer-motion';
 const MotionBox = motion(Box);
 
 const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
-  const [formData, setFormData] = useState({
+
+  //console.log(tournament,"I am the tournament")
+  const initialFormState = {
     name: '',
     age: '',
     role: '',
     experience: '',
     previousTeam: '',
-    battingStyle: 'right',
-    bowlingStyle: '',
     achievements: '',
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
+  const [errors, setErrors] = useState({});
+
+  // Reset form when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setFormData(initialFormState);
+      setErrors({});
+    }
+  }, [open]);
 
   const getSportIcon = (sport) => {
     switch(sport) {
@@ -52,9 +63,44 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
     }));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    
+    // Age validation
+    if (!formData.age) {
+      newErrors.age = 'Age is required';
+    } else if (parseInt(formData.age) < 15) {
+      newErrors.age = 'Minimum age should be 15 years';
+    }
+    
+    if (!formData.role) newErrors.role = 'Position is required';
+    
+    // Experience validation
+    if (!formData.experience) {
+      newErrors.experience = 'Experience is required';
+    } else if (parseInt(formData.experience) < 0) {
+      newErrors.experience = 'Experience cannot be negative';
+    }
+
+    // Additional fields validation
+    if (!formData.previousTeam.trim()) newErrors.previousTeam = 'Previous team is required';
+    if (!formData.achievements.trim()) newErrors.achievements = 'Achievements are required';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      onSubmit(formData);
+      setFormData(initialFormState); // Reset form after submission
+    }
+  };
+
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
       maxWidth="md"
       fullWidth
@@ -69,7 +115,7 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
         }
       }}
     >
-      <DialogTitle 
+      <DialogTitle
         sx={{
           background: `linear-gradient(135deg, ${COLORS[tournament?.sport || 'cricket'].primary}, ${COLORS[tournament?.sport || 'cricket'].secondary})`,
           color: 'white',
@@ -115,7 +161,8 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
                     value={formData.name}
                     onChange={handleChange('name')}
                     required
-                    variant="outlined"
+                    error={!!errors.name}
+                    helperText={errors.name}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -126,7 +173,9 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
                     value={formData.age}
                     onChange={handleChange('age')}
                     required
-                    variant="outlined"
+                    error={!!errors.age}
+                    helperText={errors.age}
+                    inputProps={{ min: 15 }}
                   />
                 </Grid>
               </Grid>
@@ -151,6 +200,7 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
                       value={formData.role}
                       label="Primary Position"
                       onChange={handleChange('role')}
+                      error={!!errors.role}
                     >
                       {tournament?.playerRequirements.positions.map((position) => (
                         <MenuItem key={position} value={position}>
@@ -168,6 +218,9 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
                     value={formData.experience}
                     onChange={handleChange('experience')}
                     required
+                    error={!!errors.experience}
+                    helperText={errors.experience}
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
               </Grid>
@@ -191,7 +244,9 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
                     label="Previous Team"
                     value={formData.previousTeam}
                     onChange={handleChange('previousTeam')}
-                    placeholder="Leave blank if none"
+                    required
+                    error={!!errors.previousTeam}
+                    helperText={errors.previousTeam}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -202,7 +257,9 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
                     label="Achievements"
                     value={formData.achievements}
                     onChange={handleChange('achievements')}
-                    placeholder="List your achievements..."
+                    required
+                    error={!!errors.achievements}
+                    helperText={errors.achievements}
                   />
                 </Grid>
               </Grid>
@@ -229,9 +286,18 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
           Cancel
         </Button>
         <Button 
-          onClick={() => onSubmit(formData)}
+          onClick={handleSubmit}
           variant="contained"
-          disabled={!formData.name || !formData.age || !formData.role}
+          disabled={
+            !formData.name || 
+            !formData.age || 
+            parseInt(formData.age) < 15 || 
+            !formData.role || 
+            !formData.experience || 
+            parseInt(formData.experience) < 0 ||
+            !formData.previousTeam ||
+            !formData.achievements
+          }
           sx={{
             background: `linear-gradient(135deg, ${COLORS[tournament?.sport || 'cricket'].primary}, ${COLORS[tournament?.sport || 'cricket'].secondary})`,
             '&:hover': {
