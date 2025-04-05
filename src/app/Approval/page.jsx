@@ -57,6 +57,15 @@ import {
   Close,
 } from '@mui/icons-material';
 import { fetchReqHook } from '@/hook/fetchReqHook';
+import Header from '@/components/Approval/Header';
+import RequestCard from '@/components/Approval/RequestCard';
+import ConfirmDialog from '@/components/Approval/ConfirmDialog';
+import RejectDialog from '@/components/Approval/RejectDialog';
+import CustomSnackbar from '@/components/Approval/CustomSnackbar';
+import RequestDetails from '@/components/Approval/RequestDetails';
+import TeamDetails from '@/components/Approval/TeamDetails';
+import AttachedDocuments from '@/components/Approval/AttatchedDoc';
+import RequestDialog from '@/components/Approval/RequestDialog';
 
 // Update color theme for better visibility
 const COLORS = {
@@ -160,18 +169,7 @@ const initialRequests = [
     contactPhone: '+1234567890',
     additionalInfo: 'Previous tournament winners',
   },
-  {
-    id: 2,
-    type: 'Score Verification',
-    match: 'Royal Strikers vs Thunder Kings',
-    score: '186/4 vs 142/8',
-    status: 'pending',
-    submittedAt: '2024-01-20 17:45',
-    umpire: 'James Wilson',
-    matchDate: '2024-01-20',
-    venue: 'Central Stadium',
-    documents: ['scorecard.pdf', 'match_report.pdf'],
-  },
+
   {
     id: 3,
     type: 'Team Registration',
@@ -185,19 +183,7 @@ const initialRequests = [
     contactPhone: '+1234567891',
     additionalInfo: 'New team registration',
   },
-  {
-    id: 4,
-    type: 'Score Verification',
-    match: 'Eagle Warriors vs Lion Kings',
-    score: '165/8 vs 168/3',
-    status: 'rejected',
-    submittedAt: '2024-01-18 16:30',
-    umpire: 'Robert Brown',
-    matchDate: '2024-01-18',
-    venue: 'Sports Complex',
-    documents: ['match_summary.pdf'],
-    rejectionReason: 'Incomplete documentation',
-  },
+
 ];
 
 
@@ -290,547 +276,68 @@ const ApprovalSystem = () => {
       <Fade in={true} timeout={800}>
         <Box>
           {/* Header Section */}
-          <Box sx={{ mb: 4 }}>
-            <Typography 
-              variant="h4" 
-              sx={{
-                fontWeight: 800,
-                color: COLORS.text.title,
-                textShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                mb: 3
-              }}
-            >
-              Approval System
-            </Typography>
-            <Grid container spacing={2}>
-              {[
-                { icon: <HourglassEmpty />, label: 'Pending', status: 'pending', color: COLORS.warning },
-                { icon: <CheckCircle />, label: 'Approved', status: 'approved', color: COLORS.success },
-                { icon: <Cancel />, label: 'Rejected', status: 'rejected', color: COLORS.error },
-              ].map((stat, index) => (
-                <Grid item xs={12} sm={4} key={index}>
-                  <Zoom in={true} timeout={500 + (index * 100)}>
-                    <StyledCard 
-                      sx={{ 
-                        cursor: 'pointer',
-                        border: filterStatus === stat.status ? `2px solid ${stat.color}` : 'none'
-                      }}
-                      onClick={() => handleStatusFilter(stat.status)}
-                    >
-                      <CardContent>
-                        <GlowingBorder color={stat.color}>
-                          <Box sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                          }}>
-                            {React.cloneElement(stat.icon, { 
-                              sx: { color: stat.color, fontSize: 40 } 
-                            })}
-                            <Box>
-                              <Typography variant="h4" sx={{ color: stat.color, fontWeight: 'bold' }}>
-                                {getStatusCount(stat.status)}
-                              </Typography>
-                              <Typography variant="body1" sx={{ color: COLORS.text.secondary }}>
-                                {stat.label}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </GlowingBorder>
-                      </CardContent>
-                    </StyledCard>
-                  </Zoom>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
+        <Header filterStatus={filterStatus} COLORS={COLORS}
+        handleStatusFilter={handleStatusFilter}
+        getStatusCount={getStatusCount} StyledCard={StyledCard} GlowingBorder={GlowingBorder}
+        StyledIconButton={StyledIconButton}
+        
+        ></Header>
 
           {/* Requests Grid */}
           <Grid container spacing={3}>
             {getFilteredRequests().map((request, index) => (
-              <Grid item xs={12} md={6} key={request.id}>
-                <Zoom in={true} timeout={500 + (index * 100)}>
-                  <StyledCard>
-                    <CardContent>
-                      <Box sx={{ 
-                        p: 3,
-                        background: alpha(COLORS.paper, 0.5),
-                        borderRadius: 2,
-                        border: `1px solid ${alpha(COLORS.border, 0.2)}`,
-                      }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                          <StatusChip
-                            icon={
-                              request.status === 'pending' ? <Timer /> :
-                              request.status === 'approved' ? <CheckCircle /> :
-                              <Cancel />
-                            }
-                            label={request.status.toUpperCase()}
-                            status={request.status}
-                          />
-                          <Typography 
-                            variant="caption" 
-                            sx={{ 
-                              color: COLORS.text.secondary,
-                              fontSize: '0.85rem',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 0.5
-                            }}
-                          >
-                            <CalendarToday sx={{ fontSize: '1rem' }} />
-                            Submitted: {request.submittedAt}
-                          </Typography>
-                        </Box>
-
-                        <Typography variant="h6" sx={{ 
-                          color: COLORS.text.title,
-                          fontWeight: 600,
-                          mb: 2 
-                        }}>
-                          {request.type}
-                        </Typography>
-
-                        {request.type === 'Team Registration' ? (
-                          <Box sx={{ mt: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                              <Groups sx={{ color: 'primary.main' }} />
-                              <Typography sx={{ 
-                                color: COLORS.text.primary,
-                                fontSize: '1rem',
-                                fontWeight: 500,
-                              }}>
-                                Team: {request.teamName}
-                              </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <VerifiedUser sx={{ color: 'primary.main' }} />
-                              <Typography sx={{ 
-                                color: COLORS.text.primary,
-                                fontSize: '1rem',
-                                fontWeight: 500,
-                              }}>
-                                Captain: {request.captain}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        ) : (
-                          <Box sx={{ mt: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                              <Score sx={{ color: 'primary.main' }} />
-                              <Typography sx={{ 
-                                color: COLORS.text.primary,
-                                fontSize: '1rem',
-                                fontWeight: 500,
-                              }}>
-                                Match: {request.match}
-                              </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Assessment sx={{ color: 'primary.main' }} />
-                              <Typography sx={{ 
-                                color: COLORS.text.primary,
-                                fontSize: '1rem',
-                                fontWeight: 500,
-                              }}>
-                                Score: {request.score}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        )}
-
-                        {request.status === 'rejected' && (
-                          <Alert 
-                            severity="error" 
-                            sx={{ 
-                              mt: 2,
-                              bgcolor: alpha(COLORS.error, 0.1),
-                              color: COLORS.error,
-                              '& .MuiAlert-icon': {
-                                color: COLORS.error
-                              },
-                              border: `1px solid ${alpha(COLORS.error, 0.2)}`
-                            }}
-                          >
-                            Reason: {request.rejectionReason}
-                          </Alert>
-                        )}
-
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-                          <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Tooltip title="View Details">
-                              <IconButton
-                                onClick={() => {
-                                  setSelectedRequest(request);
-                                  setOpenDialog(true);
-                                }}
-                                sx={{ 
-                                  bgcolor: alpha(COLORS.primary, 0.1),
-                                  color: COLORS.primary,
-                                  '&:hover': {
-                                    bgcolor: alpha(COLORS.primary, 0.2),
-                                  }
-                                }}
-                              >
-                                <Preview />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                          {request.status === 'pending' && (
-                            <Box sx={{ display: 'flex', gap: 1 }}>
-                              <Button
-                                variant="contained"
-                                color="success"
-                                startIcon={<ThumbUp />}
-                                onClick={() => handleApprove(request)}
-                                sx={{ 
-                                  borderRadius: 2,
-                                  textTransform: 'none',
-                                  fontSize: '0.95rem',
-                                  fontWeight: 600,
-                                  px: 3,
-                                  background: `linear-gradient(45deg, ${COLORS.success}, ${alpha(COLORS.success, 0.8)})`,
-                                  '&:hover': {
-                                    background: COLORS.success,
-                                  }
-                                }}
-                              >
-                                Approve
-                              </Button>
-                              <Button
-                                variant="contained"
-                                color="error"
-                                startIcon={<ThumbDown />}
-                                onClick={() => handleReject(request)}
-                                sx={{ 
-                                  borderRadius: 2,
-                                  textTransform: 'none',
-                                  fontSize: '0.95rem',
-                                  fontWeight: 600,
-                                  px: 3,
-                                  background: `linear-gradient(45deg, ${COLORS.error}, ${alpha(COLORS.error, 0.8)})`,
-                                  '&:hover': {
-                                    background: COLORS.error,
-                                  }
-                                }}
-                              >
-                                Reject
-                              </Button>
-                            </Box>
-                          )}
-                        </Box>
-                      </Box>
-                    </CardContent>
-                  </StyledCard>
-                </Zoom>
-              </Grid>
+                <RequestCard
+                key={request.id}
+                request={request}
+                index={index}
+                COLORS={COLORS}
+                handleApprove={handleApprove}
+                handleReject={handleReject}
+                setSelectedRequest={setSelectedRequest}
+                setOpenDialog={setOpenDialog}
+                StyledCard={StyledCard}
+                StatusChip={StatusChip}
+              />
             ))}
           </Grid>
 
           {/* Details Dialog */}
-          <Dialog
-            open={openDialog}
-            onClose={() => setOpenDialog(false)}
-            maxWidth="md"
-            fullWidth
-            PaperProps={{
-              sx: {
-                background: COLORS.paper,
-                backgroundImage: `linear-gradient(135deg, ${alpha('#FFF', 0.03)} 0%, ${alpha('#FFF', 0.05)} 100%)`,
-                border: `1px solid ${alpha('#FFF', 0.1)}`,
-                borderRadius: 2,
-              }
-            }}
-          >
-            <StyledDialogTitle>
-              Request Details
-              <IconButton
-                onClick={() => setOpenDialog(false)}
-                sx={{ position: 'absolute', right: 8, top: 8, color: 'white' }}
-              >
-                <Close />
-              </IconButton>
-            </StyledDialogTitle>
-            <DialogContent 
-              dividers 
-              sx={{ 
-                bgcolor: alpha(COLORS.paper, 0.95),
-                color: COLORS.text.primary,
-                '& .MuiDivider-root': {
-                  borderColor: alpha(COLORS.border, 0.2)
-                }
-              }}
-            >
-              {selectedRequest && (
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Paper elevation={0} sx={{ p: 2, bgcolor: alpha(COLORS.paper, 0.05) }}>
-                      <Typography variant="h6" gutterBottom color="primary">
-                        {selectedRequest.type} Details
-                      </Typography>
-                      <Grid container spacing={2}>
-                        {selectedRequest.type === 'Team Registration' ? (
-                          <>
-                            <Grid item xs={12} md={6}>
-                              <List>
-                                <ListItem>
-                                  <ListItemIcon><Groups color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Team Name
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.teamName}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                                <ListItem>
-                                  <ListItemIcon><Person color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Captain
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.captain}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                                <ListItem>
-                                  <ListItemIcon><Email color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Contact Email
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.contactEmail}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                              </List>
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                              <List>
-                                <ListItem>
-                                  <ListItemIcon><Phone color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Contact Phone
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.contactPhone}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                                <ListItem>
-                                  <ListItemIcon><Groups color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Number of Players
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.players}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                              </List>
-                            </Grid>
-                          </>
-                        ) : (
-                          <>
-                            <Grid item xs={12} md={6}>
-                              <List>
-                                <ListItem>
-                                  <ListItemIcon><Score color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Match
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.match}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                                <ListItem>
-                                  <ListItemIcon><Assessment color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Final Score
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.score}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                              </List>
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                              <List>
-                                <ListItem>
-                                  <ListItemIcon><Person color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Umpire
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.umpire}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                                <ListItem>
-                                  <ListItemIcon><CalendarToday color="primary" /></ListItemIcon>
-                                  <ListItemText 
-                                    primary={
-                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Match Date
-                                      </Typography>
-                                    }
-                                    secondary={
-                                      <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.matchDate}
-                                      </Typography>
-                                    }
-                                  />
-                                </ListItem>
-                              </List>
-                            </Grid>
-                          </>
-                        )}
-                      </Grid>
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper elevation={0} sx={{ p: 2, bgcolor: alpha(COLORS.paper, 0.05) }}>
-                      <Typography variant="h6" gutterBottom color="primary">
-                        Attached Documents
-                      </Typography>
-                      <List>
-                        {selectedRequest.documents.map((doc, index) => (
-                          <ListItem key={index}>
-                            <ListItemIcon><Description color="primary" /></ListItemIcon>
-                            <ListItemText 
-                              primary={
-                                <Typography sx={{ color: COLORS.text.primary }}>
-                                  {doc}
-                                </Typography>
-                              }
-                            />
-                            <Button startIcon={<AttachFile />}>
-                              Download
-                            </Button>
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Paper>
-                  </Grid>
-                </Grid>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenDialog(false)}>Close</Button>
-            </DialogActions>
-          </Dialog>
+          <RequestDialog 
+  openDialog={openDialog} 
+  setOpenDialog={setOpenDialog} 
+  COLORS={COLORS} 
+  selectedRequest={selectedRequest} 
+  StyledDialogTitle={StyledDialogTitle}
+/>
+
 
           {/* Confirm Dialog */}
-          <Dialog
-            open={confirmDialog.open}
-            onClose={() => setConfirmDialog({ open: false, type: null, request: null })}
+         <ConfirmDialog
+         confirmDialog={confirmDialog}
+         setConfirmDialog={setConfirmDialog}
+         confirmApprove={confirmApprove}
           >
-            <DialogTitle>Confirm Action</DialogTitle>
-            <DialogContent>
-              <Typography>
-                Are you sure you want to approve this request?
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setConfirmDialog({ open: false, type: null, request: null })}>
-                Cancel
-              </Button>
-              <Button onClick={confirmApprove} variant="contained" color="success">
-                Confirm Approve
-              </Button>
-            </DialogActions>
-          </Dialog>
+
+         </ConfirmDialog>
 
           {/* Reject Dialog */}
-          <Dialog
-            open={rejectDialog.open}
-            onClose={() => setRejectDialog({ open: false, request: null })}
-          >
-            <DialogTitle>Reject Request</DialogTitle>
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                label="Reason for Rejection"
-                type="text"
-                fullWidth
-                multiline
-                rows={4}
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setRejectDialog({ open: false, request: null })}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={confirmReject} 
-                variant="contained" 
-                color="error"
-                disabled={!rejectReason.trim()}
-              >
-                Confirm Reject
-              </Button>
-            </DialogActions>
-          </Dialog>
+         
+          <RejectDialog
+  open={rejectDialog.open}
+  onClose={() => setRejectDialog({ open: false, request: null })}
+  rejectReason={rejectReason}
+  setRejectReason={setRejectReason}
+  onConfirm={confirmReject}
+/>
 
           {/* Snackbar */}
-          <Snackbar
-            open={snackbar.open}
-            autoHideDuration={6000}
-            onClose={() => setSnackbar({ ...snackbar, open: false })}
-          >
-            <Alert 
-              onClose={() => setSnackbar({ ...snackbar, open: false })} 
-              severity={snackbar.severity}
-              sx={{ width: '100%' }}
-            >
-              {snackbar.message}
-            </Alert>
-          </Snackbar>
+          <CustomSnackbar
+  open={snackbar.open}
+  message={snackbar.message}
+  severity={snackbar.severity}
+  onClose={() => setSnackbar({ ...snackbar, open: false })}
+/>
+
         </Box>
       </Fade>
     </MainContainer>
