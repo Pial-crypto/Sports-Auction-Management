@@ -36,6 +36,8 @@ const RequestCard = ({
   StyledCard,
   StatusChip
 }) => {
+  console.log('Request in card:', request);
+
   return (
     <Grid item xs={12} md={6} key={request.id}>
       <Zoom in={true} timeout={500 + (index * 100)}>
@@ -112,10 +114,10 @@ const RequestCard = ({
                     </Typography>
                   </Box>
                 </Box>
-              ) : (
+              ) : request.type === 'Player Registration' ? (
                 <Box sx={{ mt: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <Score sx={{ color: 'primary.main' }} />
+                    <VerifiedUser sx={{ color: 'primary.main' }} />
                     <Typography
                       sx={{
                         color: COLORS.text.primary,
@@ -123,9 +125,10 @@ const RequestCard = ({
                         fontWeight: 500,
                       }}
                     >
-                      Match: {request.match}
+                      Player Name: {request.playerName}
                     </Typography>
                   </Box>
+                
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Assessment sx={{ color: 'primary.main' }} />
                     <Typography
@@ -135,11 +138,11 @@ const RequestCard = ({
                         fontWeight: 500,
                       }}
                     >
-                      Score: {request.score}
+                      Position: {request.position}
                     </Typography>
                   </Box>
                 </Box>
-              )}
+              ) : null}
 
               {request.status === 'rejected' && (
                 <Alert

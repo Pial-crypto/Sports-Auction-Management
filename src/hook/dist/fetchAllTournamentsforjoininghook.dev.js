@@ -62,12 +62,23 @@ var fetchAllTournamentsforjoininghook = function fetchAllTournamentsforjoiningho
                     var hasRequested = allReq.find(function (req) {
                       return req.tournamentId === tournament.id && req.approved !== true && req.playerId === _storage["default"].get("user").id;
                     });
+                    var isRejected = allReq.find(function (req) {
+                      return req.tournamentId === tournament.id && req.rejected === true && req.playerId === _storage["default"].get("user").id;
+                    });
+                    var isApproved = allReq.find(function (req) {
+                      return req.tournamentId === tournament.id && req.approved === true && req.playerId === _storage["default"].get("user").id;
+                    });
+                    console.log(isApproved, "isApproved");
+                    console.log(isRejected, "isRejected");
+                    console.log(hasRequested, "hasRequested");
                     return _objectSpread({}, tournament, {
                       startDate: (0, _formateDatewithTime["default"])(tournament.tournamentDate),
                       totalTeams: tournament.numberOfTeams,
                       prizeMoney: tournament.prizeMoney,
                       entryFee: tournament.registrationFee,
                       hasRequested: hasRequested ? true : false,
+                      isRejected: isRejected ? true : false,
+                      isApproved: isApproved ? true : false,
                       sport: tournament.gameType.toLowerCase(),
                       status: (0, _handleJoinTournament.getStatus)(tournament),
                       image: tournament.tournamenIcon == 'https://example.com/icon.png' || tournament.tournamenIcon == null ? "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea" : tournament.tournamenIcon,

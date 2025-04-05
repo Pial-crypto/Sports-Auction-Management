@@ -22,7 +22,11 @@ export const fetchAllTournamentsforjoininghook=(setTournaments,setFilteredTourna
                 console.log(response,"I am the response")
                 const formattedData = response.map(tournament =>{
                   const hasRequested=allReq.find(req => req.tournamentId === tournament.id && req.approved!==true && req.playerId===storage.get("user").id);
-                  
+                  const isRejected=allReq.find(req => req.tournamentId === tournament.id && req.rejected===true && req.playerId===storage.get("user").id);
+                  const isApproved=allReq.find(req => req.tournamentId === tournament.id && req.approved===true && req.playerId===storage.get("user").id);
+                  console.log(isApproved,"isApproved")
+                  console.log(isRejected,"isRejected")
+                  console.log(hasRequested,"hasRequested")
                  return {
                   ...tournament,
                   startDate: formatDateWithTime(tournament.tournamentDate),
@@ -30,6 +34,8 @@ export const fetchAllTournamentsforjoininghook=(setTournaments,setFilteredTourna
                   prizeMoney: tournament.prizeMoney,
                   entryFee: tournament.registrationFee,
                   hasRequested: hasRequested ? true : false,
+                  isRejected: isRejected ? true : false,
+                  isApproved: isApproved ? true : false,
                   sport: tournament.gameType.toLowerCase(),
                   status: getStatus(tournament),
                   image: (tournament.tournamenIcon=='https://example.com/icon.png' || tournament.tournamenIcon==null)?"https://images.unsplash.com/photo-1626224583764-f87db24ac4ea":tournament.tournamenIcon,

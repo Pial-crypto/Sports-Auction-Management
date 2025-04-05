@@ -121,7 +121,7 @@ const TournamentCard = ({ tournament, onJoinRequest }) => {
             }
           }}
         >
-          {tournament.hasRequested ? 'Request Sent' : 'Join Tournament'}
+          {tournament.hasRequested ? (tournament.rejected ? 'Request Rejected' : (tournament.approved ? 'Request Approved' : 'Request Sent')) : 'Join Tournament'}
         </Button>
       </CardContent>
     </StyledCard>

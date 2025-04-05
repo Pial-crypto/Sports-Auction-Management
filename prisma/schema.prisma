@@ -131,5 +131,7 @@ model PlayerRequest {
   role String 
   approved Boolean @default(false)
   createdAt DateTime @default(now())
+  rejected Boolean @default(false)
+  rejectionReason String @default("N/A")
 }
 

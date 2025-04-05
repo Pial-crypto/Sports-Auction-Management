@@ -52,19 +52,14 @@ const RequestDialog = ({ openDialog, setOpenDialog, COLORS, selectedRequest,Styl
                 <Grid container spacing={2}>
                   {selectedRequest.type === 'Team Registration' ? (
                     <TeamDetails COLORS={COLORS} selectedRequest={selectedRequest} />
-                  ) : (
-                    <RequestDetails
-                      match={selectedRequest.match}
-                      score={selectedRequest.score}
-                      umpire={selectedRequest.umpire}
-                      matchDate={selectedRequest.matchDate}
-                    />
-                  )}
+                  ) : selectedRequest.type === 'Player Registration' ? (
+                    <RequestDetails COLORS={COLORS} selectedRequest={selectedRequest} />
+                  ) : null}
                 </Grid>
               </Paper>
             </Grid>
 
-            <AttachedDocuments COLORS={COLORS} documents={selectedRequest.documents} />
+            {/* <AttachedDocuments COLORS={COLORS} documents={selectedRequest.documents} /> */}
           </Grid>
         )}
       </DialogContent>
