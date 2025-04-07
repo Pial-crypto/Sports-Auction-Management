@@ -19,6 +19,9 @@ import { fetchAllCurrentAnnouncementHook } from '@/hook/fetchCurrentAnnouncement
 import { handleDeleteAnnouncement,confirmDelete } from '@/function/handleDeleteAnnounceMent';
 import { getFilteredAnnouncements } from '@/function/getFilteredAnnouncements';
 import { handleEditAnnouncement } from '@/function/handleEditAnnouncement';
+import storage from '@/class/storage';
+import fetchLatestApprovedTournamentHookDev from '@/hook/dist/fetchLatestApprovedTournamentHook.dev';
+import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState(mockData);
@@ -30,8 +33,14 @@ const Announcements = () => {
   const [error, setError] = useState(null);
   const [tournament, setTournament] = useState(null);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+  const editPermission=storage.get("user").role==="organizer";
+  if(storage.get("user").role==="player"){
+    useFetchLatestApprovedTournamentHook(undefined,setTournament)
+    }
 
+if(storage.get("user").role==="organizer"){
   fetchCurrentTournamentHook(setTournament)
+}
 
   fetchAllCurrentAnnouncementHook(setAnnouncements,setError,tournament)
 
@@ -64,7 +73,7 @@ const Announcements = () => {
       <Box>
         {/* Header Section */}
         <Box sx={{ mb: 4 }}>
-          <AnnouncementHeader onCreateClick={handleCreateAnnouncement} />
+          <AnnouncementHeader editPermission={editPermission} onCreateClick={handleCreateAnnouncement} />
           <QuickStats 
             announcements={announcements}
             filterType={filterType}

@@ -19,6 +19,9 @@ import { handleAddRule,handleEditRule,handleDeleteRule,handleSaveRule,handleTemp
 import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 import { fetchCurrentTournamentRulesHook } from '@/hook/fetchCurrentTournamentRules';
 import rulesMockData from '@/constants/TournamentRules/rulesMockData';
+import storage from '@/class/storage';
+import { fetchCurrentTournamentForPlayer, fetchCurrentTournamentForPlayerHook } from '@/hook/fetchCurrentTournamentForPlayer';
+import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 const TournamentRules = () => {
   const [rules, setRules] = useState(rulesMockData);
 
@@ -32,7 +35,13 @@ const TournamentRules = () => {
   const [error, setError] = useState('');
   const [tournament,setTournament]=useState(null)
 
+  if(storage.get("user").role==="organizer"){
  fetchCurrentTournamentHook(setTournament)
+  }
+
+  if(storage.get("user").role==="player"){
+  useFetchLatestApprovedTournamentHook(undefined,setTournament)
+  }
  //console.log(tournament,"tournament")
 
 fetchCurrentTournamentRulesHook(tournament,setRules)

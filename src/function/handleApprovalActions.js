@@ -1,8 +1,9 @@
 export const handleApprovePlayer = async (request) => {
   try {
+    
     // API call to approve request
 
-    console.log(request,"request")
+    //console.log(request,"request")
     const response = await fetch('/api/giveApprovaltoPlayer', {
       method: 'POST',
       headers: {
@@ -14,7 +15,22 @@ export const handleApprovePlayer = async (request) => {
     });
 
     if (response.ok) {
-     return true
+const addApprovaltoTableResponse = await fetch('/api/addApprovaltoTable', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ 
+    playerId: request.playerId,
+    tournamentId: request.tournamentId,
+ 
+  }),
+});
+if(addApprovaltoTableResponse.ok){
+  return true
+}else{
+  return false
+}
      // alert('Request approved successfully');
     } else {
       return false

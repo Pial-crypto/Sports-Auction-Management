@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import {
   Box,
   Container,
@@ -18,11 +18,18 @@ import storage from '@/class/storage';
 import playerCardInactive from '@/constants/TournamentManagement/playerCardsInactive';
 import scheduleCardsDisabled from '@/constants/TournamentManagement/scheduleCardsDisabled';
 import Footer from '@/components/Footer/Footer';
+import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 
 const TournamentManagement = () => {
   const user=storage.get("user")
   const {role}=user
-  const {activeStatus}=user;
+  //const {activeStatus}=user
+  const [activeStatus,setActiveStatus]=useState(user.activeStatus);
+ 
+  if(role==="player"){
+
+useFetchLatestApprovedTournamentHook(setActiveStatus)
+  }
 
   console.log("activeStatus",activeStatus);
   console.log(user,"I am the user","My role is ",role)

@@ -6,15 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.handleRejectiontoPlayerReq = exports.handleApprovePlayer = void 0;
 
 var handleApprovePlayer = function handleApprovePlayer(request) {
-  var response;
+  var response, addApprovaltoTableResponse;
   return regeneratorRuntime.async(function handleApprovePlayer$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-          // API call to approve request
-          console.log(request, "request");
-          _context.next = 4;
+          _context.next = 3;
           return regeneratorRuntime.awrap(fetch('/api/giveApprovaltoPlayer', {
             method: 'POST',
             headers: {
@@ -25,34 +23,61 @@ var handleApprovePlayer = function handleApprovePlayer(request) {
             })
           }));
 
-        case 4:
+        case 3:
           response = _context.sent;
 
           if (!response.ok) {
-            _context.next = 9;
+            _context.next = 15;
+            break;
+          }
+
+          _context.next = 7;
+          return regeneratorRuntime.awrap(fetch('/api/addApprovaltoTable', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              playerId: request.playerId,
+              tournamentId: request.tournamentId
+            })
+          }));
+
+        case 7:
+          addApprovaltoTableResponse = _context.sent;
+
+          if (!addApprovaltoTableResponse.ok) {
+            _context.next = 12;
             break;
           }
 
           return _context.abrupt("return", true);
 
-        case 9:
+        case 12:
           return _context.abrupt("return", false);
 
-        case 10:
-          _context.next = 15;
+        case 13:
+          _context.next = 16;
           break;
 
-        case 12:
-          _context.prev = 12;
+        case 15:
+          return _context.abrupt("return", false);
+
+        case 16:
+          _context.next = 21;
+          break;
+
+        case 18:
+          _context.prev = 18;
           _context.t0 = _context["catch"](0);
           return _context.abrupt("return", false);
 
-        case 15:
+        case 21:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 12]]);
+  }, null, null, [[0, 18]]);
 };
 
 exports.handleApprovePlayer = handleApprovePlayer;

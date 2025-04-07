@@ -8,6 +8,7 @@ import { StyledContainer, ContentWrapper } from "@/style/HomePage";
 
 const Homepage = () => {
   return (
+    
     <>
     <StyledContainer>
       <NavBar activePage={"Home"} />

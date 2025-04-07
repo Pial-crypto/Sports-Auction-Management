@@ -60,7 +60,7 @@ var fetchAllTournamentsforjoininghook = function fetchAllTournamentsforjoiningho
                   console.log(response, "I am the response");
                   var formattedData = response.map(function (tournament) {
                     var hasRequested = allReq.find(function (req) {
-                      return req.tournamentId === tournament.id && req.approved !== true && req.playerId === _storage["default"].get("user").id;
+                      return req.tournamentId === tournament.id && req.playerId === _storage["default"].get("user").id;
                     });
                     var isRejected = allReq.find(function (req) {
                       return req.tournamentId === tournament.id && req.rejected === true && req.playerId === _storage["default"].get("user").id;

@@ -135,3 +135,9 @@ model PlayerRequest {
   rejectionReason String @default("N/A")
 }
 
+model Approval {
+  id String @id @default(cuid())
+  playerId String
+  tournamentId String
+  createdAt DateTime @default(now())
+}

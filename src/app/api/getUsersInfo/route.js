@@ -14,6 +14,8 @@ export async function POST(req) {
     });
     console.log(user,"user")
 
+
+
     // If user doesn't exist
     if (!user) {
       return NextResponse.json(

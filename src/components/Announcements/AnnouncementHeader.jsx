@@ -2,7 +2,8 @@ import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
-const AnnouncementHeader = ({ onCreateClick }) => {
+const AnnouncementHeader = ({ onCreateClick,editPermission }) => {
+  console.log(editPermission,"editPermission")
   return (
     <Box sx={{ 
       display: 'flex', 
@@ -29,10 +30,11 @@ const AnnouncementHeader = ({ onCreateClick }) => {
       >
         Announcements
       </Typography>
-      <Button
+      {editPermission && <Button
         variant="contained"
         startIcon={<Add />}
         onClick={onCreateClick}
+        disabled={!editPermission}
         sx={{
           borderRadius: '12px',
           background: 'linear-gradient(45deg, #2563eb, #3b82f6)',
@@ -49,7 +51,7 @@ const AnnouncementHeader = ({ onCreateClick }) => {
         }}
       >
         New Announcement
-      </Button>
+      </Button>}
     </Box>
   );
 };

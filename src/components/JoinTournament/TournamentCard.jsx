@@ -27,6 +27,9 @@ import { sportIcons } from '@/constants/JoinTournament/mockData';
 import formatDateWithTime from '@/function/formateDatewithTime';
 
 const TournamentCard = ({ tournament, onJoinRequest }) => {
+
+
+  console.log(tournament,"tournament inside tournament card")
   return (
     <StyledCard sportType={tournament.sport}>
       <TournamentImage 
@@ -119,9 +122,19 @@ const TournamentCard = ({ tournament, onJoinRequest }) => {
                 : 'rgba(0, 0, 0, 0.12)',
               color: tournament.hasRequested ? 'white' : 'rgba(0, 0, 0, 0.26)',
             }
-          }}
+          }
+        }
         >
-          {tournament.hasRequested ? (tournament.rejected ? 'Request Rejected' : (tournament.approved ? 'Request Approved' : 'Request Sent')) : 'Join Tournament'}
+        {
+  tournament.hasRequested 
+    ? (tournament.isRejected 
+        ? 'Request Rejected' 
+        : (tournament.isApproved 
+            ? 'Request Approved' 
+            : 'Request Sent'))
+    : 'Join Tournament'
+}
+
         </Button>
       </CardContent>
     </StyledCard>

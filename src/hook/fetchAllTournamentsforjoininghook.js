@@ -21,7 +21,7 @@ export const fetchAllTournamentsforjoininghook=(setTournaments,setFilteredTourna
                 const allReq=data.allPlayerReq;
                 console.log(response,"I am the response")
                 const formattedData = response.map(tournament =>{
-                  const hasRequested=allReq.find(req => req.tournamentId === tournament.id && req.approved!==true && req.playerId===storage.get("user").id);
+                  const hasRequested=allReq.find(req => req.tournamentId === tournament.id  && req.playerId===storage.get("user").id);
                   const isRejected=allReq.find(req => req.tournamentId === tournament.id && req.rejected===true && req.playerId===storage.get("user").id);
                   const isApproved=allReq.find(req => req.tournamentId === tournament.id && req.approved===true && req.playerId===storage.get("user").id);
                   console.log(isApproved,"isApproved")
