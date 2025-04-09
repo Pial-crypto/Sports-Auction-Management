@@ -9,7 +9,10 @@ import PlayerInfoDialog from '@/components/JoinTournament/PlayerInfoDialog';
 import { LoadingState, ErrorState } from '@/components/Common/States';
 import { mockTournaments } from '@/constants/JoinTournament/mockData';
 import { fetchAllTournamentsforjoininghook } from '@/hook/fetchAllTournamentsforjoininghook';
-import { handleJoinRequest, handleSubmitRequest } from '@/function/handleJoinTournament';
+import { handleJoinRequest, handleSubmitRequest,handleSubmitTeamRequest } from '@/function/handleJoinTournament';
+import storage from '@/class/storage';
+import TeamInfoDialog from '@/components/JoinTournament/TeamInfoDialog';
+import { fetchAllTournamentForManagerForJoiningHook } from '@/hook/fetchAllTournamentForManagerForJoiningHook';
 
 const MotionContainer = motion(Container);
 const MotionTypography = motion(Typography);
@@ -25,8 +28,15 @@ const JoinTournament = () => {
   const [selectedTournament, setSelectedTournament] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
 
+  const role=storage.get('user').role;
+  //console.log(role,"role")
   // Fetch tournaments
-  fetchAllTournamentsforjoininghook(setTournaments, setFilteredTournaments, setIsLoading, filterStatus);
+  if(role==='player'){
+    fetchAllTournamentsforjoininghook(setTournaments, setFilteredTournaments, setIsLoading, filterStatus);
+  }
+  if(role==='manager'){
+    fetchAllTournamentForManagerForJoiningHook(setTournaments, setFilteredTournaments, setIsLoading, filterStatus);
+  }
 
   // Handle filter change
   const handleFilterChange = (status) => {
@@ -93,15 +103,16 @@ const JoinTournament = () => {
         />
       )}
 
-      <PlayerInfoDialog
+     {role==='manager'?
+      (<TeamInfoDialog
         open={openDialog}
         onClose={() => {
           setOpenDialog(false);
           setSelectedTournament(null);
         }}
-        onSubmit={(playerData) => 
-          handleSubmitRequest(
-            playerData,
+        onSubmit={(teamData) => 
+          handleSubmitTeamRequest(
+            teamData,
             selectedTournament,
             setTournaments,
             setFilteredTournaments,
@@ -111,7 +122,29 @@ const JoinTournament = () => {
           )
         }
         tournament={selectedTournament}
-      />
+      />):
+      (
+        <PlayerInfoDialog
+          open={openDialog}
+          onClose={() => {
+            setOpenDialog(false);
+            setSelectedTournament(null);
+          }}
+          onSubmit={(playerData) => 
+            handleSubmitRequest(
+              playerData,
+              selectedTournament,
+              setTournaments,
+              setFilteredTournaments,
+              setOpenDialog,
+              setSelectedTournament,
+              setError
+            )
+          }
+          tournament={selectedTournament}
+        />
+      )
+      }
     </MotionContainer>
   );
 };

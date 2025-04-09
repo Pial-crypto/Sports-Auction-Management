@@ -2,6 +2,7 @@ import fetchAllReq from "@/function/getAllreq"
 import fetchCurrentTournament from "@/function/fetchCurrentTournament"
 import { useEffect } from "react"
 import formatDateWithTime from "@/function/formateDatewithTime"
+import fetchAllTeamReq from "@/function/getAllTeamReq"
 export const fetchReqHook = (setRequests) => {
     useEffect(() => {
         fetchCurrentTournament().then((currentTournament) => {
@@ -18,6 +19,7 @@ export const fetchReqHook = (setRequests) => {
                         playerName: req.name,
                         prevTeam: req.previousTeam,
                         position: req.role,
+                        playerId:req.playerId,
                         age: req.age,
                         status: req.rejected ? 'rejected' : (req.approved ? 'approved' : 'pending'),
                         experience: req.experience,
@@ -37,8 +39,51 @@ export const fetchReqHook = (setRequests) => {
             }).catch((error) => {
                 console.log(error)
             })
-        }).catch((error) => {
+
+
+            fetchAllTeamReq().then((data) => {
+                console.log(data,"data from fetch all team req")
+                const allTeamReq = data.allTeamReq;
+                const formattedTeamReqs = allTeamReq
+                .filter((req) => req.tournamentId === currentTournament.id)
+                .map((req) => ({
+                    id: req.id,
+                    type: 'Team Registration',
+                    teamName: req.teamName,
+                  managerId:req.managerId,
+                    tournamentId:req.tournamentId,
+                    status: req.rejected ? 'rejected' : (req.approved ? 'approved' : 'pending'),
+                    submittedAt: formatDateWithTime(req.createdAt),
+                   managerName: req.managerName,
+                  
+                  
+                  
+                   previousTournaments: req.previousTournament,
+                   
+                    contactEmail: req.managerEmail,
+                    contactPhone: req.managerNumber,
+                    additionalInfo: req.teamDescription,
+                }));
+
+
+                setRequests(prevRequests => {
+                    // Filter out any existing player requests to avoid duplicates
+               console.log(formattedTeamReqs,"formatted team reqs")
+                    return [...prevRequests, ...formattedTeamReqs];
+                });
+            }).catch((error) => {
+                console.log(error)
+            })
+
+        }
+    
+
+    
+    ).catch((error) => {
             console.log(error)
         })
+
+
+
     }, [])
 }

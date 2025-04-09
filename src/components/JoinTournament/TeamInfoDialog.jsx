@@ -16,34 +16,34 @@ import {
   IconButton,
   Slide,
 } from '@mui/material';
-import { Close, SportsCricket, SportsSoccer, Sports } from '@mui/icons-material';
+import { Close, SportsCricket, SportsSoccer, Sports, Group } from '@mui/icons-material';
 import { COLORS } from '@/style/JoinTournament';
 import { motion } from 'framer-motion';
 
 const MotionBox = motion(Box);
 
-const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
-
-   
-
-  //console.log(tournament,"I am the tournament")
+const TeamInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
   const initialFormState = {
-    name: '',
-    age: '',
-    role: '',
-    experience: '',
-    previousTeam: '',
-    achievements: '',
+    teamName: '',
+    managerName: '',
+    contactNumber: '',
+    email: '',
+   
+    previousTournaments: '',
+    teamDescription: '',
+    role: 'team', // Add role to identify this as a team registration
   };
 
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Reset form when dialog closes
   useEffect(() => {
     if (!open) {
       setFormData(initialFormState);
       setErrors({});
+      setIsSubmitting(false);
     }
   }, [open]);
 
@@ -63,42 +63,50 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
       ...prev,
       [field]: event.target.value
     }));
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.teamName.trim()) newErrors.teamName = 'Team name is required';
+    if (!formData.managerName.trim()) newErrors.managerName = 'Manager name is required';
     
-    // Age validation
-    if (!formData.age) {
-      newErrors.age = 'Age is required';
-    } else if (parseInt(formData.age) < 15) {
-      newErrors.age = 'Minimum age should be 15 years';
+    // Contact validation
+    if (!formData.contactNumber.trim()) {
+      newErrors.contactNumber = 'Contact number is required';
+    } else if (!/^\d{10}$/.test(formData.contactNumber)) {
+      newErrors.contactNumber = 'Please enter a valid 10-digit phone number';
     }
     
-    if (!formData.role) newErrors.role = 'Position is required';
-    
-    // Experience validation
-    if (!formData.experience) {
-      newErrors.experience = 'Experience is required';
-    } else if (parseInt(formData.experience) < 0) {
-      newErrors.experience = 'Experience cannot be negative';
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
+    
 
-    // Additional fields validation
-    if (!formData.previousTeam.trim()) newErrors.previousTeam = 'Previous team is required';
-    if (!formData.achievements.trim()) newErrors.achievements = 'Achievements are required';
+
+    if (!formData.previousTournaments.trim()) newErrors.previousTournaments = 'Previous tournaments information is required';
+    if (!formData.teamDescription.trim()) newErrors.teamDescription = 'Team description is required';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+
   const handleSubmit = () => {
+    console.log(formData);
     if (validateForm()) {
+      console.log(formData);
       onSubmit(formData);
       setFormData(initialFormState); // Reset form after submission
     }
   };
+
 
   return (
     <Dialog
@@ -128,10 +136,10 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {getSportIcon(tournament?.sport)}
+          <Group sx={{ fontSize: 40 }} />
           <Box>
             <Typography variant="h5" fontWeight={700}>
-              Join {tournament?.name}
+              Register Team for {tournament?.name}
             </Typography>
             <Typography variant="subtitle2" sx={{ opacity: 0.8 }}>
               {tournament?.format}
@@ -145,7 +153,7 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
 
       <DialogContent sx={{ p: 4 }}>
         <Grid container spacing={3}>
-          {/* Personal Information Section */}
+          {/* Team Information Section */}
           <Grid item xs={12}>
             <MotionBox
               initial={{ opacity: 0, y: 20 }}
@@ -153,38 +161,26 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
               transition={{ delay: 0.2 }}
             >
               <Typography variant="h6" sx={{ mb: 2, color: COLORS[tournament?.sport || 'cricket'].primary }}>
-                Personal Information
+                Team Information
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Full Name"
-                    value={formData.name}
-                    onChange={handleChange('name')}
+                    label="Team Name"
+                    value={formData.teamName}
+                    onChange={handleChange('teamName')}
                     required
-                    error={!!errors.name}
-                    helperText={errors.name}
+                    error={!!errors.teamName}
+                    helperText={errors.teamName}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Age"
-                    type="number"
-                    value={formData.age}
-                    onChange={handleChange('age')}
-                    required
-                    error={!!errors.age}
-                    helperText={errors.age}
-                    inputProps={{ min: 15 }}
-                  />
-                </Grid>
+               
               </Grid>
             </MotionBox>
           </Grid>
 
-          {/* Sport Specific Section */}
+          {/* Manager Information Section */}
           <Grid item xs={12}>
             <MotionBox
               initial={{ opacity: 0, y: 20 }}
@@ -192,37 +188,41 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
               transition={{ delay: 0.4 }}
             >
               <Typography variant="h6" sx={{ mb: 2, color: COLORS[tournament?.sport || 'cricket'].primary }}>
-                Sport Details
+                Manager Information
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth required>
-                    <InputLabel>Primary Position</InputLabel>
-                    <Select
-                      value={formData.role}
-                      label="Primary Position"
-                      onChange={handleChange('role')}
-                      error={!!errors.role}
-                    >
-                      {tournament?.playerRequirements.positions.map((position) => (
-                        <MenuItem key={position} value={position}>
-                          {position}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <TextField
+                    fullWidth
+                    label="Manager Name"
+                    value={formData.managerName}
+                    onChange={handleChange('managerName')}
+                    required
+                    error={!!errors.managerName}
+                    helperText={errors.managerName}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Years of Experience"
-                    type="number"
-                    value={formData.experience}
-                    onChange={handleChange('experience')}
+                    label="Contact Number"
+                    value={formData.contactNumber}
+                    onChange={handleChange('contactNumber')}
                     required
-                    error={!!errors.experience}
-                    helperText={errors.experience}
-                    inputProps={{ min: 0 }}
+                    error={!!errors.contactNumber}
+                    helperText={errors.contactNumber}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange('email')}
+                    required
+                    error={!!errors.email}
+                    helperText={errors.email}
                   />
                 </Grid>
               </Grid>
@@ -243,12 +243,12 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Previous Team"
-                    value={formData.previousTeam}
-                    onChange={handleChange('previousTeam')}
+                    label="Previous Tournaments"
+                    value={formData.previousTournaments}
+                    onChange={handleChange('previousTournaments')}
                     required
-                    error={!!errors.previousTeam}
-                    helperText={errors.previousTeam}
+                    error={!!errors.previousTournaments}
+                    helperText={errors.previousTournaments}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -256,12 +256,12 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
                     fullWidth
                     multiline
                     rows={3}
-                    label="Achievements"
-                    value={formData.achievements}
-                    onChange={handleChange('achievements')}
+                    label="Team Description"
+                    value={formData.teamDescription}
+                    onChange={handleChange('teamDescription')}
                     required
-                    error={!!errors.achievements}
-                    helperText={errors.achievements}
+                    error={!!errors.teamDescription}
+                    helperText={errors.teamDescription}
                   />
                 </Grid>
               </Grid>
@@ -280,6 +280,7 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
         <Button 
           onClick={onClose}
           variant="outlined"
+          disabled={isSubmitting}
           sx={{
             borderColor: COLORS[tournament?.sport || 'cricket'].primary,
             color: COLORS[tournament?.sport || 'cricket'].primary,
@@ -290,15 +291,13 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
         <Button 
           onClick={handleSubmit}
           variant="contained"
-          disabled={
-            !formData.name || 
-            !formData.age || 
-            parseInt(formData.age) < 15 || 
-            !formData.role || 
-            !formData.experience || 
-            parseInt(formData.experience) < 0 ||
-            !formData.previousTeam ||
-            !formData.achievements
+          disabled={isSubmitting || 
+            !formData.teamName || 
+            !formData.managerName || 
+            !formData.contactNumber || 
+            !formData.email || 
+            !formData.previousTournaments ||
+            !formData.teamDescription
           }
           sx={{
             background: `linear-gradient(135deg, ${COLORS[tournament?.sport || 'cricket'].primary}, ${COLORS[tournament?.sport || 'cricket'].secondary})`,
@@ -307,11 +306,11 @@ const PlayerInfoDialog = ({ open, onClose, onSubmit, tournament }) => {
             },
           }}
         >
-          Submit Request
+          {isSubmitting ? 'Submitting...' : 'Submit Registration'}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default PlayerInfoDialog; 
+export default TeamInfoDialog; 

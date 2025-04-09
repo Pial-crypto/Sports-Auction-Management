@@ -17,6 +17,7 @@ import playerTournamentCards from '@/constants/TournamentManagement/PlayerCards'
 import storage from '@/class/storage';
 import playerCardInactive from '@/constants/TournamentManagement/playerCardsInactive';
 import scheduleCardsDisabled from '@/constants/TournamentManagement/scheduleCardsDisabled';
+import teamManagerCardInactive from '@/constants/TournamentManagement/TeamManagerCardsInactive';
 import Footer from '@/components/Footer/Footer';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 
@@ -28,7 +29,11 @@ const TournamentManagement = () => {
  
   if(role==="player"){
 
-useFetchLatestApprovedTournamentHook(setActiveStatus)
+useFetchLatestApprovedTournamentHook(setActiveStatus,role)
+  }
+
+  if(role==="manager"){
+    useFetchLatestApprovedTournamentHook(setActiveStatus,role)
   }
 
   console.log("activeStatus",activeStatus);
@@ -50,7 +55,7 @@ useFetchLatestApprovedTournamentHook(setActiveStatus)
       case "player":
         return activeStatus ? playerTournamentCards : playerCardInactive;
       case "manager":
-        return teamManagerCards;
+        return activeStatus ? teamManagerCards : teamManagerCardInactive;
       default:
         return activeStatus?scheduleCards:scheduleCardsDisabled;
     }

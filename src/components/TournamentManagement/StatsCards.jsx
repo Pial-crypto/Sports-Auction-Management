@@ -40,7 +40,7 @@ export const StatsCards = ({cardItems,activeStatus}) => {
             </Typography>
             
 
-            <a href={card.path}>
+           { activeStatus || index==0?(<a href={card.path}>
             <GradientButton
           
           disabled={index!==0 && !activeStatus}
@@ -51,7 +51,19 @@ export const StatsCards = ({cardItems,activeStatus}) => {
         >
           {index === 4 ? 'SETTLE' : 'MANAGE'}
         </GradientButton >
-            </a>
+            </a>):(
+              <GradientButton
+          disabled={index!==0 && !activeStatus}
+          fullWidth
+          color={card.color}
+          component={motion.button}
+          whileTap={{ scale: 0.98 }}
+        >
+          {index === 4 ? 'SETTLE' : 'MANAGE'}
+        </GradientButton >
+            )
+
+            }
           </StatsCard>
         </Grid>
       ))}

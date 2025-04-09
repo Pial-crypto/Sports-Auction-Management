@@ -3,13 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.handleSubmitRequest = exports.handleJoinRequest = exports.getStatus = void 0;
+exports.handleSubmitTeamRequest = exports.handleSubmitRequest = exports.handleJoinRequest = exports.getStatus = void 0;
 
 var _storage = _interopRequireDefault(require("@/class/storage"));
 
 var _savePlayerRequest = require("./savePlayerRequest");
 
 var _getAllreq = _interopRequireDefault(require("./getAllreq"));
+
+var _saveTeamRequest = require("./saveTeamRequest");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -103,3 +105,67 @@ var handleSubmitRequest = function handleSubmitRequest(playerData, selectedTourn
 };
 
 exports.handleSubmitRequest = handleSubmitRequest;
+
+var handleSubmitTeamRequest = function handleSubmitTeamRequest(teamData, selectedTournament, setTournaments, setFilteredTournaments, setOpenDialog, setSelectedTournament, setError) {
+  var request, data, updateTournamentState;
+  return regeneratorRuntime.async(function handleSubmitTeamRequest$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          request = _objectSpread({}, teamData, {
+            tournamentId: selectedTournament.id,
+            managerId: _storage["default"].get("user").id,
+            status: 'pending',
+            createdAt: new Date().toISOString()
+          });
+          console.log('Submitting team request:', request);
+          _context2.next = 5;
+          return regeneratorRuntime.awrap((0, _saveTeamRequest.saveTeamRequest)(request));
+
+        case 5:
+          data = _context2.sent;
+
+          if (data) {
+            console.log('Team request submitted successfully:', data);
+            alert("Team registration request submitted successfully");
+
+            updateTournamentState = function updateTournamentState(tournaments) {
+              return tournaments.map(function (tournament) {
+                return tournament.id === selectedTournament.id ? _objectSpread({}, tournament, {
+                  hasRequested: true
+                }) : tournament;
+              });
+            };
+
+            setTournaments(function (prev) {
+              return updateTournamentState(prev);
+            });
+            setFilteredTournaments(function (prev) {
+              return updateTournamentState(prev);
+            });
+            setOpenDialog(false);
+            setSelectedTournament(null);
+          } else {
+            console.error('Failed to submit team request');
+            setError("Team registration request submission failed");
+          }
+
+          _context2.next = 13;
+          break;
+
+        case 9:
+          _context2.prev = 9;
+          _context2.t0 = _context2["catch"](0);
+          console.error('Failed to submit team request:', _context2.t0);
+          setError('Failed to submit team registration request. Please try again.');
+
+        case 13:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[0, 9]]);
+};
+
+exports.handleSubmitTeamRequest = handleSubmitTeamRequest;

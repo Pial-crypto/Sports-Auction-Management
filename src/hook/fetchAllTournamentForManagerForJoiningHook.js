@@ -6,8 +6,10 @@ import { getStatus } from "@/function/handleJoinTournament";
 import { positionsMap } from "@/constants/JoinTournament/positionMap";
 import fetchAllReq from "@/function/getAllreq";
 import storage from "@/class/storage";
-export const fetchAllTournamentsforjoininghook=(setTournaments,setFilteredTournaments,setIsLoading,filterStatus)=>{
+import fetchAllTeamReq from "@/function/getAllTeamReq";
+export const fetchAllTournamentForManagerForJoiningHook=(setTournaments,setFilteredTournaments,setIsLoading,filterStatus)=>{
     useEffect(() => {
+      console.log("I am the use effect")
         const fetchData = async () => {
           try {
             setIsLoading(true);
@@ -16,15 +18,17 @@ export const fetchAllTournamentsforjoininghook=(setTournaments,setFilteredTourna
             if (response && Array.isArray(response)) {
 
 
-              fetchAllReq().then((data)=>{
-                console.log(data,"data from fetch all requests")
-                const allReq=data.allPlayerReq;
-                console.log(allReq,"allReq")
-                console.log(response,"I am the response")
+              fetchAllTeamReq().then((data)=>{
+                console.log(data,"data from fetch all team requests inside hook")
+                const allReq=data.allTeamReq;
+                console.log(allReq,"allReq inside hook")
+                //console.log(response,"I am the response")
+             //   console.log(tournament,"I am the tournament")
                 const formattedData = response.map(tournament =>{
-                  const hasRequested=allReq.find(req => req.tournamentId === tournament.id  && req.playerId===storage.get("user").id);
-                  const isRejected=allReq.find(req => req.tournamentId === tournament.id && req.rejected===true && req.playerId===storage.get("user").id);
-                  const isApproved=allReq.find(req => req.tournamentId === tournament.id && req.approved===true && req.playerId===storage.get("user").id);
+
+                  const hasRequested=allReq.find(req => req.tournamentId === tournament.id  && req.managerId===storage.get("user").id);
+                  const isRejected=allReq.find(req => req.tournamentId === tournament.id && req.rejected===true && req.managerId===storage.get("user").id);
+                  const isApproved=allReq.find(req => req.tournamentId === tournament.id && req.approved===true && req.managerId===storage.get("user").id);
                   console.log(isApproved,"isApproved")
                   console.log(isRejected,"isRejected")
                   console.log(hasRequested,"hasRequested")

@@ -8,7 +8,7 @@ export const initialRequests = [
     players: 15,
     status: 'pending',
     submittedAt: '2024-01-20 14:30',
-    documents: ['team_list.pdf', 'player_ids.pdf'],
+
     contactEmail: 'john@example.com',
     contactPhone: '+1234567890',
     additionalInfo: 'Previous tournament winners',

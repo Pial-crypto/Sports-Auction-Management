@@ -135,9 +135,30 @@ model PlayerRequest {
   rejectionReason String @default("N/A")
 }
 
+
+model TeamRequest {
+  id          String  @id @default(cuid()) 
+  tournamentId String
+  teamName String @default("N/A")
+  managerId String @default("N/A")
+  managerEmail String @default("N/A")
+  managerName String @default("N/A")
+  managerNumber String @default("N/A")
+
+  
+  previousTournament String @default("N/A")
+  teamDescription String @default("N/A")
+  approved Boolean @default(false)
+  createdAt DateTime @default(now())
+  rejected Boolean @default(false)
+  rejectionReason String @default("N/A")
+}
+
 model Approval {
   id String @id @default(cuid())
   playerId String
   tournamentId String
   createdAt DateTime @default(now())
+  managerId String @default("N/A")
+
 }

@@ -1,4 +1,4 @@
-import { handleApprovePlayer, handleRejectiontoPlayerReq } from "./handleApprovalActions";
+import { handleApprovePlayer, handleApproveTeam, handleRejectiontoPlayerReq } from "./handleApprovalActions";
 
   // Handlers
   export const handleStatusFilter = (status,setFilterStatus) => {
@@ -27,10 +27,35 @@ import { handleApprovePlayer, handleRejectiontoPlayerReq } from "./handleApprova
 
   export const confirmApprove = (requests, confirmDialog, setRequests, setConfirmDialog, setSnackbar) => {
 
-   
+   console.log(confirmDialog.request,"confirmDialog.request")
 
     const approvedRequest = { ...confirmDialog.request, status: 'approved' };
-    handleApprovePlayer(approvedRequest).then((res)=>{
+    console.log(approvedRequest,"approvedRequest of confirmApprove")
+    if(confirmDialog.request.type === "Team Registration"){
+
+      
+handleApproveTeam(approvedRequest).then((res)=>{
+  console.log(res,"res of confirmApprove")
+ // if(res){
+      // Remove the request from current position and add it to the beginning
+      const otherRequests = requests.filter(req => req.id !== confirmDialog.request.id);
+      const updatedRequests = [approvedRequest, ...otherRequests];
+      
+  setRequests(updatedRequests);
+  setConfirmDialog({ open: false, type: null, request: null });
+  setSnackbar({
+    open: true,
+    message: 'Request approved successfully',
+    severity: 'success'
+  });
+ // }
+//   else{
+// alert("Failed to approve request")
+//   }
+})
+    }
+    else{
+      handleApprovePlayer(approvedRequest).then((res)=>{
       if(res){
           // Remove the request from current position and add it to the beginning
           const otherRequests = requests.filter(req => req.id !== confirmDialog.request.id);
@@ -48,6 +73,7 @@ import { handleApprovePlayer, handleRejectiontoPlayerReq } from "./handleApprova
 alert("Failed to approve request")
       }
   })
+    }
       
   };
 

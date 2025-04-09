@@ -1,9 +1,5 @@
 export const handleApprovePlayer = async (request) => {
   try {
-    
-    // API call to approve request
-
-    //console.log(request,"request")
     const response = await fetch('/api/giveApprovaltoPlayer', {
       method: 'POST',
       headers: {
@@ -23,6 +19,7 @@ const addApprovaltoTableResponse = await fetch('/api/addApprovaltoTable', {
   body: JSON.stringify({ 
     playerId: request.playerId,
     tournamentId: request.tournamentId,
+
  
   }),
 });
@@ -31,12 +28,51 @@ if(addApprovaltoTableResponse.ok){
 }else{
   return false
 }
-     // alert('Request approved successfully');
     } else {
       return false
     }
   } catch (error) {
-    //console.error('Error approving request:', error);
+   
+    return false
+  }
+};
+
+
+export const handleApproveTeam = async (request) => {
+  try {
+
+    const response = await fetch('/api/approveTeamReq', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        id: request.id,
+      }),
+    });
+
+    if (response.ok) {
+const addApprovaltoTableResponse = await fetch('/api/addApprovaltoTable', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ 
+    
+    tournamentId: request.tournamentId,
+    managerId: request.managerId,
+  }),
+});
+if(addApprovaltoTableResponse.ok){
+  return true
+}else{
+  return false
+}
+    } else {
+      return false
+    }
+  } catch (error) {
+   
     return false
   }
 };

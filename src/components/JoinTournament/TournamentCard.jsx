@@ -29,7 +29,7 @@ import formatDateWithTime from '@/function/formateDatewithTime';
 const TournamentCard = ({ tournament, onJoinRequest }) => {
 
 
-  console.log(tournament,"tournament inside tournament card")
+  //console.log(tournament,"tournament inside tournament card")
   return (
     <StyledCard sportType={tournament.sport}>
       <TournamentImage 

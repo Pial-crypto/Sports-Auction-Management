@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.savePlayerRequest = void 0;
+exports.saveTeamRequest = void 0;
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -11,17 +11,17 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var savePlayerRequest = function savePlayerRequest(playerData) {
+var saveTeamRequest = function saveTeamRequest(teamData) {
   var response, data;
-  return regeneratorRuntime.async(function savePlayerRequest$(_context) {
+  return regeneratorRuntime.async(function saveTeamRequest$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return regeneratorRuntime.awrap(fetch("/api/saveNewJoiningReq", {
+          return regeneratorRuntime.awrap(fetch("/api/saveNewTeamJoiningReq", {
             method: "POST",
-            body: JSON.stringify(_objectSpread({}, playerData, {
+            body: JSON.stringify(_objectSpread({}, teamData, {
               approved: false
             })),
             headers: {
@@ -75,4 +75,4 @@ var savePlayerRequest = function savePlayerRequest(playerData) {
   }, null, null, [[0, 15]]);
 };
 
-exports.savePlayerRequest = savePlayerRequest;
+exports.saveTeamRequest = saveTeamRequest;

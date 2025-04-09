@@ -11,6 +11,25 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import SportsCricketIcon from '@mui/icons-material/SportsCricket';
 
 const teamManagerCards = [
+
+  {
+    title: 'Tournament Status',
+    value: 'Ongoing',
+    subtitle: 'Matches: 5/10',
+    path: '/TournamentStatus',
+    icon: <EmojiEventsIcon sx={{ fontSize: 32, color: '#16a34a' }} />,
+    color: '#16a34a'
+  }
+,  
+  { 
+    title: 'Team Details',
+    value: 'Active',
+    subtitle: 'Players: 15/15',
+    path: '/TeamDetails',
+    icon: <GroupsIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
+    color: '#2563eb'
+  },
+
   { 
     title: 'Team Details',
     value: 'Active',
@@ -26,7 +45,7 @@ const teamManagerCards = [
     path: '/TournamentRules',
     icon: <RuleIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb',
-    viewOnly: true // Indicates this is view-only for team managers
+    //viewOnly: true // Indicates this is view-only for team managers
   },
   { 
     title: 'Team Schedule',

@@ -1,5 +1,5 @@
 export const savePlayerRequest = async (playerData) => {
-    console.log(playerData,"I am the player data in savePlayerRequest")
+   // console.log(playerData,"I am the player data in savePlayerRequest")
     try {
         const response = await fetch("/api/saveNewJoiningReq", {
             method: "POST",

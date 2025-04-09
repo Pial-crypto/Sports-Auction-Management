@@ -33,9 +33,9 @@ const Announcements = () => {
   const [error, setError] = useState(null);
   const [tournament, setTournament] = useState(null);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
-  const editPermission=storage.get("user").role==="organizer";
-  if(storage.get("user").role==="player"){
-    useFetchLatestApprovedTournamentHook(undefined,setTournament)
+  const editPermission=storage.get("user").role==="organizer" || storage.get("user").role==="manager";
+  if(storage.get("user").role==="player" || storage.get("user").role==="manager"){
+    useFetchLatestApprovedTournamentHook(undefined,storage.get("user").role,setTournament)
     }
 
 if(storage.get("user").role==="organizer"){

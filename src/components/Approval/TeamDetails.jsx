@@ -3,6 +3,8 @@ import { Grid, List, ListItem, ListItemIcon, ListItemText, Typography } from '@m
 import { Groups, Person, Email, Phone } from '@mui/icons-material';
 
 const TeamDetails = ({ COLORS,selectedRequest }) => {
+
+  console.log(selectedRequest,"selected request")
   return (
     <>
                             <Grid item xs={12} md={6}>
@@ -27,12 +29,12 @@ const TeamDetails = ({ COLORS,selectedRequest }) => {
                                   <ListItemText 
                                     primary={
                                       <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Captain
+                                        Manager Name
                                       </Typography>
                                     }
                                     secondary={
                                       <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.captain}
+                                          {selectedRequest.managerName}
                                       </Typography>
                                     }
                                   />
@@ -76,12 +78,29 @@ const TeamDetails = ({ COLORS,selectedRequest }) => {
                                   <ListItemText 
                                     primary={
                                       <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
-                                        Number of Players
+                                        Previous Tournament
                                       </Typography>
                                     }
                                     secondary={
                                       <Typography sx={{ color: COLORS.text.secondary }}>
-                                        {selectedRequest.players}
+                                        {selectedRequest.previousTournaments}
+                                      </Typography>
+                                    }
+                                  />
+                                </ListItem>
+
+
+                                <ListItem>
+                                  <ListItemIcon><Groups color="primary" /></ListItemIcon>
+                                  <ListItemText 
+                                    primary={
+                                      <Typography sx={{ color: COLORS.text.primary, fontWeight: 500 }}>
+                                        Team Description
+                                      </Typography>
+                                    }
+                                    secondary={
+                                      <Typography sx={{ color: COLORS.text.secondary }}>
+                                        {selectedRequest.additionalInfo}
                                       </Typography>
                                     }
                                   />

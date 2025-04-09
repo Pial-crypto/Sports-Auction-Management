@@ -34,13 +34,14 @@ const TournamentRules = () => {
   });
   const [error, setError] = useState('');
   const [tournament,setTournament]=useState(null)
+  
 
   if(storage.get("user").role==="organizer"){
  fetchCurrentTournamentHook(setTournament)
   }
 
-  if(storage.get("user").role==="player"){
-  useFetchLatestApprovedTournamentHook(undefined,setTournament)
+  if(storage.get("user").role==="player" || storage.get("user").role==="manager"){
+  useFetchLatestApprovedTournamentHook(undefined,storage.get("user").role,setTournament)
   }
  //console.log(tournament,"tournament")
 

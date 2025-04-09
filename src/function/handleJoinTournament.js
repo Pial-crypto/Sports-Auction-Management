@@ -1,6 +1,7 @@
 import storage from "@/class/storage";
 import { savePlayerRequest } from "./savePlayerRequest";
 import fetchAllReq from "./getAllreq";
+import { saveTeamRequest } from "./saveTeamRequest";
 
 // Check tournament status
 export const getStatus = (tournament) => {
@@ -27,7 +28,8 @@ export const handleSubmitRequest = async (
   setFilteredTournaments,
   setOpenDialog,
   setSelectedTournament,
-  setError
+  setError,
+  
 ) => {
   try {
     const request = {
@@ -64,5 +66,54 @@ export const handleSubmitRequest = async (
   } catch (error) {
     console.error('Failed to submit request:', error);
     setError('Failed to submit request. Please try again.');
+  }
+};
+
+
+export const handleSubmitTeamRequest = async (
+  teamData,
+  selectedTournament,
+  setTournaments,
+  setFilteredTournaments,
+  setOpenDialog,
+  setSelectedTournament,
+  setError,
+) => {
+  try {
+    const request = {
+      ...teamData,
+      tournamentId: selectedTournament.id,
+      managerId: storage.get("user").id,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    };
+
+    console.log('Submitting team request:', request);
+
+    const data = await saveTeamRequest(request);
+    
+    if(data){
+      console.log('Team request submitted successfully:', data);
+      alert("Team registration request submitted successfully");
+      
+      const updateTournamentState = (tournaments) =>
+        tournaments.map(tournament =>
+          tournament.id === selectedTournament.id
+            ? { ...tournament, hasRequested: true }
+            : tournament
+        );
+  
+      setTournaments(prev => updateTournamentState(prev));
+      setFilteredTournaments(prev => updateTournamentState(prev));
+  
+      setOpenDialog(false);
+      setSelectedTournament(null);
+    } else {
+      console.error('Failed to submit team request');
+      setError("Team registration request submission failed");
+    }
+  } catch (error) {
+    console.error('Failed to submit team request:', error);
+    setError('Failed to submit team registration request. Please try again.');
   }
 };

@@ -110,7 +110,7 @@ const RequestCard = ({
                         fontWeight: 500,
                       }}
                     >
-                      Captain: {request.captain}
+                      Manager Name: {request.managerName}
                     </Typography>
                   </Box>
                 </Box>
