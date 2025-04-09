@@ -1,4 +1,4 @@
-import { handleApprovePlayer, handleApproveTeam, handleRejectiontoPlayerReq } from "./handleApprovalActions";
+import { handleApprovePlayer, handleApproveTeam, handleRejectiontoPlayerReq, handleRejectiontoTeamReq } from "./handleApprovalActions";
 
   // Handlers
   export const handleStatusFilter = (status,setFilterStatus) => {
@@ -85,6 +85,7 @@ alert("Failed to approve request")
       status: 'rejected', 
       rejectionReason: rejectReason 
     };
+    if(rejectDialog.request.type==="Player Registration"){
     handleRejectiontoPlayerReq(rejectedRequest).then((res)=>{
       if(res){
         // Remove the request from current position and add it to the beginning
@@ -104,6 +105,30 @@ alert("Failed to approve request")
     alert("Failed to reject request")
   }
   })
+}
+
+if(rejectDialog.request.type==="Team Registration"){
+    
+  handleRejectiontoTeamReq(rejectedRequest).then((res)=>{
+    if(res){
+      // Remove the request from current position and add it to the beginning
+      const otherRequests = requests.filter(req => req.id !== rejectDialog.request.id);
+      const updatedRequests = [rejectedRequest, ...otherRequests];
+      
+  setRequests(updatedRequests);
+  setRejectDialog({ open: false, request: null });
+  setRejectReason('');
+  setSnackbar({
+    open: true,
+    message: 'Request rejected',
+    severity: 'error'
+  });
+}
+else{
+  alert("Failed to reject request")
+}
+})
+}
   };
 
   export const getStatusCount = (requests, status) => {

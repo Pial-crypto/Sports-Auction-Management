@@ -101,3 +101,26 @@ export const handleRejectiontoPlayerReq = async (request) => {
   }
 };
 
+export const handleRejectiontoTeamReq = async (request) => {
+  try {
+    // API call to reject request
+    const response = await fetch('/api/rejectionToTeamReq', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        id: request.id,
+      }),
+    });
+
+    if (response.ok) {
+      // Update local state
+      return true
+    } else {
+      return false
+    }
+  } catch (error) {
+   return false
+  }
+};
