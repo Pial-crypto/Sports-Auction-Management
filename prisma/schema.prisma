@@ -144,8 +144,6 @@ model TeamRequest {
   managerEmail String @default("N/A")
   managerName String @default("N/A")
   managerNumber String @default("N/A")
-
-  
   previousTournament String @default("N/A")
   teamDescription String @default("N/A")
   approved Boolean @default(false)
@@ -161,4 +159,15 @@ model Approval {
   createdAt DateTime @default(now())
   managerId String @default("N/A")
 
+}
+
+model Auction{
+  id String @id @default(cuid())
+  playerId String
+  tournamentId String
+  createdAt DateTime @default(now())
+  managerId String @default("N/A")
+  teamId String @default("N/A")
+  teamName String @default("N/A")
+  soldStatus String @default("Unsold")
 }

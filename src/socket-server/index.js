@@ -14,8 +14,12 @@ const initial_state = {
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Next.js runs here
-    methods: ["GET", "POST"]
+    
+    origin: ["http://localhost:3000", "http://192.168.137.1:3000"],
+methods: ["GET", "POST"]
+
+  //  origin: ["http://localhost:3000","192.168.0.105"], // Next.js runs here
+    //methods: ["GET", "POST"]
   }
 });
 
@@ -50,12 +54,7 @@ io.on("connection", (socket) => {
     initial_state.End = End;
     console.log("Before emitting")
     io.emit("receiveIsBidEnd", End);
-    // Reset after emitting
-  setTimeout(() => {
-    initial_state.End = false;
-  }, 500); // একটু delay দিয়ে reset করলে emit এর জন্য সময় পাবে
-
-      // 🧹 Purge the old player & bidding state
+ 
  
   });
 

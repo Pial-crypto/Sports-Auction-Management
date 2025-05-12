@@ -19,6 +19,7 @@ import { alpha } from '@mui/material/styles';
 import { COLORS } from '@/style/Budget';
 import { Zoom } from '@mui/material';
 import { toast } from 'react-toastify';
+import storage from '@/class/storage';
 
 const CategoryBreakdown = ({ 
   categories, 
@@ -37,7 +38,7 @@ const CategoryBreakdown = ({
     setAmount('');
     setOpenDialog(true);
   };
-
+const role=storage.get("user").role
   const handleSubmit = () => {
     if (!amount || isNaN(amount) || amount <= 0) return;
 
@@ -120,7 +121,9 @@ const CategoryBreakdown = ({
                       }
                     }}
                   />
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>
+                {
+                  role=== 'organizer' && (
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>
                     <Button
                       startIcon={<Add />}
                       onClick={() => handleOpenDialog(category, 'expense')}
@@ -140,6 +143,8 @@ const CategoryBreakdown = ({
                       Refund
                     </Button>
                   </Box>
+                  )
+                }
                 </CardContent>
               </StyledCard>
             </Zoom>

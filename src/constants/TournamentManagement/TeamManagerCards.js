@@ -31,10 +31,10 @@ const teamManagerCards = [
   },
 
   { 
-    title: 'Team Details',
+    title: 'Tournament Budget',
     value: 'Active',
     subtitle: 'Players: 15/15',
-    path: '/TeamDetails',
+    path: '/Budget',
     icon: <GroupsIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb'
   },

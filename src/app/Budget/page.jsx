@@ -34,6 +34,8 @@ import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 import { handleAddTransaction, handleUpdateCategory, generateBudgetReport } from '@/function/handleBudgetPage';
 import { fetchCurrentTransactionHook } from '@/hook/fetchCurrentTransactionHook';
 import getTransactionList from '@/function/getTransactionList';
+import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
+import storage from '@/class/storage';
 // Register ChartJS components
 ChartJS.register(
   CategoryScale,
@@ -52,7 +54,14 @@ const BudgetManagement = () => {
   const [tournament,setTournament]=useState(null)
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
+
+  if(storage.get("user").role==="player" || storage.get("user").role==="manager"){
+    useFetchLatestApprovedTournamentHook(undefined,storage.get("user").role,setTournament,setBudgetData)
+  
+  }
+  if(storage.get("user").role==="organizer"){
   fetchCurrentTournamentHook(setTournament,setBudgetData)
+  }
 
   fetchCurrentTransactionHook(tournament,setBudgetData)
 

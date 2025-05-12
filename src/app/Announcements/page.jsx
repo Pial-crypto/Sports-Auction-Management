@@ -42,6 +42,8 @@ if(storage.get("user").role==="organizer"){
   fetchCurrentTournamentHook(setTournament)
 }
 
+console.log(tournament," current tournament from announcement page")
+
   fetchAllCurrentAnnouncementHook(setAnnouncements,setError,tournament)
 
   // Sort and memoize announcements
