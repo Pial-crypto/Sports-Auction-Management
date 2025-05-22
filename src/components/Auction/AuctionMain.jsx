@@ -23,6 +23,11 @@ import PlayerSelectionDialog from './PlayerSelectionDialog';
 import { io } from 'socket.io-client';
 import BidChart from './BidChart';
 import fetchAllTeamReq from '@/function/getAllTeamReq';
+import { addNewAuction } from '@/function/addNewAuction';
+import { markAuctionStatus } from '@/function/markAuctionStatusFinished';
+import { pl } from 'date-fns/locale';
+import saveBidding from '@/function/saveBidding';
+import getAllBidding from '@/function/getAllBidding';
 
 // Socket instance
 let socket;
@@ -30,8 +35,9 @@ let socket;
 const AuctionMain = () => {
   const user = storage.get("user");
   const userRole = user?.role;
-  let myTeam;
+  //let myTeam;
   // Basic auction state
+  const[myTeam,setMyTeam]=useState(null)
   const [currentBid, setCurrentBid] = useState(0);
   const [bidAmount, setBidAmount] = useState('');
   const [bidDialog, setBidDialog] = useState(false);
@@ -43,6 +49,7 @@ const AuctionMain = () => {
   const [players, setPlayers] = useState(DUMMY_PLAYERS);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(null);
   const [callPlayerHook,setCallPlayerHook]=useState(true)
+  //const [tournamentIdFromServer,settournamentIdFromServer]=useState(null)
   // Snackbar for notifications
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -54,15 +61,39 @@ const AuctionMain = () => {
     const allTeamReqResponse=await fetchAllTeamReq();
     const allTeamReqList=allTeamReqResponse.allTeamReq;
 
-    //console.log(allTeamReqList,"Here is all of the team requests")
-    if(tournament)
-     myTeam=allTeamReqList.find((item)=>item.managerId==user.id && item.tournamentId==tournament.id && item.approved)
-    //console.log("This is my team",myTeam)
+    console.log(allTeamReqList,"Here is all of the team requests")
+    if(tournament){
+      console.log("Tournament id",tournament.id,"Userid",user.id)
+      
+    const myownTeam=allTeamReqList.find((item)=>item.managerId==user.id && item.tournamentId==tournament.id && item.approved)
+    setMyTeam(myownTeam)
+    console.log("This is my team",myTeam)
   }
+}
+useEffect(()=>{
+allTeamReq()
+},[tournament])
+ 
 
-  allTeamReq()
-  
-   
+if (tournament) {
+  getAllBidding().then((data) => {
+    if(data){
+    const currentAvailableBidding = data
+      .filter(item => item.tournamentId === tournament.id)
+      .map(item => ({
+        ...item,
+        team: item.teamName,
+        time: new Date(item.createdAt).toLocaleTimeString(),
+      }));
+
+    setBidHistory(currentAvailableBidding);
+    }
+  });
+}
+
+
+
+
 
   // Function to end bidding
   const endBidding = () => {
@@ -86,9 +117,27 @@ const AuctionMain = () => {
       };
 
       //console.log("before emitting updated players",updatedPlayers)
-     
+     //const currentPlayer=players[currentPlayerIndex]
+      //console.log(players[currentPlayerIndex],"The current player")
       socket.emit('current_queue',updatedPlayers)
       setPlayers(updatedPlayers);
+      console.log("I am the winner",winner)
+      if(userRole=='organizer'){
+        //console.log(myTeam,"My team is here")
+        const currentPlayer= players[currentPlayerIndex]
+        const auctionData = {
+          playerId: currentPlayer.playerId,
+          tournamentId: currentPlayer.tournamentId,
+         managerId: winner.managerId,      // optional, default: "N/A"
+         createdAt: new Date(),        // optional, default: now()
+          teamId: winner.id,            // optional, default: "N/A"
+          teamName: winner.team,         // optional, default: "N/A"
+         soldStatus:true   // optional, default: "Unsold"
+        };
+    
+        addNewAuction(auctionData)
+      }
+     
       
       setSnackbar({
         open: true,
@@ -243,6 +292,7 @@ const AuctionMain = () => {
   };
 
   const sendBidInfo = () => {
+    console.log("Before sending bit info",myTeam)
     const bidValue = Number(bidAmount);
     if (bidValue <= currentBid) {
       setSnackbar({
@@ -252,13 +302,28 @@ const AuctionMain = () => {
       });
       return;
     }
-
+ 
+    console.log("This is my team",myTeam)
+  
     const bidData = {
       amount: bidValue,
       team: myTeam.teamName,
+      managerId:myTeam.managerId,
+      teamId:myTeam.teamId,
+
+
       //user.teamName || 'Team ' + user.name || 'Unknown Team',
-      time: new Date().toLocaleTimeString()
+      time: new Date().toLocaleTimeString(),
+
+      
     };
+
+
+
+    saveBidding({teamId:myTeam.teamId,teamName:myTeam.teamName,amount:bidValue,playerId:players[currentPlayerIndex].playerId,tournamentId:tournament.id})
+    .then((response) => {
+      console.log("Bidding saved successfully:", response);
+    })
 
     socket.emit("sendNewBid", bidData);
     setBidDialog(false);
@@ -266,6 +331,9 @@ const AuctionMain = () => {
   };
 
   const handleEndBidding = () => {
+
+   
+
     console.log("Before going to endBidding", bidHistory);
     
      socket.emit("bid_history", bidHistory);
@@ -275,8 +343,8 @@ const AuctionMain = () => {
     }
   };
 
-  if (!userRole) {
-    return <Box sx={{ p: 4 }}>Loading auction...</Box>;
+  if (!tournament) {
+    return <Box sx={{ p: 4 }}>Unfortunately you are not accepted in any tournament...</Box>;
   }
 
   return (
@@ -288,6 +356,7 @@ const AuctionMain = () => {
       <AuctionPhaseProgress 
         isBiddingActive={isBiddingActive}
         timeLeft={timeLeft}
+        players={players}
       />
 
       <Grid container spacing={3}>

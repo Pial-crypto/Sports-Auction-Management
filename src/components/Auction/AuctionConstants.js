@@ -26,9 +26,9 @@ export const COLORS = {
 // Auction phases
 export const AUCTION_PHASES = [
   'Registration',
-  'Player Selection',
+ // 'Player Selection',
   'Bidding',
-  'Confirmation',
+  //'Confirmation',
   'Complete'
 ];
 
@@ -40,28 +40,28 @@ export const PHASE_DETAILS = {
     icon: 'PersonAdd',
     color: COLORS.accent
   },
-  'Player Selection': {
-    title: 'Player Selection',
-    description: 'Tournament manager selecting next player for auction',
-    icon: 'Groups',
-    color: COLORS.primary
-  },
+  // 'Player Selection': {
+  //   title: 'Player Selection',
+  //   description: 'Tournament manager selecting next player for auction',
+  //   icon: 'Groups',
+  //   color: COLORS.primary
+  // },
   Bidding: {
     title: 'Live Bidding',
     description: 'Active bidding in progress',
     icon: 'Gavel',
-    color: COLORS.accent
-  },
-  Confirmation: {
-    title: 'Bid Confirmation',
-    description: 'Confirming final bid and team allocation',
-    icon: 'CheckCircle',
     color: COLORS.success
   },
+  // Confirmation: {
+  //   title: 'Bid Confirmation',
+  //   description: 'Confirming final bid and team allocation',
+  //   icon: 'CheckCircle',
+  //   color: COLORS.success
+  // },
   Complete: {
     title: 'Auction Complete',
     description: 'Player has been successfully auctioned',
     icon: 'EmojiEvents',
-    color: COLORS.secondary
+   color: COLORS.secondary
   }
 }; 

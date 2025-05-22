@@ -15,11 +15,11 @@ export const fetchPlayerQueueForAuction = async () => {
     });
 
     const data = await response.json();
-    console.log(data,"data from get player queue")
+    //console.log(data,"data from get player queue")
 
     if (response.ok) {
       
-      console.log(data,"data from get player queue api call")
+    //  console.log(data,"data from get player queue api call")
    return data
 
 

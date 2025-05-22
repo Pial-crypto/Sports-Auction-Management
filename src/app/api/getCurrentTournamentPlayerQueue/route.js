@@ -12,9 +12,6 @@ export async function GET(req) {
     })
 
 
-    // If user doesn't exist
-
-
  
    
 

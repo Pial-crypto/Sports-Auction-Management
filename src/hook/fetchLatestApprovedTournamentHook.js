@@ -23,6 +23,8 @@ const useFetchLatestApprovedTournamentHook = (setActiveStatus, role, setTourname
         if (approvalResponse.ok) {
           const approvalData = await approvalResponse.json();
           const { latestApproval } = approvalData;
+
+          
           console.log("Here is the approval data",approvalData)
 
           if (latestApproval) {

@@ -169,5 +169,21 @@ model Auction{
   managerId String @default("N/A")
   teamId String @default("N/A")
   teamName String @default("N/A")
-  soldStatus String @default("Unsold")
+  soldStatus Boolean @default(false)
+}
+
+model tournamentAuctionStatus{
+    id String @id @default(cuid())
+    tournamentId String
+    auctionStatus String @default("finished")
+}
+
+model bidding{
+  id String @id @default(cuid())
+  teamId String
+  playerId String
+  teamName String
+  amount Int
+  tournamentId String
+  createdAt DateTime @default(now())
 }

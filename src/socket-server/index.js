@@ -9,6 +9,7 @@ const initial_state = {
   timeLeft: null,
   bidHistory: [],
   currentQueue:[],
+  tournamentId:null
 
 };
 
@@ -36,6 +37,9 @@ io.on("connection", (socket) => {
     io.emit("receive_message", msg);
   });
 
+  socket.on("tournamentId",(tournamentId)=>{
+    initial_state.tournamentId=tournamentId
+  })
   socket.on("sendNewBid", (bidData) => {
     console.log("Received bid:", bidData);
     initial_state.bidData = bidData;

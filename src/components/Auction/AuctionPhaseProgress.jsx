@@ -16,7 +16,8 @@ import {
   CheckCircle,
   EmojiEvents,
 } from '@mui/icons-material';
-import { AUCTION_PHASES, PHASE_DETAILS } from './AuctionConstants';
+import { AUCTION_PHASES, COLORS, PHASE_DETAILS } from './AuctionConstants';
+
 
 const getIconComponent = (iconName) => {
   switch (iconName) {
@@ -29,11 +30,16 @@ const getIconComponent = (iconName) => {
   }
 };
 
-const AuctionPhaseProgress = ({ isBiddingActive, timeLeft }) => {
+const AuctionPhaseProgress = ({ isBiddingActive, timeLeft,players }) => {
+  if(players.length === 0){
+    PHASE_DETAILS['Complete'].color=COLORS.success;
+    PHASE_DETAILS['Bidding'].color=COLORS.secondary
+  }
   return (
     <Box sx={{ mb: 4 }}>
       <Stepper activeStep={isBiddingActive ? 2 : 1}>
         {AUCTION_PHASES.map((phase) => (
+          
           <Step key={phase}>
             <StepLabel
               StepIconProps={{
@@ -62,9 +68,9 @@ const AuctionPhaseProgress = ({ isBiddingActive, timeLeft }) => {
           mt: 2,
           height: 6,
           borderRadius: 3,
-          bgcolor: alpha(PHASE_DETAILS[isBiddingActive ? 'Bidding' : 'Player Selection'].color, 0.1),
+          bgcolor: alpha(PHASE_DETAILS[isBiddingActive ? 'Bidding' : 'Registration'].color, 0.1),
           '& .MuiLinearProgress-bar': {
-            bgcolor: PHASE_DETAILS[isBiddingActive ? 'Bidding' : 'Player Selection'].color,
+            bgcolor: PHASE_DETAILS[isBiddingActive ? 'Bidding' : 'Registration'].color,
           }
         }}
       />
