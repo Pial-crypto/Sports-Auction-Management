@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Match" ADD COLUMN     "currentOver" TEXT NOT NULL DEFAULT '0',
+ADD COLUMN     "minutes" TEXT NOT NULL DEFAULT '0',
+ADD COLUMN     "score" TEXT NOT NULL DEFAULT '0';

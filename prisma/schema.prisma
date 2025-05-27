@@ -152,6 +152,8 @@ model TeamRequest {
   rejectionReason String @default("N/A")
 }
 
+
+
 model Approval {
   id String @id @default(cuid())
   playerId String
@@ -186,4 +188,27 @@ model bidding{
   amount Int
   tournamentId String
   createdAt DateTime @default(now())
+}
+
+model Match {
+  id            String  @id @default(cuid()) 
+  tournamentId  String
+  team1Name     String @default("N/A")
+  team2Name     String @default("N/A")
+  team1Id       String @default("N/A")
+  team2Id       String @default("N/A")
+  status        String @default("Upcoming")
+  type          String @default("Knockout")
+  date          String 
+  createdAt     DateTime @default(now()) 
+  venue         String
+  currentOver   String @default("0")
+  currentTime   String @default("0")
+  toralOvers    String @default("0")
+  score         String @default("0")
+
+  team1Score    String @default("0")  
+  team2Score    String @default("0")  
+
+  winner String @default("Not get yet")
 }
