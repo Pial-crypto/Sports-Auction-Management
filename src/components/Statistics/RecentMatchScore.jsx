@@ -1,85 +1,51 @@
-"use client";
-
 import React, { useState } from 'react';
 import {
   Box,
+  Typography,
   Grid,
+  CardContent,
 } from '@mui/material';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip as ChartTooltip,
-  Legend as ChartLegend,
-} from 'chart.js';
-import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
-import { fetchCurrentTournamentMatchesHook } from '@/hook/fetchCurrentTournamentMatchesHook';
-import { TournamentProgress } from '@/components/Statistics/TournamentProgress';
-import { QuickStatsCard } from '@/components/Statistics/QuickStatsCard';
-import { Header } from '@/components/Statistics/Header';
-import { TrendsChart } from '@/components/Statistics/TrendsChart';
-import { RecentMatchScore } from '@/components/Statistics/RecentMatchScore';
-// Recharts dynamic imports
-
-// Register ChartJS components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  ChartTooltip,
-  ChartLegend
-);
+import { Bar } from 'react-chartjs-2';
+import { StyledCard } from '@/style/statistics';
 
 
+ export const RecentMatchScore = ({matches,tournamet})=>{
 
-
-// Add these styled components
-
-// Add more mock data for better visualization
-
-
-
-const Statistics = () => {
-
-
-  const [tournament,setTournamet]=useState(null);
-  const [matches,setMatches]=useState([])
-  fetchCurrentTournamentHook(setTournamet,undefined)
-  fetchCurrentTournamentMatchesHook(tournament,setMatches)
-
-
-
-
-
- 
-  return (
-    <Box sx={{ 
-      p: 3, 
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-      minHeight: '100vh',
-      color: 'white'
-    }}>
-<Header></Header>
-
-
-
-      {/* Quick Stats Cards */}
- <QuickStatsCard tournament={tournament} matches={matches} />
-
+  const recentMatchesLabelArray = [];
+  const teamAScoresArray = [];
+  const teamBScoresArray = [];
+  for (let i = 0; i < matches.length; i++) {
+  
+    recentMatchesLabelArray.push(`Match ${i + 1}`);
+    if(tournamet?.gameType.toLowerCase() === 'cricket') {
+    // For cricket, split scores into runs and wickets
+    const [team1RawRun, team1RawWicket] = matches[i]?.team1Score.split('/');
+    const [team2RawRun, team2RawWicket] = matches[i]?.team2Score.split('/');
+      const team1Run = !isNaN(team1RawRun) ? parseInt(team1RawRun) : 0;
+    const team2Run = !isNaN(team2RawRun) ? parseInt(team2RawRun) : 0;
+    teamAScoresArray.push(
+      team1Run)
+  
+    teamBScoresArray.push(
+      team2Run)
+    }
+    else {
+        // For football, use scores directly
+        const team1Score = !isNaN(matches[i].team1Score) ? parseInt(matches[i].team1Score) : 0;
+        const team2Score = !isNaN(matches[i].team2Score) ? parseInt(matches[i].team2Score) : 0;
+        teamAScoresArray.push(team1Score);
+        teamBScoresArray.push(team2Score);
+    }
     
-      <Grid container spacing={3}>
-          {/* Tournament Trends Chart */}
+    if(i==4) break; // Limit to 5 matches
+  }
 
-          <TrendsChart matches={matches} tournament={tournament} />
-    
 
-        {/* Recent Match Scores */}
 
-        <RecentMatchScore matches={matches} tournament={tournament} />
-        {/* <Grid item xs={12} lg={4}>
+     return(
+        
+      
+           <Grid item xs={12} lg={4}>
           <StyledCard>
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ color: '#94a3b8' }}>
@@ -91,13 +57,13 @@ const Statistics = () => {
                     labels: recentMatchesLabelArray,
                     datasets: [
                       {
-                        label: 'Team A',
+                        label: '1st Team',
                         data:teamAScoresArray,
                         backgroundColor: '#3b82f6',
                         borderRadius: 6,
                       },
                       {
-                        label: 'Team B',
+                        label: '2nd Team',
                         data: teamBScoresArray,
                         backgroundColor: '#10b981',
                         borderRadius: 6,
@@ -139,14 +105,6 @@ const Statistics = () => {
               </Box>
             </CardContent>
           </StyledCard>
-        </Grid> */}
-
-        {/* Tournament Progress */}
-        <TournamentProgress matches={matches} tournament={tournament} />
-
-      </Grid>
-    </Box>
-  );
-};
-
-export default Statistics;
+        </Grid>
+     )
+}

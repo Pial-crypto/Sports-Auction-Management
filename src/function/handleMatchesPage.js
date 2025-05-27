@@ -201,10 +201,17 @@ if(editMatch.status === "completed" && (team1Score === "Not started yet" || team
     newMatch,matches,setMatches,setCreateDialogOpen
   ) => {
 
+    const available=['League Match','Quarter Final','Semi Final','Final']
+
+  let maxStage=getCurrentStage(matches)
+
    
 
+    console.log(maxStage,"Our max stage")
 
-  try {
+   
+if(maxStage!='Final' &&  stagePriority[newMatch.type]>=stagePriority[maxStage]){
+ try {
     const response = await fetch('/api/createMatch', {
       method: 'POST',
       headers: {
@@ -220,7 +227,7 @@ if(editMatch.status === "completed" && (team1Score === "Not started yet" || team
       // Optional: Notify user
       // alert("Match created successfully");
 
-     setMatches([...matches, newMatch]);
+     setMatches([newMatch,...matches]);
 
       // Close the modal or dialog
   setCreateDialogOpen(false);
@@ -231,7 +238,38 @@ if(editMatch.status === "completed" && (team1Score === "Not started yet" || team
     console.error('Error creating match:', error);
     alert('Error creating match: ' + error.message);
   }
+
+
+
+}
+
+else{
+  alert(`The tournament is already in the ${maxStage} stage`)
+}
+
+ 
   };
+
+
+  export const getCurrentStage=(matches)=>{
+      const stagePriority={
+      'League Match':1,
+     'Quarter Final':2,
+     'Semi Final':3,
+     'Final':4,
+    }
+
+     let maxStage= 'League Match';
+
+    matches.forEach((match)=>{
+
+if(stagePriority[match.type]>stagePriority[maxStage]){
+maxStage=match.type;
+}
+    })
+
+    return maxStage;
+  }
 
 
 
@@ -440,4 +478,38 @@ export const getHighestScore = (matches, tournament) => {
   console.log("Highest score found:", highest); 
 
   return highest > 0 ? highest : "N/A";
+};
+
+
+
+
+
+export const getAvgWicket = (matches, tournament) => {
+  const completedMatches = matches.filter(
+    match => match.status?.toLowerCase() === "completed"
+  );
+
+  let total = 0;
+  let count = 0;
+
+  if (tournament?.gameType.toLowerCase() === 'cricket') {
+    completedMatches.forEach(match => {
+      [match.team1Score, match.team2Score].forEach(score => {
+        if (typeof score === 'string' && score.includes("/")) {
+          const [runsStr, wicketsStr] = score.split("/");
+          const runs = parseFloat(runsStr);
+          const wickets = parseFloat(wicketsStr);
+
+          if (!isNaN(runs) && !isNaN(wickets) && wickets > 0) {
+            total += wickets ;
+            count++;
+          }
+        }
+      });
+    });
+  }
+
+
+
+  return count > 0 ? (total / count).toFixed(2) : "N/A";
 };

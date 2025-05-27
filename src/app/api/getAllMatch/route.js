@@ -6,7 +6,11 @@ export async function GET(_req) {
 
     console.log("Received request to fetch all matches");
     // Fetch all matches
-    const allMatch = await prisma.match.findMany();
+    const allMatch = await prisma.match.findMany({
+      orderBy: {
+        createdAt: "desc", // Order by creation date, most recent first
+      },
+    });
 
     // If no matches found
     if (!allMatch || allMatch.length === 0) {
