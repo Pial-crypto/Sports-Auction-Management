@@ -21,6 +21,9 @@ import { QuickStatsCard } from '@/components/Statistics/QuickStatsCard';
 import { Header } from '@/components/Statistics/Header';
 import { TrendsChart } from '@/components/Statistics/TrendsChart';
 import { RecentMatchScore } from '@/components/Statistics/RecentMatchScore';
+import storage from '@/class/storage';
+import { fetchCurrentTournamentForPlayerHook } from '@/hook/fetchCurrentTournamentForPlayer';
+import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 // Recharts dynamic imports
 
 // Register ChartJS components
@@ -36,18 +39,26 @@ ChartJS.register(
 
 
 
-// Add these styled components
-
-// Add more mock data for better visualization
-
-
 
 const Statistics = () => {
 
 
   const [tournament,setTournamet]=useState(null);
   const [matches,setMatches]=useState([])
-  fetchCurrentTournamentHook(setTournamet,undefined)
+
+
+  if(storage.get("user").role==="organizer"){
+  
+// Fetch current tournament for organizer
+
+ fetchCurrentTournamentHook(setTournamet)
+
+  }
+  if(storage.get("user").role==="player" || storage.get("user").role==="manager"){
+  useFetchLatestApprovedTournamentHook(undefined,storage.get("user").role,setTournamet)
+  }
+
+  
   fetchCurrentTournamentMatchesHook(tournament,setMatches)
 
 

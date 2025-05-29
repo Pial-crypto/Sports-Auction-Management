@@ -28,6 +28,7 @@ import { getTeamColor,getTeamInitials } from '@/function/handleMatchesPage';
 
 import { StyledCard, MatchStatusChip } from '@/style/Matches';
 import { getFilteredMatches } from '@/function/handleMatchesPage';
+import storage from '@/class/storage';
 
 const winnerGlow = keyframes`
   0% { box-shadow: 0 0 5px rgba(25, 118, 210, 0.5); }
@@ -394,7 +395,11 @@ export const MatchCard = ({tabValue, matches, handleViewDetails, handleDeleteMat
                       <Visibility />
                     </IconButton>
                   </MuiTooltip>
-                  <MuiTooltip title="Edit Match">
+             {    
+             storage.get("user").role === "organizer" &&
+             <>
+             
+             <MuiTooltip title="Edit Match">
                     <IconButton 
                       size="small" 
                       sx={{ bgcolor: alpha('#4CAF50', 0.1) }}
@@ -412,6 +417,8 @@ export const MatchCard = ({tabValue, matches, handleViewDetails, handleDeleteMat
                       <Delete sx={{ color: '#F44336' }} />
                     </IconButton>
                   </MuiTooltip>
+</>
+             }
                 </Box>
               </CardContent>
             </StyledCard>

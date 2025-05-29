@@ -26,6 +26,8 @@ import fetchAllTeamReq from '@/function/getAllTeamReq';
 import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 import { fetchTournamentMatchesHook } from '@/hook/fetchTournamentMatches';
 import { fetchCurrentTournamentMatchesHook } from '@/hook/fetchCurrentTournamentMatchesHook';
+import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
+import storage from '@/class/storage';
 
 
 
@@ -177,8 +179,14 @@ const [tournamentTeams,setTournamentTeams] = useState(null);
   };
 
   
+  if(storage.get("user").role==="organizer"){
+ fetchCurrentTournamentHook(setTournament)
+  }
 
-  fetchCurrentTournamentHook(setTournament,undefined);
+  if(storage.get("user").role==="player" || storage.get("user").role==="manager"){
+  useFetchLatestApprovedTournamentHook(undefined,storage.get("user").role,setTournament)
+  }
+ // fetchCurrentTournamentHook(setTournament,undefined);
 
  fetchCurrentTournamentMatchesHook(tournament,setMatches,undefined);
    

@@ -114,6 +114,12 @@ if (!isTeam1Valid || !isTeam2Valid) {
   return;
 }
 
+if(!editMatch.totalPoints){
+  alert("Total points cannot be zero or empty")
+
+  return;
+}
+
 // Ensure both scores are not "Not started yet"
 if (team1Score === "Not started yet" && team2Score === "Not started yet") {
   alert("Both teams cannot have 'Not started yet' as their score. Please enter at least one valid score.");

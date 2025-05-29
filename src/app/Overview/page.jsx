@@ -1,41 +1,25 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
   Grid,
   Card,
   CardContent,
-  Chip,
-  IconButton,
   Avatar,
   LinearProgress,
   Tooltip,
-  Fade,
-  Zoom,
-  AvatarGroup,
 } from '@mui/material';
-import { styled, alpha } from '@mui/material/styles';
+import { styled, alpha, keyframes } from '@mui/material/styles';
 import {
-  TrendingUp,
-  EmojiEvents,
   Groups,
-  Schedule,
-  LocationOn,
-  Star,
   SportsCricket,
-  MonetizationOn,
-  Assessment,
   CalendarToday,
-  Person,
-  Timer,
-  Visibility,
   ArrowUpward,
   ArrowDownward,
-  LightMode,
-  DarkMode,
 } from '@mui/icons-material';
+import fetchAllTeamReq from '@/function/getAllTeamReq';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -46,8 +30,11 @@ import {
   PointElement,
   LineElement,
 } from 'chart.js';
-import { Doughnut, Line } from 'react-chartjs-2';
-
+import { useEffect } from 'react';
+import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
+// import { Header } from '@/components/OverView/Header';
+//import {COLORS} from '@/style/OverView';
+import { fetchCurrentTournamentMatchesHook } from '@/hook/fetchCurrentTournamentMatchesHook';
 ChartJS.register(
   ArcElement,
   ChartTooltip,
@@ -57,9 +44,7 @@ ChartJS.register(
   PointElement,
   LineElement,
 );
-
-// Define the color theme
-const COLORS = {
+export const COLORS = {
   primary: '#4361EE',    // Modern Indigo
   secondary: '#3F37C9',  // Deep Purple
   success: '#4CAF50',    // Material Green
@@ -73,6 +58,7 @@ const COLORS = {
   border: '#E2E8F0'      // Slate Light
 };
 
+
 // Styled Components
 const MainContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -81,218 +67,180 @@ const MainContainer = styled(Box)(({ theme }) => ({
   color: COLORS.text,
 }));
 
+
+const pulseGlow = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.3); }
+  70% { box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+`;
+
 const StyledCard = styled(Card)(({ theme }) => ({
-  background: COLORS.paper,
-  borderRadius: theme.spacing(2),
-  border: `1px solid ${COLORS.border}`,
-  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-  transition: 'all 0.3s ease',
+  background: `linear-gradient(135deg, ${COLORS.paper} 0%, ${alpha(COLORS.primary, 0.05)} 100%)`,
+  borderRadius: theme.spacing(3),
+  border: '1px solid rgba(255,255,255,0.2)',
+  backdropFilter: 'blur(10px)',
+  boxShadow: `
+    0 10px 15px -3px rgba(0,0,0,0.1),
+    0 4px 6px -2px rgba(0,0,0,0.05)
+  `,
+  transform: 'perspective(1000px)',
+  transformStyle: 'preserve-3d',
+  transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+  overflow: 'hidden',
   '&:hover': {
-    transform: 'translateY(-4px)',
-    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-  },
+    transform: 'perspective(1000px) rotateX(2deg) translateY(-5px)',
+    boxShadow: `
+      0 20px 25px -5px ${alpha(COLORS.primary, 0.2)},
+      0 8px 10px -6px ${alpha(COLORS.primary, 0.1)}
+    `
+  }
 }));
 
-const StatBox = styled(Box)(({ theme, color }) => ({
-  padding: theme.spacing(2),
-  borderRadius: 12,
-  background: alpha(color, 0.1),
+
+const ProgressBar = styled(LinearProgress)(({ color }) => ({
+  height: 10,
+  borderRadius: 5,
+  background: alpha(color || COLORS.primary, 0.1),
+  '& .MuiLinearProgress-bar': {
+    background: `linear-gradient(90deg, ${COLORS.primary}, ${COLORS.secondary})`,
+    borderRadius: 5,
+  }
+}));
+
+const float = keyframes`
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+`;
+
+
+const AnimatedIcon = styled(Box)(({ color }) => ({
+  background: alpha(color || COLORS.primary, 0.1),
+  borderRadius: '50%',
+  padding: '16px',
   display: 'flex',
   alignItems: 'center',
-  gap: theme.spacing(2),
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transform: 'scale(1.02)',
-    background: alpha(color, 0.15),
-  },
-}));
-
-const ProgressBar = styled(LinearProgress)(({ theme, color }) => ({
-  height: 8,
-  borderRadius: 4,
-  backgroundColor: alpha(color, 0.1),
-  '& .MuiLinearProgress-bar': {
-    backgroundColor: color,
-    borderRadius: 4,
-  },
+  justifyContent: 'center',
+  animation: `${float} 3s ease-in-out infinite`,
+  '& svg': {
+    fontSize: '2rem',
+    color: color || COLORS.primary,
+  }
 }));
 
 // Mock Data
-const tournamentData = {
-  name: "Premier Cricket League 2024",
-  status: "In Progress",
-  progress: 45,
-  totalTeams: 8,
-  matchesPlayed: 24,
-  upcomingMatches: 8,
-  totalPrizeMoney: "₹500,000",
-  currentPhase: "Quarter Finals",
-  topTeams: [
-    { name: "Royal Strikers", points: 14, trend: "up" },
-    { name: "Thunder Kings", points: 12, trend: "up" },
-    { name: "Eagle Warriors", points: 10, trend: "down" },
-    { name: "Lion Hearts", points: 8, trend: "down" },
-  ],
-  recentMatches: [
-    {
-      id: 1,
-      team1: "Royal Strikers",
-      team2: "Thunder Kings",
-      score1: "186/4",
-      score2: "142/8",
-      result: "Royal Strikers won by 44 runs",
-      date: "2024-01-20",
-    },
-    // Add more matches...
-  ],
-  upcomingFixtures: [
-    {
-      id: 1,
-      team1: "Eagle Warriors",
-      team2: "Lion Hearts",
-      date: "2024-01-22",
-      time: "14:30",
-      venue: "Central Stadium",
-    },
-    // Add more fixtures...
-  ],
-};
 
 // Add Tournament Progress Chart data
-const progressChartData = {
-  labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-  datasets: [
-    {
-      label: 'Matches Completed',
-      data: [4, 12, 20, 24],
-      borderColor: COLORS.secondary,
-      backgroundColor: alpha(COLORS.secondary, 0.2),
-      fill: true,
-      tension: 0.4,
-      pointBackgroundColor: COLORS.secondary,
-      pointBorderColor: COLORS.secondary,
-      pointRadius: 6,
-      pointHoverRadius: 8,
-    }
-  ],
-};
 
 // Update TeamPerformanceChart
-const TeamPerformanceChart = () => (
-  <StyledCard>
-    <CardContent>
-      <Typography variant="h6" sx={{ color: COLORS.text, mb: 3 }}>
-        Team Performance Overview
-      </Typography>
-      <Box sx={{ height: 300, position: 'relative' }}>
-        <Doughnut
-          data={{
-            labels: ['Wins', 'Losses', 'Draws'],
-            datasets: [{
-              data: [8, 3, 1],
-              backgroundColor: [
-                COLORS.success,
-                COLORS.error,
-                COLORS.warning
-              ],
-              borderWidth: 0,
-            }]
-          }}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: { color: COLORS.text }
-              }
-            },
-            cutout: '70%'
-          }}
-        />
-      </Box>
-    </CardContent>
-  </StyledCard>
-);
 
 // Update TournamentStatsGrid to receive isDarkMode as prop
-const TournamentStatsGrid = ({ isDarkMode }) => (
-  <Grid container spacing={3}>
-    {[
-      { 
-        icon: <SportsCricket sx={{ fontSize: 40 }} />,
-        label: "Total Matches",
-        value: "32",
-        color: COLORS.primary,
-        trend: "+2 this week"
-      },
-      {
-        icon: <Groups sx={{ fontSize: 40 }} />,
-        label: "Active Teams",
-        value: "16",
-        color: COLORS.success,
-        trend: "All teams active"
-      },
-      {
-        icon: <EmojiEvents sx={{ fontSize: 40 }} />,
-        label: "Tournament Phase",
-        value: "Quarter Finals",
-        color: COLORS.warning,
-        trend: "On Schedule"
-      },
-      {
-        icon: <Assessment sx={{ fontSize: 40 }} />,
-        label: "Average Score",
-        value: "165",
-        color: COLORS.secondary,
-        trend: "+12 vs last week"
-      }
-    ].map((stat, index) => (
-      <Grid item xs={12} sm={6} md={3} key={index}>
-        <StyledCard>
-          <CardContent>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 2,
-              p: 2,
-              background: alpha(stat.color, 0.1),
-              borderRadius: 2
-            }}>
-              <Avatar sx={{ 
-                bgcolor: alpha(stat.color, 0.1),
-                color: stat.color,
-                width: 56,
-                height: 56,
-                border: `2px solid ${alpha(stat.color, 0.2)}`,
-              }}>
-                {stat.icon}
-              </Avatar>
-              <Box>
-                <Typography variant="h4" sx={{ color: stat.color, fontWeight: 'bold' }}>
-                  {stat.value}
-                </Typography>
-                <Typography variant="body2" sx={{ color: COLORS.textSecondary }}>
-                  {stat.label}
-                </Typography>
-                <Typography variant="caption" sx={{ color: stat.color }}>
-                  {stat.trend}
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </StyledCard>
-      </Grid>
-    ))}
-  </Grid>
-);
 
 const Overview = () => {
+
+  const [tournamentTeams,setTournamentTeams]=useState([])
+    const [tournament,setTournament]=useState()
+    const [matches,setMatches]=useState([])
+  fetchCurrentTournamentHook(setTournament,undefined)
+
+
+
+    useEffect(() => {
+  
+        fetchAllTeamReq().then(teamData => 
+          {
+            console.log(teamData, "teamData from ");
+        if(tournament){
+        const thisTournamentTeam= teamData.allTeamReq.filter(team => team.tournamentId === tournament.id && team.approved  );
+        console.log(thisTournamentTeam, "thisTournamentTeam");
+        setTournamentTeams(thisTournamentTeam);
+        }
+      });
+  },[tournament]);
+  const progress=matches.filter(match => match.status?.toLowerCase() === 'completed').length / matches.length * 100 || 0;
+const firstUpcomingMatch = matches.find(
+  (match) => match.status?.toLowerCase() === 'upcoming'
+);
+
+
+  fetchCurrentTournamentMatchesHook(tournament,setMatches)
+
+const teamPoints = {};
+
+matches.forEach((match) => {
+  console.log(match, "match in overview page");
+  // Add team1's points
+  if (teamPoints[match.team1Name]) {
+    teamPoints[match.team1Name] += parseInt(match.team1Points);
+  } else {
+    teamPoints[match.team1Name] = parseInt(match.team1Points);
+  }
+
+  // Add team2's points (if applicable)
+  if (teamPoints[match.team2Name]) {
+    teamPoints[match.team2Name] += parseInt(match.team2Points);
+  } else {
+    teamPoints[match.team2Name] = parseInt(match.team2Points);
+  }
+});
+
+// Convert teamPoints object to array and sort by points
+
+const ptsArray = Object.entries(teamPoints).map(
+  ([teamName, totalPoints]) => ({ teamName, totalPoints })
+);
+
+ptsArray.sort((a, b) => b.totalPoints - a.totalPoints);
+
+
+
+
+
+
+
+
   return (
+    matches && tournament && tournamentTeams && matches.length>0 &&
     <MainContainer>
+
+   {/* <Header phase={tournamentStage}></Header> */}
+      
+    {/* <>
       <Typography 
         variant="h3" 
         sx={{
+          fontWeight: 800,
+          mb: 4,
+          background: `linear-gradient(135deg, 
+            ${COLORS.primary}, 
+            ${COLORS.secondary} 50%, 
+            ${COLORS.primary} 100%)`,
+          backgroundSize: '200% auto',
+          animation: `${shine} 3s linear infinite`,
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          color: 'transparent',
+          letterSpacing: '-0.02em',
+          textShadow: '0 2px 10px rgba(67, 97, 238, 0.2)',
+          position: 'relative',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: '-8px',
+            left: 0,
+            width: '60px',
+            height: '4px',
+            background: `linear-gradient(90deg, ${COLORS.primary}, ${COLORS.secondary})`,
+            borderRadius: '2px',
+          }
+        }}
+      >
+        Tournament Overview
+
+        
+      </Typography>
+         <Typography variant="subtitle1" color="text.secondary"
+           sx={{
           fontWeight: 800,
           mb: 4,
           background: `linear-gradient(45deg, ${COLORS.primary}, ${COLORS.secondary})`,
@@ -301,81 +249,14 @@ const Overview = () => {
           color: 'transparent',
           letterSpacing: '-0.02em',
         }}
-      >
-        Tournament Overview
-      </Typography>
+         >
+            Phase: {tournamentStage || "Not Started"}
+          </Typography>
 
-      <Grid container spacing={3}>
-        {[
-          { 
-            icon: <SportsCricket sx={{ fontSize: 40 }} />,
-            label: "Total Matches",
-            value: "32",
-            color: COLORS.primary,
-            trend: "+2 this week"
-          },
-          {
-            icon: <Groups sx={{ fontSize: 40 }} />,
-            label: "Active Teams",
-            value: "16",
-            color: COLORS.success,
-            trend: "All teams active"
-          },
-          {
-            icon: <EmojiEvents sx={{ fontSize: 40 }} />,
-            label: "Tournament Phase",
-            value: "Quarter Finals",
-            color: COLORS.warning,
-            trend: "On Schedule"
-          },
-          {
-            icon: <Assessment sx={{ fontSize: 40 }} />,
-            label: "Average Score",
-            value: "165",
-            color: COLORS.secondary,
-            trend: "+12 vs last week"
-          }
-        ].map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <StyledCard>
-              <CardContent>
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 2,
-                  p: 2,
-                  background: alpha(stat.color, 0.1),
-                  borderRadius: 2
-                }}>
-                  <Avatar sx={{ 
-                    bgcolor: alpha(stat.color, 0.1),
-                    color: stat.color,
-                    width: 56,
-                    height: 56,
-                    border: `2px solid ${alpha(stat.color, 0.2)}`,
-                  }}>
-                    {stat.icon}
-                  </Avatar>
-                  <Box>
-                    <Typography variant="h4" sx={{ color: stat.color, fontWeight: 'bold' }}>
-                      {stat.value}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: COLORS.textSecondary }}>
-                      {stat.label}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: stat.color }}>
-                      {stat.trend}
-                    </Typography>
-                  </Box>
-                </Box>
-              </CardContent>
-            </StyledCard>
-          </Grid>
-        ))}
-      </Grid>
+          </> */}
 
       {/* Charts Section */}
-      <Grid container spacing={3} sx={{ mt: 3 }}>
+      {/* <Grid container spacing={3} sx={{ mt: 3 }}>
         <Grid item xs={12} md={8}>
           <StyledCard>
             <CardContent>
@@ -428,132 +309,190 @@ const Overview = () => {
         <Grid item xs={12} md={4}>
           <TeamPerformanceChart />
         </Grid>
-      </Grid>
+      </Grid> */}
 
       {/* Header Section */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
-          Tournament Overview
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Chip 
-            icon={<Timer />} 
-            label={tournamentData.status} 
-            color="primary"
-            sx={{ borderRadius: 2 }}
-          />
-          <Typography variant="subtitle1" color="text.secondary">
-            Phase: {tournamentData.currentPhase}
-          </Typography>
-        </Box>
-      </Box>
 
-      {/* Quick Stats */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        {[
-          {
-            icon: <Groups sx={{ fontSize: 40 }} />,
-            title: "Total Teams",
-            value: tournamentData.totalTeams,
-            color: "#2196F3"
-          },
-          {
-            icon: <SportsCricket sx={{ fontSize: 40 }} />,
-            title: "Matches Played",
-            value: tournamentData.matchesPlayed,
-            color: "#4CAF50"
-          },
-          {
-            icon: <Schedule sx={{ fontSize: 40 }} />,
-            title: "Upcoming Matches",
-            value: tournamentData.upcomingMatches,
-            color: "#FFC107"
-          },
-          {
-            icon: <MonetizationOn sx={{ fontSize: 40 }} />,
-            title: "Prize Pool",
-            value: tournamentData.totalPrizeMoney,
-            color: "#9C27B0"
-          }
-        ].map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <Zoom in={true} timeout={500 + (index * 100)}>
-              <StyledCard>
-                <CardContent>
-                  <StatBox color={stat.color}>
-                    {stat.icon}
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
-                        {stat.title}
-                      </Typography>
-                      <Typography variant="h5" fontWeight="bold">
-                        {stat.value}
-                      </Typography>
-                    </Box>
-                  </StatBox>
-                </CardContent>
-              </StyledCard>
-            </Zoom>
-          </Grid>
-        ))}
-      </Grid>
+
 
       {/* Tournament Progress */}
       <Grid container spacing={3}>
         {/* Tournament Progress Card */}
         <Grid item xs={12} md={8}>
           <StyledCard>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Tournament Progress
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    Overall Progress
-                  </Typography>
-                  <Typography variant="body2" fontWeight="bold">
-                    {tournamentData.progress}%
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 2, 
+                mb: 4 
+              }}>
+                <AnimatedIcon color={COLORS.primary}>
+                  <SportsCricket />
+                </AnimatedIcon>
+                <Typography variant="h5" 
+                  sx={{ 
+                    fontWeight: 700,
+                    background: `linear-gradient(90deg, ${COLORS.primary}, ${COLORS.secondary})`,
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    color: 'transparent',
+                  }}
+                >
+                  Tournament Progress
+                </Typography>
+              </Box>
+
+              <Box sx={{ mt: 3 }}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  mb: 2 
+                }}>
+                  <Typography variant="h4" 
+                    sx={{ 
+                      fontWeight: 800,
+                      background: `linear-gradient(90deg, ${COLORS.primary}, ${COLORS.secondary})`,
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+                      color: 'transparent',
+                    }}
+                  >
+                    {progress.toFixed(0)}%
                   </Typography>
                 </Box>
                 <ProgressBar 
                   variant="determinate" 
-                  value={tournamentData.progress} 
-                  color="#2196F3"
+                  value={progress} 
+                  color={COLORS.primary}
                 />
               </Box>
 
               <Box sx={{ mt: 4 }}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Top Performing Teams
+                <Typography variant="h6" 
+                  sx={{ 
+                    mb: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    color: COLORS.text,
+                    '& svg': { color: COLORS.primary }
+                  }}
+                >
+                  <Groups /> Participating Teams
                 </Typography>
-                {tournamentData.topTeams.map((team, index) => (
+                
+                {ptsArray.map((team, index) => (
                   <Box 
                     key={index}
                     sx={{ 
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'space-between',
-                      p: 1,
+                      p: 2.5,
+                      mb: 2,
+                      borderRadius: 3,
+                      background: index < 3 
+                        ? `linear-gradient(135deg, 
+                            ${alpha(COLORS.primary, 0.08)} 0%, 
+                            ${alpha(COLORS.secondary, 0.08)} 100%)`
+                        : alpha(COLORS.background, 0.5),
+                      backdropFilter: 'blur(8px)',
+                      border: '1px solid',
+                      borderColor: index < 3 ? alpha(COLORS.primary, 0.1) : 'transparent',
+                      transform: 'perspective(1000px)',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                       '&:hover': {
-                        bgcolor: 'rgba(0,0,0,0.02)',
+                        transform: 'perspective(1000px) scale(1.02) translateX(10px) rotateY(-2deg)',
+                        background: index < 3 
+                          ? `linear-gradient(135deg, 
+                              ${alpha(COLORS.primary, 0.12)} 0%, 
+                              ${alpha(COLORS.secondary, 0.12)} 100%)`
+                          : alpha(COLORS.primary, 0.05),
+                        boxShadow: index < 3 
+                          ? `0 10px 20px ${alpha(COLORS.primary, 0.2)}`
+                          : 'none'
                       }
                     }}
                   >
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Typography variant="body1">
-                        {index + 1}. {team.name}
-                      </Typography>
+                      <Avatar 
+                        sx={{ 
+                          bgcolor: index < 3 
+                            ? `linear-gradient(135deg, ${COLORS.primary}, ${COLORS.secondary})`
+                            : alpha(COLORS.text, 0.1),
+                          width: 40,
+                          height: 40,
+                          border: '2px solid white',
+                          boxShadow: index < 3 
+                            ? `0 0 0 2px ${alpha(COLORS.primary, 0.2)}`
+                            : 'none',
+                          animation: index < 3 ? `${pulseGlow} 2s infinite` : 'none'
+                        }}
+                      >
+                        {index + 1}
+                      </Avatar>
+                      <Box>
+                        <Typography 
+                          variant="body1"
+                          sx={{ 
+                            fontWeight: index < 3 ? 700 : 500,
+                            fontSize: '1.1rem',
+                            color: index < 3 ? COLORS.primary : COLORS.text,
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          {team.teamName}
+                        </Typography>
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: COLORS.textSecondary,
+                            display: 'block',
+                            mt: 0.5
+                          }}
+                        >
+                          Rank #{index + 1}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Typography variant="body1" fontWeight="bold">
-                        {team.points} pts
+                    <Box 
+                      sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 1.5,
+                        background: alpha(index < 3 ? COLORS.primary : COLORS.text, 0.05),
+                        padding: '8px 16px',
+                        borderRadius: '20px'
+                      }}
+                    >
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontWeight: 800,
+                          color: index < 3 ? COLORS.primary : COLORS.text,
+                          textShadow: index < 3 ? '0 2px 4px rgba(67, 97, 238, 0.2)' : 'none'
+                        }}
+                      >
+                        {team.totalPoints}
                       </Typography>
-                      {team.trend === 'up' ? (
-                        <ArrowUpward sx={{ color: '#4CAF50' }} />
-                      ) : (
-                        <ArrowDownward sx={{ color: '#F44336' }} />
-                      )}
+                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                        <Typography variant="caption" sx={{ color: COLORS.textSecondary }}>
+                          points
+                        </Typography>
+                        {index < ptsArray.length/2 ? (
+                          <ArrowUpward sx={{ 
+                            color: COLORS.success, 
+                            fontSize: '1.2rem',
+                            animation: `${float} 2s infinite`
+                          }} />
+                        ) : (
+                          <ArrowDownward sx={{ 
+                            color: COLORS.error,
+                            fontSize: '1.2rem'
+                          }} />
+                        )}
+                      </Box>
                     </Box>
                   </Box>
                 ))}
@@ -570,9 +509,9 @@ const Overview = () => {
                 Recent Activity
               </Typography>
               <Box sx={{ mt: 2 }}>
-                {tournamentData.recentMatches.map((match, index) => (
+       
                   <Box
-                    key={index}
+                 
                     sx={{
                       p: 1.5,
                       borderRadius: 2,
@@ -584,16 +523,16 @@ const Overview = () => {
                     }}
                   >
                     <Typography variant="body2" color="text.secondary" gutterBottom>
-                      {match.date}
+                      {matches[0].date}
                     </Typography>
                     <Typography variant="body1" fontWeight="medium">
-                      {match.team1} vs {match.team2}
+                      {matches[0].team1Name} vs {matches[0].team2Name}
                     </Typography>
                     <Typography variant="body2" color="primary">
-                      {match.result}
+                      {matches[0].winner} won the match
                     </Typography>
                   </Box>
-                ))}
+                
               </Box>
             </CardContent>
           </StyledCard>
@@ -607,8 +546,10 @@ const Overview = () => {
                 Upcoming Fixtures
               </Typography>
               <Grid container spacing={2} sx={{ mt: 1 }}>
-                {tournamentData.upcomingFixtures.map((fixture, index) => (
-                  <Grid item xs={12} md={6} key={index}>
+            
+               
+
+                  <Grid item xs={12} md={6} key={firstUpcomingMatch.id}>
                     <Box
                       sx={{
                         p: 2,
@@ -624,27 +565,31 @@ const Overview = () => {
                     >
                       <Box>
                         <Typography variant="body1" fontWeight="medium">
-                          {fixture.team1} vs {fixture.team2}
+                          {firstUpcomingMatch?.team1Name} vs {firstUpcomingMatch.team2Name}
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                           <CalendarToday sx={{ fontSize: 16, color: 'text.secondary' }} />
                           <Typography variant="body2" color="text.secondary">
-                            {fixture.date}
+                            {firstUpcomingMatch?.date}
                           </Typography>
-                          <Timer sx={{ fontSize: 16, color: 'text.secondary', ml: 1 }} />
+                          {/* <Timer sx={{ fontSize: 16, color: 'text.secondary', ml: 1 }} />
                           <Typography variant="body2" color="text.secondary">
-                            {fixture.time}
-                          </Typography>
+                            {firstUpcomingMatch?.date}
+                          </Typography> */}
                         </Box>
                       </Box>
                       <Tooltip title="View Details">
-                        <IconButton size="small" sx={{ bgcolor: 'white' }}>
-                          <Visibility />
-                        </IconButton>
+                     
                       </Tooltip>
                     </Box>
                   </Grid>
-                ))}
+                
+
+              
+                
+                
+                
+                
               </Grid>
             </CardContent>
           </StyledCard>

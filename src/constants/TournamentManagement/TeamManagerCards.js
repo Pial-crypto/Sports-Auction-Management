@@ -16,16 +16,16 @@ const teamManagerCards = [
     title: 'Tournament Status',
     value: 'Ongoing',
     subtitle: 'Matches: 5/10',
-    path: '/TournamentStatus',
+    path: '/Statistics',
     icon: <EmojiEventsIcon sx={{ fontSize: 32, color: '#16a34a' }} />,
     color: '#16a34a'
   }
 ,  
   { 
-    title: 'Team Details',
+    title: 'Matches',
     value: 'Active',
     subtitle: 'Players: 15/15',
-    path: '/TeamDetails',
+    path: '/Matches',
     icon: <GroupsIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb'
   },

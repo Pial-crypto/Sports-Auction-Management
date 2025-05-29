@@ -30,6 +30,8 @@ console.log("Data received for match update:", data);
         toralOvers: data.overs || "0",
         currentTime: data.currentTime || "0",
         winner: data.winner || "Not get yet",
+        team1Points:data.team1Points||"0",
+        team2Points:data.team2Points || "0",
       }
     });
 

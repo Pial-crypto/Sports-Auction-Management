@@ -10,6 +10,7 @@ import {
   AddCircle,
 } from '@mui/icons-material';
 import { COLORS } from '@/style/Matches';
+import storage from '@/class/storage';
 
 export const Header = ({ handleCreateMatch }) => {
   return (
@@ -51,8 +52,8 @@ export const Header = ({ handleCreateMatch }) => {
       >
         Tournament Matches
       </Typography>
-
-      <Button
+{  storage.get("user").role === "organizer" &&
+    <Button
         variant="contained"
         startIcon={
           <AddCircle 
@@ -86,6 +87,7 @@ export const Header = ({ handleCreateMatch }) => {
       >
         Create New Match
       </Button>
+}
     </Box>
   );
 };

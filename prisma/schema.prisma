@@ -207,6 +207,8 @@ model Match {
   toralOvers    String @default("0")
   score         String @default("0")
 
+  team1Points    String @default("0")
+  team2Points  String @default("0")
   team1Score    String @default("0")  
   team2Score    String @default("0")  
 
