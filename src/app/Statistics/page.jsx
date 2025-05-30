@@ -22,7 +22,6 @@ import { Header } from '@/components/Statistics/Header';
 import { TrendsChart } from '@/components/Statistics/TrendsChart';
 import { RecentMatchScore } from '@/components/Statistics/RecentMatchScore';
 import storage from '@/class/storage';
-import { fetchCurrentTournamentForPlayerHook } from '@/hook/fetchCurrentTournamentForPlayer';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 // Recharts dynamic imports
 
