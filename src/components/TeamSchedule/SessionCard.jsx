@@ -7,7 +7,8 @@ import {
   LocationOn, 
   Person, 
   Edit,
-  CheckCircle 
+  CheckCircle,
+  Delete // Add this import
 } from '@mui/icons-material';
 
 const glowAnimation = keyframes`
@@ -47,7 +48,7 @@ const InfoRow = styled(Box)({
   }
 });
 
-export const SessionCard = ({ session, onEdit }) => {
+export const SessionCard = ({ session, onEdit, onDelete }) => { // Add onDelete prop
   return (
     <StyledSessionCard>
       <CardContent sx={{ p: 3 }}>
@@ -65,21 +66,39 @@ export const SessionCard = ({ session, onEdit }) => {
               '& .MuiChip-icon': { color: '#1976d2' }
             }}
           />
-          {onEdit && (
-            <IconButton 
-              onClick={() => onEdit(session)}
-              sx={{ 
-                color: '#1976d2',
-                bgcolor: '#e3f2fd',
-                '&:hover': {
-                  bgcolor: '#1976d2',
-                  color: '#fff'
-                }
-              }}
-            >
-              <Edit />
-            </IconButton>
-          )}
+          {/* Action Buttons */}
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {onEdit && (
+              <IconButton 
+                onClick={() => onEdit(session)}
+                sx={{ 
+                  color: '#1976d2',
+                  bgcolor: '#e3f2fd',
+                  '&:hover': {
+                    bgcolor: '#1976d2',
+                    color: '#fff'
+                  }
+                }}
+              >
+                <Edit />
+              </IconButton>
+            )}
+            {onDelete && (
+              <IconButton 
+                onClick={() => onDelete(session)}
+                sx={{ 
+                  color: '#d32f2f',
+                  bgcolor: '#ffebee',
+                  '&:hover': {
+                    bgcolor: '#d32f2f',
+                    color: '#fff'
+                  }
+                }}
+              >
+                <Delete />
+              </IconButton>
+            )}
+          </Box>
         </Box>
 
         {/* Title */}

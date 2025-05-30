@@ -214,3 +214,18 @@ model Match {
 
   winner String @default("Not get yet")
 }
+
+model Practice {
+  id           String @id @default(cuid())
+  tournamentId String @default("default-tournament")
+  teamId       String @default("default-team")
+  coach        String @default("default-coach")
+  date         String @default("2025-01-01")
+  duration     String @default("1h")
+  focus        String @default("General fitness")
+  status       String @default("upcoming")
+  time         String @default("10:00")
+  title        String @default("Practice Session")
+  venue        String @default("Main Ground")
+   createdAt     DateTime @default(now()) 
+}

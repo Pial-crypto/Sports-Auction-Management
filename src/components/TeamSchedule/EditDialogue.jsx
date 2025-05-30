@@ -1,14 +1,16 @@
-
 import React, { useState } from 'react';
 import {
   Grid,
   Dialog,
-    DialogTitle,
-    DialogContent,
-TextField,
+  DialogTitle,
+  DialogContent,
+  TextField,
   DialogActions,
-  
-  Button} from '@mui/material';
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  Typography} from '@mui/material';
 
 
 export const EditDialog = ({ open, onClose, practice, onSave }) => {
@@ -23,6 +25,8 @@ export const EditDialog = ({ open, onClose, practice, onSave }) => {
     focus: '',
     coach: ''
   });
+
+  const statusOptions = ['Upcoming', 'Live', 'Completed'];
 
   return (
     <Dialog 
@@ -46,70 +50,129 @@ export const EditDialog = ({ open, onClose, practice, onSave }) => {
       <DialogContent sx={{ p: 3 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
+            <Typography 
+              sx={{ 
+                fontWeight: 600, 
+                color: '#333',
+                mb: 1
+              }}
+            >
+              Session Title
+            </Typography>
             <TextField
               fullWidth
-              label="Session Title"
+              placeholder="Enter session title"
               value={editedPractice.title}
-              onChange={(e) => setEditedPractice({...editedPractice, 
-                title: e.target.value})}
+              onChange={(e) => setEditedPractice({...editedPractice, title: e.target.value})}
             />
           </Grid>
+
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <Typography 
+                sx={{ 
+                  fontWeight: 600, 
+                  color: '#333',
+                  mb: 1
+                }}
+              >
+                Status
+              </Typography>
+              <Select
+                value={editedPractice.status}
+                onChange={(e) => setEditedPractice({...editedPractice, status: e.target.value})}
+                sx={{
+                  '& .MuiSelect-select': {
+                    padding: '12px'
+                  }
+                }}
+              >
+                {statusOptions.map((status) => (
+                  <MenuItem 
+                    key={status} 
+                    value={status}
+                    sx={{
+                      textTransform: 'capitalize'
+                    }}
+                  >
+                    {status}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
           <Grid item xs={6}>
+            <Typography 
+              sx={{ 
+                fontWeight: 600, 
+                color: '#333',
+                mb: 1
+              }}
+            >
+              Date
+            </Typography>
             <TextField
               fullWidth
               type="date"
-              label="Date"
               value={editedPractice.date}
               onChange={(e) => setEditedPractice({...editedPractice, date: e.target.value})}
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
+
           <Grid item xs={6}>
+            <Typography 
+              sx={{ 
+                fontWeight: 600, 
+                color: '#333',
+                mb: 1
+              }}
+            >
+              Time
+            </Typography>
             <TextField
               fullWidth
               type="time"
-              label="Time"
               value={editedPractice.time}
               onChange={(e) => setEditedPractice({...editedPractice, time: e.target.value})}
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Venue"
-              value={editedPractice.venue}
-              onChange={(e) => setEditedPractice({...editedPractice, venue: e.target.value})}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Duration"
-              value={editedPractice.duration}
-              onChange={(e) => setEditedPractice({...editedPractice, duration: e.target.value})}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Focus Areas"
-              value={editedPractice.focus}
-              onChange={(e) => setEditedPractice({...editedPractice, focus: e.target.value})}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Coach"
-              value={editedPractice.coach}
-              onChange={(e) => setEditedPractice({...editedPractice, coach: e.target.value})}
-            />
-          </Grid>
+
+          {/* Rest of the fields with Typography labels */}
+          {[{
+            field: 'venue', label: 'Venue' },
+            { field: 'duration', label: 'Duration' },
+            { field: 'focus', label: 'Focus Areas' },
+            { field: 'coach', label: 'Coach' }
+          ].map(({ field, label }) => (
+            <Grid item xs={12} key={field}>
+              <Typography 
+                sx={{ 
+                  fontWeight: 600, 
+                  color: '#333',
+                  mb: 1
+                }}
+              >
+                {label}
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder={`Enter ${label.toLowerCase()}`}
+                value={editedPractice[field]}
+                onChange={(e) => setEditedPractice({...editedPractice, [field]: e.target.value})}
+              />
+            </Grid>
+          ))}
         </Grid>
       </DialogContent>
       <DialogActions sx={{ p: 3 }}>
-        <Button onClick={onClose} variant="outlined" color="inherit">
+        <Button 
+          onClick={onClose} 
+          variant="outlined" 
+          color="inherit"
+        >
           Cancel
         </Button>
         <Button 
