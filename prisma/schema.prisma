@@ -211,6 +211,8 @@ model Match {
   team2Points  String @default("0")
   team1Score    String @default("0")  
   team2Score    String @default("0")  
+  manOfTheMatchId String @default("none")
+  manOfTheMatchName String @default("none")
 
   winner String @default("Not get yet")
 }
@@ -228,4 +230,20 @@ model Practice {
   title        String @default("Practice Session")
   venue        String @default("Main Ground")
    createdAt     DateTime @default(now()) 
+}
+
+
+model PlayerPerformance {
+  id           String @id @default(cuid())
+  tournamentId String @default("default-tournament")
+  teamId       String @default("default-team")
+  playerId     String @default("default-id")
+  matchId      String @default("default-match")
+  ballsFaced   Int    @default(0)
+  overs        Int    @default(0)
+  runsScored   Int    @default(0)
+  wickets      Int    @default(0)
+  goals        Int    @default(0)
+  assists      Int    @default(0)
+  cards        String @default("none")
 }

@@ -10,7 +10,11 @@ export async function GET(_req) {
       orderBy: {
         createdAt: "desc", // Order by creation date, most recent first
       },
+
+      
     });
+
+    console.log('allmatch',allMatch)
 
     // If no matches found
     if (!allMatch || allMatch.length === 0) {

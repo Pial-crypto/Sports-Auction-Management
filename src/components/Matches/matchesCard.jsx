@@ -22,8 +22,10 @@ import {
   Celebration
 } from '@mui/icons-material';
 import { keyframes } from '@mui/system';
-
+import { Timeline } from '@mui/icons-material';
+import { ScoreBoard } from './ScoreBoard';
 import { getTeamColor,getTeamInitials } from '@/function/handleMatchesPage';
+import { useState } from 'react';
 
 
 import { StyledCard, MatchStatusChip } from '@/style/Matches';
@@ -55,7 +57,22 @@ const CARD_COLORS = {
   hover: 'rgba(25, 118, 210, 0.05)'
 };
 
-export const MatchCard = ({tabValue, matches, handleViewDetails, handleDeleteMatch, handleEditMatch}) => {
+
+
+export const MatchCard = ({tabValue, matches, handleViewDetails, handleDeleteMatch, handleEditMatch,playerPerformances,tournament}) => {
+
+   // Add this state
+  const [scoreBoardOpen, setScoreBoardOpen] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState(null);
+
+
+  console.log(tournament,"Tournament inside match card")
+  // Add this function
+  const handleShowScoreBoard = (match) => {
+    setSelectedMatch(match);
+    setScoreBoardOpen(true);
+  };
+
   return (
     <Grid container spacing={3}>
       {getFilteredMatches(tabValue, matches).map((match, index) => (
@@ -377,6 +394,29 @@ export const MatchCard = ({tabValue, matches, handleViewDetails, handleDeleteMat
                   pt: 2,
                   borderTop: '1px solid rgba(0,0,0,0.08)'
                 }}>
+
+                  <>
+
+                     { (
+            <MuiTooltip title="View Scoreboard">
+              <IconButton 
+                size="small" 
+                sx={{ 
+                  bgcolor: 'success.light',
+                  color: 'white',
+                  boxShadow: '0 4px 12px rgba(76,175,80,0.4)',
+                  '&:hover': {
+                    bgcolor: 'success.main',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 6px 16px rgba(76,175,80,0.6)',
+                  }
+                }}
+                onClick={() => handleShowScoreBoard(match)}
+              >
+                <Timeline />
+              </IconButton>
+            </MuiTooltip>
+          )}
                   <MuiTooltip title="View Details">
                     <IconButton 
                       size="small" 
@@ -395,6 +435,18 @@ export const MatchCard = ({tabValue, matches, handleViewDetails, handleDeleteMat
                       <Visibility />
                     </IconButton>
                   </MuiTooltip>
+
+
+                   {/* Add ScoreBoard Dialog */}
+      <ScoreBoard
+      playerPerformances={playerPerformances.filter((performance)=>performance.matchId==match.id)}
+        open={scoreBoardOpen}
+        onClose={() => setScoreBoardOpen(false)}
+        match={match}
+        sport={ tournament && tournament.gameType.toLowerCase() || 'football'}
+      />
+                  </>
+                  
              {    
              storage.get("user").role === "organizer" &&
              <>

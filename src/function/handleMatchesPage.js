@@ -73,129 +73,231 @@ export const handleSaveEdit = async (
   setEditDialogOpen,
   tournament
 ) => {
- // console.log("Saving edited match:", matches);
-  console.log("Editing match with data:", editMatch);
+  const cricketScorePattern = /^\d{1,3}\/\d{1,2}$/;
+  const footballScorePattern = /^\d+$/;
 
+  const team1Score = editMatch.team1Score?.trim();
+  const team2Score = editMatch.team2Score?.trim();
+  const matchType = tournament?.gameType?.toLowerCase();
 
-const cricketScorePattern = /^\d{1,3}\/\d{1,2}$/; // e.g., "123/7"
-const footballScorePattern = /^\d+$/; // e.g., "2"
-
-const team1Score = editMatch.team1Score?.trim();
-const team2Score = editMatch.team2Score?.trim();
-const matchType = tournament?.gameType.toLowerCase(); // Ensure match type is in lowercase for comparison
-
-// Function to validate score based on match type
-function isValidScore(score, type) {
-  if (score === "Not started yet") return true;
-
-  if (type === "cricket") {
-    return cricketScorePattern.test(score);
-  } else if (type === "football") {
-    return footballScorePattern.test(score);
-  } else {
-    // If match type is unrecognized, consider the score invalid
+  function isValidScore(score, type) {
+    if (score === "Not started yet") return true;
+    if (type === "cricket") return cricketScorePattern.test(score);
+    if (type === "football") return footballScorePattern.test(score);
     return false;
   }
-}
 
-// Validate scores
-const isTeam1Valid = isValidScore(team1Score, matchType);
-const isTeam2Valid = isValidScore(team2Score, matchType);
-
-// Check if both scores are valid
-if (!isTeam1Valid || !isTeam2Valid) {
-  if(matchType === "cricket") {
-  alert("Please follow the valid syntax.You can enter Not started yet if one team's innings has not been started");
-  }
-
-  else{
-  alert("Please follow the valid syntax");
-  }
-  return;
-}
-
-if(!editMatch.totalPoints){
-  alert("Total points cannot be zero or empty")
-
-  return;
-}
-
-// Ensure both scores are not "Not started yet"
-if (team1Score === "Not started yet" && team2Score === "Not started yet") {
-  alert("Both teams cannot have 'Not started yet' as their score. Please enter at least one valid score.");
-  return;
-}
-
-if(editMatch.status === "completed" && (team1Score === "Not started yet" || team2Score === "Not started yet")) {
-  alert("Both teams must have a valid score when the match is completed.");
-  return;
-}
-
-
-
-
-
-
-  // Basic Validation
-  if (!editMatch.team1Score || !editMatch.team2Score) {
-    alert("Please enter score for both Team 1 and Team 2.");
+  // Score validation
+  if (!isValidScore(team1Score, matchType) || !isValidScore(team2Score, matchType)) {
+    alert(matchType === "cricket"
+      ? "Invalid score format for cricket. Use format like 123/7 or 'Not started yet'."
+      : "Invalid score format. Use number like 2 or 'Not started yet'.");
     return;
   }
 
-  if (editMatch.status === "upcoming") {
-    alert("Please change status to 'live' or 'completed' to save scores.");
+  // Total points check
+  if (!editMatch.totalPoints || Number(editMatch.totalPoints) <= 0) {
+    alert("Total points cannot be empty or zero.");
+    return;
+  }
+
+  // At least one valid score must exist
+  if (team1Score === "Not started yet" && team2Score === "Not started yet") {
+    alert("At least one team must have a valid score.");
+    return;
+  }
+
+  if (editMatch.status === "completed" &&
+    (team1Score === "Not started yet" || team2Score === "Not started yet")) {
+    alert("Both teams must have valid scores if the match is completed.");
+    return;
+  }
+
+  // Man of the match check
+  if (!editMatch.manOfTheMatchName || !editMatch.manOfTheMatchId || editMatch.manOfTheMatchId === 'none') {
+    alert("Select a valid Man of the Match.");
+    return;
+  }
+
+  // Basic field checks
+  if (!team1Score || !team2Score) {
+    alert("Enter score for both teams.");
     return;
   }
 
   if (!editMatch.venue) {
-    alert("Please enter the venue.");
+    alert("Enter the match venue.");
+    return;
+  }
+
+  if (editMatch.status === "upcoming") {
+    alert("Change match status to 'live' or 'completed' to save.");
     return;
   }
 
   if (editMatch.status === "live") {
-    if (!editMatch.currentOver) {
-      alert("Please enter current over.");
+    if (!editMatch.currentOver && editMatch.currentOver !== 0) {
+      alert("Enter current over.");
       return;
     }
-    if (!editMatch.overs) {
-      alert("Please enter total overs.");
+    if (!editMatch.overs && editMatch.overs !== 0) {
+      alert("Enter total overs.");
       return;
     }
-    if(editMatch.currentOver > editMatch.overs) {
-      alert("How current over can be greater than total overs?");
+    if (Number(editMatch.currentOver) > Number(editMatch.overs)) {
+      alert("Current over cannot exceed total overs.");
       return;
     }
   }
 
-  // Send update request
-  try {
-    console.log("Sending request to update match:", editMatch);
+  // Team performance validations
+  if (!editMatch.team1Perf || Object.keys(editMatch.team1Perf).length === 0) {
+    alert("Enter Team 1's performance.");
+    return;
+  }
+  handleTeamPerformanceSave(editMatch.team1Perf, tournament, editMatch.team1Id, editMatch.id);
 
+  if (!editMatch.team2Perf || Object.keys(editMatch.team2Perf).length === 0) {
+    alert("Enter Team 2's performance.");
+    return;
+  }
+  handleTeamPerformanceSave(editMatch.team2Perf, tournament, editMatch.team2Id, editMatch.id);
+
+  // All validations passed: Submit match update
+  try {
     const response = await fetch('/api/updateMatch', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(editMatch),
     });
 
     const data = await response.json();
-    console.log("Response from updateMatch API:", data);
 
     if (response.ok) {
-      // Update local match list
       setMatches(matches.map(m => m.id === editMatch.id ? editMatch : m));
       setEditDialogOpen(false);
-      // Optional: alert("Match updated successfully");
+      alert("Match updated successfully.");
     } else {
-      alert('Error updating match: ' + (data?.error || 'Unknown error'));
+      alert("Error updating match: " + (data?.error || "Unknown error"));
     }
   } catch (error) {
-    console.error('Error updating match:', error);
-    alert('Error updating match: ' + error.message);
+    console.error("Update error:", error);
+    alert("Something went wrong while updating the match.");
     setEditDialogOpen(false);
   }
 };
+
+
+const handleTeamPerformanceSave = (teamPerfObj, tournament, teamId, matchId) => {
+  if (!teamPerfObj || typeof teamPerfObj !== 'object' || Object.keys(teamPerfObj).length === 0) {
+    alert("Team performance is required. Please enter valid data.");
+    return;
+  }
+
+  // Convert object to array of { playerId, ...performance }
+  const teamPerfArray = Object.entries(teamPerfObj).map(([playerId, perf]) => ({
+    playerId,
+    ...perf,
+  }));
+
+  console.log("Team performance data:", teamPerfArray);
+
+  teamPerfArray.forEach((perf) => {
+    savePlayerPerformance(perf, tournament, teamId, matchId);
+  });
+};
+
+
+
+
+const savePlayerPerformance = async (editMatchPerf, tournament, teamId, matchId) => {
+  const {
+    playerId,
+    ballsFaced,
+    overs,
+    runsScored,
+    wickets,
+    goals,
+    assists,
+    cards,
+  } = editMatchPerf;
+
+  const tournamentId = tournament.id;
+  const sport = tournament.gameType;
+
+  if (!playerId || !matchId || !teamId || !tournamentId) {
+    alert("Missing required identifiers: playerId, matchId, teamId, or tournamentId.");
+    return;
+  }
+
+  if (sport === "cricket") {
+    if (ballsFaced === undefined || ballsFaced === null || ballsFaced === "" || ballsFaced < 0) {
+      alert("Balls faced must be a non-negative number for cricket.");
+      return;
+    }
+    if (overs === undefined || overs === null || overs === "" || overs < 0) {
+      alert("Overs must be a non-negative number for cricket.");
+      return;
+    }
+    if (runsScored === undefined || runsScored === null || runsScored === "" || runsScored < 0) {
+      alert("Runs scored must be a non-negative number for cricket.");
+      return;
+    }
+    if (wickets === undefined || wickets === null || wickets === "" || wickets < 0) {
+      alert("Wickets must be a non-negative number for cricket.");
+      return;
+    }
+  }
+
+  if (sport === "football") {
+    if (goals === undefined || goals === null || goals === "" || goals < 0) {
+      alert("Goals must be a non-negative number for football.");
+      return;
+    }
+    if (assists === undefined || assists === null || assists === "" || assists < 0) {
+      alert("Assists must be a non-negative number for football.");
+      return;
+    }
+    if (!cards || typeof cards !== "string") {
+      alert("Cards field is required for football and must be a string.");
+      return;
+    }
+  }
+
+  try {
+    const response = await fetch("/api/addPlayerPerformance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tournamentId,
+        teamId,
+        playerId,
+        matchId,
+        ballsFaced: ballsFaced || 0,
+        overs: overs || 0,
+        runsScored: runsScored || 0,
+        wickets: wickets || 0,
+        goals: goals || 0,
+        assists: assists || 0,
+        cards: cards || "none",
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert(result.message || "Performance saved successfully.");
+    } else {
+      alert(result.error || "Failed to save performance.");
+    }
+  } catch (error) {
+    console.error("Error saving player performance:", error);
+    alert("Something went wrong while saving performance.");
+  }
+};
+
+
+
 
 
 

@@ -21,6 +21,7 @@ import {
 import { StyledDialogTitle } from '@/style/Matches';
 import { styled, keyframes } from '@mui/material/styles';
 import { EmojiEvents, SportsCricket, Public, Timer } from '@mui/icons-material';
+import { PlayerPerformanceSection } from './PlayerPerformanceCard';
 
 // Add animations
 const slideIn = keyframes`
@@ -49,8 +50,21 @@ const StyledFormControl = styled(FormControl)`
   }
 `;
 
+
+const PerformanceContainer = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'column',
+  marginTop: theme.spacing(3),
+  marginBottom: theme.spacing(3)
+}));
+
 export const EditDialog = ({editDialogOpen, setEditDialogOpen, setEditMatch, editMatch, handleSaveEdit, tournament}) => {
   const isCricket = tournament?.gameType === 'cricket';
+   
+
 
   // Numeric validation function
   const handleNumericInput = (value, field) => {
@@ -367,6 +381,13 @@ export const EditDialog = ({editDialogOpen, setEditDialogOpen, setEditMatch, edi
                       </Box>
                     </Box>
                   </Grid>
+<PerformanceContainer>
+                  <PlayerPerformanceSection sport={isCricket? 'cricket':'football'}  
+                  editMatch={editMatch}
+                setEditMatch={setEditMatch}
+                  tournament={tournament}
+                  ></PlayerPerformanceSection>
+                  </PerformanceContainer>
                 </>
               )}
             </Grid>

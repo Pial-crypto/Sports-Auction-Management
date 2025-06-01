@@ -200,7 +200,7 @@ const chartOptions = {
           if (value === 50) return 'Draw';
           if (value === 0) return 'Loss';
           return '';
-        }
+        } 
       },
       grid: { color: 'rgba(255,255,255,0.1)' },
     },

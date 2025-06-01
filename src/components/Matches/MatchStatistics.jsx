@@ -19,7 +19,7 @@ import { getAvgScore, getDrawRate, getHighestScore } from '@/function/handleMatc
 
 export const MatchStatistics = ({matches,tournament}) =>{
 
-
+console.log("Match asta",tournament)
 
 
   const stats = [
@@ -38,7 +38,7 @@ export const MatchStatistics = ({matches,tournament}) =>{
     gradient: `linear-gradient(135deg, ${COLORS.success.light}, ${COLORS.success.main})`
   },
   { 
-    label:  tournament?.gameType.toLowerCase()=='cricket' ? 'Avg. Score': 'Avg. Goals',
+    label: tournament && tournament?.gameType.toLowerCase()=='cricket' ? 'Avg. Score': 'Avg. Goals',
     value: getAvgScore (matches,tournament),
     icon: <Assessment />, 
     color: COLORS.warning.main,
