@@ -6,11 +6,11 @@ import pandas as pd
 router = APIRouter()
 
 # Load your trained model
-xgb_model = joblib.load('models/xgboost_model.pkl')
-feature_names = joblib.load('models/feature_names.pkl')
+passbuy_model = joblib.load('models/passbuy_model.pkl')
+feature_names = joblib.load('models/feature_names_passbuy.pkl')
 
-@router.post("/predict/xgboost")
-async def predict_xgboost(input_data: dict):
+@router.post("/predict/passbuy")
+async def predict_passbuy(input_data: dict):
     
     input_df = pd.DataFrame([input_data])
 
@@ -23,7 +23,7 @@ async def predict_xgboost(input_data: dict):
     input_df = input_df[feature_names]
 
    
-    prediction = xgb_model.predict(input_df)[0]
+    prediction = passbuy_model.predict(input_df)[0]
 
     
     prediction = float(prediction)
