@@ -12,7 +12,7 @@ export const fetchAllTeamReq = async () => {
       const data = await response.json();
       console.log(data,"data from fetch all req outside hook")
       if (response.ok) {
-        //console.log('Fetched tournaments:', data);
+        console.log('Fetched tournaments:', data);
         return data; // Return data for further use
       } else {
         console.error('Error fetching all team req:', data.error || 'Failed to fetch req');

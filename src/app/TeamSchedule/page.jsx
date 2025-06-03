@@ -22,6 +22,7 @@ import { fetchCurrentTeamForManagerHook } from '@/hook/fetchCurrentTeamForManage
 import { SessionCard } from '@/components/TeamSchedule/SessionCard';
 import { fetchPracticeSessionsForTeamTheTournamentAndTeamHook } from '@/hook/fetchPracticeSessionForTheTournamentAndTeamHook';
 import { DeleteConfirmDialog } from '@/components/TeamSchedule/DeleteConfirmDialog';
+import { fetchCurrentTeamForPlayerHook } from '@/hook/fetchTeamForPlayerHook';
 
 
 const TeamSchedule = () => {
@@ -44,15 +45,20 @@ const TeamSchedule = () => {
     severity: 'success'
   });
 
-
+const user=storage.get("user")
 
    if(storage.get("user").role==="player" || storage.get("user").role==="manager"){
   useFetchLatestApprovedTournamentHook(undefined,storage.get("user").role,setTournament)
   }
 
-  fetchCurrentTournamentMatchesHook(tournament,setMatches)
 
+  fetchCurrentTournamentMatchesHook(tournament,setMatches)
+if(user.role==='manager'){
    fetchCurrentTeamForManagerHook(tournament,setMyTeam)
+}
+if(user.role==='player'){
+  fetchCurrentTeamForPlayerHook(setMyTeam)
+}
 
    fetchPracticeSessionsForTeamTheTournamentAndTeamHook(tournament, myTeam, setPracticeSessions);
 
@@ -100,8 +106,8 @@ const TeamSchedule = () => {
           }
         </Grid>
 
-        {selectedSection === 'practice' && (
-          <AddSessionButton 
+        {selectedSection === 'practice' && user.role==='manager' && (
+      <AddSessionButton 
             setEditDialogOpen={setEditDialogOpen} 
             setSelectedPractice={setSelectedPractice}
           />

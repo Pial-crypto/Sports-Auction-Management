@@ -29,46 +29,8 @@ import fetchAllUsers from '@/function/fetchAllUser';
 import { setAllPlayersNameFromIdHook } from '@/hook/setAllPlayersNameFromIdHook';
 
 // Mock Data for Cricket
-const mockCricketData = {
-  team1: {
-    name: "Super Kings",
-    players: [
-      { id: 1, name: "MS Dhoni", runsScored: 45, ballsFaced: 30, wickets: 0, overs: 0 },
-      { id: 2, name: "Ravindra Jadeja", runsScored: 32, ballsFaced: 25, wickets: 2, overs: 4 },
-      { id: 3, name: "Faf du Plessis", runsScored: 85, ballsFaced: 50, wickets: 0, overs: 0 },
-    ]
-  },
-  team2: {
-    name: "Mumbai Indians",
-    players: [
-      { id: 4, name: "Rohit Sharma", runsScored: 56, ballsFaced: 40, wickets: 0, overs: 0 },
-      { id: 5, name: "Jasprit Bumrah", runsScored: 8, ballsFaced: 12, wickets: 3, overs: 4 },
-      { id: 6, name: "Hardik Pandya", runsScored: 42, ballsFaced: 30, wickets: 1, overs: 3 },
-    ]
-  },
-  manOfTheMatch: { id: 3, name: "Faf du Plessis" }
-};
 
 // Mock Data for Football
-const mockFootballData = {
-  team1: {
-    name: "Real Madrid",
-    players: [
-      { id: 1, name: "Benzema", goals: 2, assists: 1, cards: "none" },
-      { id: 2, name: "Modric", goals: 0, assists: 2, cards: "yellow" },
-      { id: 3, name: "Vinicius", goals: 1, assists: 1, cards: "none" },
-    ]
-  },
-  team2: {
-    name: "Barcelona",
-    players: [
-      { id: 4, name: "Lewandowski", goals: 1, assists: 0, cards: "none" },
-      { id: 5, name: "Pedri", goals: 0, assists: 1, cards: "none" },
-      { id: 6, name: "Gavi", goals: 0, assists: 0, cards: "red" },
-    ]
-  },
-  manOfTheMatch: { id: 1, name: "Benzema" }
-};
 
 // Styled Components
 const PlayerCard = styled(Box)(({ theme }) => ({
@@ -95,29 +57,15 @@ export const ScoreBoard = ({ open, onClose, match, sport = 'cricket' ,playerPerf
   const [activeTeam, setActiveTeam] = useState(0);
   
 
-  console.log('player performances for this match',match,playerPerformances)
-  // Use mock data based on sport
-  const mockData = sport === 'cricket' ? mockCricketData : mockFootballData;
   
-  const data = {
-    team1: {
-      name: match?.team1Name || mockData.team1.name,
-      players: mockData.team1.players
-    },
-    team2: {
-      name: match?.team2Name || mockData.team2.name,
-      players: mockData.team2.players
-    },
-    manOfTheMatch: mockData.manOfTheMatch
-  };
 
 
 
   const [team1PlayersPerf,setTeam1PlayersPerf]=useState(playerPerformances.filter((performance)=>performance.teamId===match.team1Id));
   const [team2PlayersPerf,setTeam2PlayersPerf]=useState(playerPerformances.filter((performance)=>performance.teamId===match.team2Id));
 
-setAllPlayersNameFromIdHook(setTeam1PlayersPerf)
-setAllPlayersNameFromIdHook(setTeam2PlayersPerf)
+setAllPlayersNameFromIdHook(team1PlayersPerf,setTeam1PlayersPerf)
+setAllPlayersNameFromIdHook(team2PlayersPerf,setTeam2PlayersPerf)
   console.log("team1PlayerPerf",team1PlayersPerf);
   console.log("team2playersPert",team2PlayersPerf)
   const renderCricketStats = (perf) => (

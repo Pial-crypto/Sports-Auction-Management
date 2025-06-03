@@ -86,7 +86,7 @@ fetchCurrentTournamentRulesHook(tournament,setRules)
           </Box>
 
           {/* Add/Edit Rule Dialog */}
-          <StyledDialog
+         <StyledDialog
             open={openDialog}
             onClose={() => setOpenDialog(false)}
             maxWidth="sm"

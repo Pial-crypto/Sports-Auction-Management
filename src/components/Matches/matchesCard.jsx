@@ -66,7 +66,7 @@ export const MatchCard = ({tabValue, matches, handleViewDetails, handleDeleteMat
   const [selectedMatch, setSelectedMatch] = useState(null);
 
 
-  console.log(tournament,"Tournament inside match card")
+  //console.log(tournament,"Tournament inside match card")
   // Add this function
   const handleShowScoreBoard = (match) => {
     setSelectedMatch(match);

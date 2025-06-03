@@ -9,14 +9,14 @@ export const getMyAvgScore = (matches, tournament, myTeam) => {
 
    if (tournament?.gameType.toLowerCase() === 'cricket') {
     completedMatches.forEach(match => {
-      if (match.team1Name === myTeam.teamName && typeof match.team1Score === 'string' && match.team1Score.includes("/")) {
+      if ((match.team1Name === myTeam.teamName || match.team1Id===myTeam.id) && typeof match.team1Score === 'string' && match.team1Score.includes("/")) {
         const [runsStr] = match.team1Score.split("/");
         const runs = parseFloat(runsStr);
         if (!isNaN(runs)) {
           total += runs;
           count++;
         }
-      } else if (match.team2Name === myTeam.teamName && typeof match.team2Score === 'string' && match.team2Score.includes("/")) {
+      } else if ((match.team2Name === myTeam.teamName|| myTeam.id===match.team2Id) && typeof match.team2Score === 'string' && match.team2Score.includes("/")) {
         const [runsStr] = match.team2Score.split("/");
         const runs = parseFloat(runsStr);
         if (!isNaN(runs)) {
@@ -29,10 +29,10 @@ export const getMyAvgScore = (matches, tournament, myTeam) => {
 
   else if (tournament?.gameType.toLowerCase() === 'football') {
     completedMatches.forEach(match => {
-      if (match.team1Name === myTeam.teamName && !isNaN(match.team1Score)) {
+      if ((match.team1Name === myTeam.teamName|| myTeam.id===match.team1Id) && !isNaN(match.team1Score)) {
         total += Number(match.team1Score);
         count++;
-      } else if (match.team2Name === myTeam.teamName && !isNaN(match.team2Score)) {
+      } else if ((match.team2Name === myTeam.teamName|| myTeam.id===match.team2Id) && !isNaN(match.team2Score)) {
         total += Number(match.team2Score);
         count++;
       }
@@ -53,11 +53,11 @@ export const getMyHighestScore = (matches, tournament, myTeam) => {
 
   completedMatches.forEach(match => {
     if (tournament?.gameType.toLowerCase() === 'cricket') {
-      if (match.team1Name === myTeam.teamName && typeof match.team1Score === 'string' && match.team1Score.includes("/")) {
+      if ((match.team1Name === myTeam.teamName|| myTeam.id===match.team1Id) && typeof match.team1Score === 'string' && match.team1Score.includes("/")) {
         const [runsStr] = match.team1Score.split("/");
         const runs = parseInt(runsStr);
         if (!isNaN(runs) && runs > highest) highest = runs;
-      } else if (match.team2Name === myTeam.teamName && typeof match.team2Score === 'string' && match.team2Score.includes("/")) {
+      } else if ((match.team2Name === myTeam.teamName|| myTeam.id===match.team2Id) && typeof match.team2Score === 'string' && match.team2Score.includes("/")) {
         const [runsStr] = match.team2Score.split("/");
         const runs = parseInt(runsStr);
         if (!isNaN(runs) && runs > highest) highest = runs;
@@ -93,14 +93,14 @@ export const getMyAvgWicket = (matches, tournament, myTeam) => {
 
   if (tournament?.gameType.toLowerCase() === 'cricket') {
     completedMatches.forEach(match => {
-      if (match.team1Name === myTeam.teamName && typeof match.team1Score === 'string' && match.team1Score.includes("/")) {
+      if ((match.team1Name === myTeam.teamName|| myTeam.id===match.team1Id) && typeof match.team1Score === 'string' && match.team1Score.includes("/")) {
         const [, wicketsStr] = match.team1Score.split("/");
         const wickets = parseFloat(wicketsStr);
         if (!isNaN(wickets)) {
           total += wickets;
           count++;
         }
-      } else if (match.team2Name === myTeam.teamName && typeof match.team2Score === 'string' && match.team2Score.includes("/")) {
+      } else if ((match.team2Name === myTeam.teamName|| myTeam.id===match.team2Id) && typeof match.team2Score === 'string' && match.team2Score.includes("/")) {
         const [, wicketsStr] = match.team2Score.split("/");
         const wickets = parseFloat(wicketsStr);
         if (!isNaN(wickets)) {
@@ -174,3 +174,171 @@ export const getCurrentStreak=(myTeam,myMatches)=>{
 
     return currentStreak
 }
+
+
+export const getMyMaxScorer = (playerPerformances, myTeam, tournament) => {
+  if (!playerPerformances || !myTeam || !tournament) return null;
+
+  const scores = {}; // initialize as object
+
+  if (tournament.gameType === 'cricket') {
+    playerPerformances.forEach((performance) => {
+      if (performance.teamId !== myTeam.id) return;
+
+      const runs = parseInt(performance.runsScored) || 0;
+      if (scores[performance.playerId]) {
+        scores[performance.playerId] += runs;
+      } else {
+        scores[performance.playerId] = runs;
+      }
+    });
+  }
+
+  if (tournament.gameType === 'football') {
+    playerPerformances.forEach((performance) => {
+      if (performance.teamId !== myTeam.id) return;
+
+      const goals = parseInt(performance.goals) || 0;
+      if (scores[performance.playerId]) {
+        scores[performance.playerId] += goals;
+      } else {
+        scores[performance.playerId] = goals;
+      }
+    });
+  }
+
+  // Now find the player with the maximum score
+  let maxId = null;
+  let maxScore = -1;
+  let maxName='';
+
+  for (const [playerId, total] of Object.entries(scores)) {
+    if (total > maxScore) {
+      maxScore = total;
+      maxId = playerId;
+      
+    }
+  }
+
+  playerPerformances.forEach((pref)=>{
+    if(pref.playerId===maxId) maxName=pref.playerName;
+  })
+  const maxScorer={
+    maxScore,
+    maxId,
+    maxName
+
+  }
+
+  return maxScorer;
+};
+
+export const getMyTopPerformers = (playerPerformances, myTeam, tournament) => {
+  if (!playerPerformances || !myTeam || !tournament) return null;
+
+  const scores = {};       // for runs or goals
+  const wickets = {};      // for cricket only
+  const assists = {};      // for football only
+
+  playerPerformances.forEach((performance) => {
+    if (performance.teamId !== myTeam.id) return;
+
+    const id = performance.playerId;
+
+    if (tournament.gameType === 'cricket') {
+      const runs = parseInt(performance.runsScored) || 0;
+      const wkts = parseInt(performance.wickets) || 0;
+
+      scores[id] = (scores[id] || 0) + runs;
+      wickets[id] = (wickets[id] || 0) + wkts;
+    }
+
+    if (tournament.gameType === 'football') {
+      const goals = parseInt(performance.goals) || 0;
+      const asts = parseInt(performance.assists) || 0;
+
+      scores[id] = (scores[id] || 0) + goals;
+      assists[id] = (assists[id] || 0) + asts;
+    }
+  });
+
+  const findMax = (obj) => {
+    let maxId = null;
+    let maxValue = -1;
+    for (const [id, val] of Object.entries(obj)) {
+      if (val > maxValue) {
+        maxId = id;
+        maxValue = val;
+      }
+    }
+    const player = playerPerformances.find(p => p.playerId === maxId);
+    return {
+      id: maxId,
+      name: player?.playerName || 'Unknown',
+      value: maxValue
+    };
+  };
+
+  const topScorer = findMax(scores);
+  const topWicketTaker = tournament.gameType === 'cricket' ? findMax(wickets) : null;
+  const topAssistMaker = tournament.gameType === 'football' ? findMax(assists) : null;
+
+  return {
+    topScorer,        // { id, name, value }
+    topWicketTaker,   // if cricket
+    topAssistMaker    // if football
+  };
+};
+
+
+export const getMyMaxMOTM = (myMatches,teamPlayers) => {
+  if (!myMatches || myMatches.length === 0) return null;
+
+  const motmCounts = {};
+
+  // Count how many times each player was MOTM
+  
+  console.log(myMatches,"Here is all the matches")
+  
+  myMatches.forEach((match) => {
+    const id = match.manOfTheMatchId;
+    if (!id) return;
+   const player = teamPlayers.find((player) => player.id === id);
+
+if (!player) {
+  return "ID not found";
+}
+
+
+    if (motmCounts[id]) {
+      motmCounts[id] += 1;
+    } else {
+      motmCounts[id] = 1;
+    }
+  });
+
+  // Find the player with the maximum MOTM count
+  let maxId = null;
+  let maxCount = -1;
+  let maxName = '';
+
+  for (const [playerId, count] of Object.entries(motmCounts)) {
+    if (count > maxCount) {
+      maxCount = count;
+      maxId = playerId;
+    }
+  }
+
+  // Get the corresponding player name from any match
+  myMatches.forEach((match) => {
+    if (match.manOfTheMatchId === maxId) {
+      maxName = match.manOfTheMatchName;
+    }
+  });
+
+  return {
+    maxId,
+    maxCount,
+    maxName
+  };
+};

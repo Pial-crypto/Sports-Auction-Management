@@ -21,7 +21,7 @@ if(!sportType){
         (tournament) => tournament.createdBy === userId
       );
    
-       setTournamentList([...tournamentList,...filteringTour])
+       setTournamentList(filteringTour)
 }
   
      })

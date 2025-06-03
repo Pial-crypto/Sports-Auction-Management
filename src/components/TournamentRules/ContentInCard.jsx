@@ -5,6 +5,7 @@ import { AnimatedIconButton } from '@/style/TournamentRules';
 import { CategoryChip } from '@/style/TournamentRules';
 import RULE_TYPES from '@/constants/TournamentRules/tournamentRules';
 import { motion } from 'framer-motion';
+import storage from '@/class/storage';
 
 const ContentsInCard = ({ rule, handleEditRule, handleDeleteRule }) => {
   // Function to truncate text
@@ -140,7 +141,7 @@ const ContentsInCard = ({ rule, handleEditRule, handleDeleteRule }) => {
         </Tooltip>
 
         {/* Action Buttons with hover effects */}
-        <Box sx={{ 
+       {storage.get("user").role==="organizer" && <Box sx={{ 
           display: 'flex', 
           justifyContent: 'flex-end', 
           gap: 1,
@@ -186,6 +187,7 @@ const ContentsInCard = ({ rule, handleEditRule, handleDeleteRule }) => {
             </IconButton>
           </Tooltip>
         </Box>
+}
       </CardContent>
     </Card>
   );

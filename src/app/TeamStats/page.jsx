@@ -28,11 +28,19 @@ import { fetchCurrentTournamentMatchesHook } from '@/hook/fetchCurrentTournament
 import { QuickStats } from '@/components/TeamStats/QuickStats';
 import { RecentForm } from '@/components/TeamStats/RecentForm';
 import { PerformanceCharts } from '@/components/TeamStats/PerformanceCharts';
-import { getCurrentStreak, getDrawCount, getMyAvgScore, getMyAvgWicket, getMyHighestScore, makeRecentFormArray, makeTeamPointsArray } from '@/function/handleTeamStat';
+import { getCurrentStreak, getDrawCount, getMyAvgScore, getMyAvgWicket, getMyHighestScore, getMyMaxMOTM, getMyTopPerformers, makeRecentFormArray, makeTeamPointsArray } from '@/function/handleTeamStat';
 import { LoadingStage } from '@/components/TeamStats/LoadingState';
 import { PerformanceMetrics } from '@/components/TeamStats/PerformanceMetrics';
 import { PlayerAchievements } from '@/components/TeamStats/PlayerAchievements';
 import { MainContainer } from '@/style/TeamStat';
+import { fetchPlayerPerformancesHook } from '@/hook/fetchPlayerPerformancesHook';
+import { setAllPlayersNameFromIdHook } from '@/hook/setAllPlayersNameFromIdHook';
+import { getMyMaxScorer } from '@/function/handleTeamStat';
+import { fetchPlayerFilteringUserForTeam } from '@/hook/fetchTeamPlayerHook';
+import { fetchPlayerForSpecificTeamHook } from '@/hook/fetchSpecificTeamPlayersHook';
+import getAllAuction from '@/function/getAllAuction';
+import { data } from 'react-router-dom';
+import { fetchCurrentTeamForPlayerHook } from '@/hook/fetchTeamForPlayerHook';
 
 
 // Register ChartJS components
@@ -62,9 +70,29 @@ const TeamStatistics = () => {
   const [tournament,setTournament]=useState(null);
   const [myTeam,setMyTeam]=useState(null)
   const [matches,setMatches]=useState([])
+   
+      const [auctionTeam,setAuctionTeam]=useState([])
+       const [teamPlayers,setTeamPlayers]=useState([])
+      
+  
+  
+
+
+  
+  
 
   useFetchLatestApprovedTournamentHook(undefined,storage.get("user").role,setTournament)
+  if(storage.get('user').role==='manager'){
   fetchCurrentTeamForManagerHook(tournament,setMyTeam)
+  }
+
+if (storage.get('user').role.toLowerCase() === 'player') {
+fetchCurrentTeamForPlayerHook(setMyTeam)
+
+}
+
+console.log("The bigger team of mine",myTeam)
+
   fetchCurrentTournamentMatchesHook(tournament,setMatches)
 
 const myMatches=matches.filter((match)=>myTeam &&  match.team1Id===myTeam.id || match.team2Id===myTeam.id)
@@ -72,14 +100,25 @@ const wonMatches=myMatches.filter((match)=>myTeam && match.winner===myTeam.teamN
 const lostMatches=myMatches.filter((match)=>myTeam && match.winner!=myTeam.teamName)
 const drawMatches=myMatches.filter((match)=>myTeam && match.winner.toLowerCase()==="draw")
 const currentStreak=getCurrentStreak(myTeam,myMatches)
+const [playerPerformances,setPlayerPerformances]=useState([]);
+fetchPlayerPerformancesHook(setPlayerPerformances,tournament)
+//console.log(playerPerformances)
 
 const recentFormArray=[];
 makeRecentFormArray(myMatches,recentFormArray,myTeam)
 
 const teamPoints = {};
 
+
+
 matches &&  makeTeamPointsArray(matches,teamPoints)
 
+const myMOTM=getMyMaxMOTM(myMatches,teamPlayers);
+
+
+console.log(myMOTM,'0tth player')
+
+console.log("player perf",playerPerformances)
 
 // Convert teamPoints object to array and sort by points
 
@@ -120,7 +159,7 @@ performance: tournament?.gameType?.toLowerCase() === 'cricket'
       battingAvg: myTeam && myMatches && getMyAvgScore(myMatches, tournament, myTeam),
       bowlingAvg: myTeam && myMatches && `${getMyAvgWicket(myMatches, tournament, myTeam)} WK`,
       highestScore: myTeam && myMatches && getMyHighestScore(myMatches, tournament, myTeam),
-      drawCount: myMatches && getDrawCount(myMatches), // optional in cricket
+      drawCount: myMatches && getDrawCount(myMatches), 
     }
   : {
       averageScore: myTeam && myMatches && getMyAvgScore(myMatches, tournament, myTeam),
@@ -136,7 +175,22 @@ performance: tournament?.gameType?.toLowerCase() === 'cricket'
   ],
 };
 
+const myTopPerformers=getMyTopPerformers(playerPerformances,myTeam,tournament)
+//const myMaxScorer= getMyMaxScorer(playerPerformances,myTeam,tournament)
+//console.log(myTopPerformers,"Bro he is my max scorer")
 
+
+setAllPlayersNameFromIdHook(playerPerformances,setPlayerPerformances)
+
+//console.log("The big my team",myTeam)
+
+fetchPlayerForSpecificTeamHook(myTeam?.teamName, myTeam?.id, tournament, setAuctionTeam);
+ 
+  
+fetchPlayerFilteringUserForTeam(auctionTeam,setTeamPlayers)
+
+
+//console.log("MY motm",myMOTM)
 
 
   useEffect(() => {
@@ -216,7 +270,7 @@ const chartOptions = {
       <Fade in={!loading} timeout={1000}>
         <Box>
           {/* Header Section */}
-   <Header></Header>
+
 
           {/* Quick Stats */}
      
@@ -244,7 +298,8 @@ loading={loading}
             <PerformanceMetrics teamStats={teamStats}></PerformanceMetrics>
 
             {/* Player Achievements */}
-         <PlayerAchievements teamStats={teamStats}></PlayerAchievements>
+      {   myTopPerformers && <PlayerAchievements myTopPerformers={myTopPerformers} tournament={tournament} myMaxMOTM={myMOTM}> </PlayerAchievements>
+}
           </Grid>
         </Box>
       </Fade>

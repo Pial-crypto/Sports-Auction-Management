@@ -10,6 +10,7 @@ import {
   CheckCircle,
   Delete // Add this import
 } from '@mui/icons-material';
+import storage from '@/class/storage';
 
 const glowAnimation = keyframes`
   0% { box-shadow: 0 0 5px rgba(25, 118, 210, 0.2); }
@@ -67,7 +68,7 @@ export const SessionCard = ({ session, onEdit, onDelete }) => { // Add onDelete 
             }}
           />
           {/* Action Buttons */}
-          <Box sx={{ display: 'flex', gap: 1 }}>
+        {  storage.get('user').role==='manager' && <Box sx={{ display: 'flex', gap: 1 }}>
             {onEdit && (
               <IconButton 
                 onClick={() => onEdit(session)}
@@ -99,6 +100,7 @@ export const SessionCard = ({ session, onEdit, onDelete }) => { // Add onDelete 
               </IconButton>
             )}
           </Box>
+}
         </Box>
 
         {/* Title */}
