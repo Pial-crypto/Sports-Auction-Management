@@ -13,6 +13,7 @@ import { handleJoinRequest, handleSubmitRequest,handleSubmitTeamRequest } from '
 import storage from '@/class/storage';
 import TeamInfoDialog from '@/components/JoinTournament/TeamInfoDialog';
 import { fetchAllTournamentForManagerForJoiningHook } from '@/hook/fetchAllTournamentForManagerForJoiningHook';
+import { CommonSnackBar } from '@/components/SnackBar';
 
 const MotionContainer = motion(Container);
 const MotionTypography = motion(Typography);
@@ -27,6 +28,11 @@ const JoinTournament = () => {
   const [filterStatus, setFilterStatus] = useState('active');
   const [selectedTournament, setSelectedTournament] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+    const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info', // can be 'success', 'error', 'warning', 'info'
+  });
 
   const role=storage.get('user').role;
   //console.log(role,"role")
@@ -46,6 +52,7 @@ const JoinTournament = () => {
   };
 
   return (
+    <>
     <MotionContainer 
       maxWidth="lg" 
       sx={{ 
@@ -97,7 +104,8 @@ const JoinTournament = () => {
               tournamentId,
               tournaments,
               setSelectedTournament,
-              setOpenDialog
+              setOpenDialog,
+              
             )
           }
         />
@@ -118,7 +126,8 @@ const JoinTournament = () => {
             setFilteredTournaments,
             setOpenDialog,
             setSelectedTournament,
-            setError
+            setError,
+            setSnackbar
           )
         }
         tournament={selectedTournament}
@@ -138,14 +147,19 @@ const JoinTournament = () => {
               setFilteredTournaments,
               setOpenDialog,
               setSelectedTournament,
-              setError
+              setError,
+              setSnackbar
             )
           }
           tournament={selectedTournament}
         />
       )
+
+      
       }
     </MotionContainer>
+<CommonSnackBar snackbar={snackbar} setSnackbar={setSnackbar} ></CommonSnackBar>
+    </>
   );
 };
 

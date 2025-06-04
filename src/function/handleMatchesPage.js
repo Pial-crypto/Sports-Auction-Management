@@ -1,4 +1,5 @@
 import { COLORS } from "@/style/Matches";
+import { updateTournamentInfo } from "./updateTournamentInfo";
 
 
     export const getFilteredMatches = (tabValue,matches) => {
@@ -621,3 +622,4 @@ export const getAvgWicket = (matches, tournament) => {
 
   return count > 0 ? (total / count).toFixed(2) : "N/A";
 };
+

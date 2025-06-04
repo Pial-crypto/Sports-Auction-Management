@@ -98,7 +98,8 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                                   onChange={handleDateChange('registrationDeadline')}
                                   sx={{ width: '100%', mb: 2 }}
                                   slotProps={{ textField: { required: true } }}
-                                  minDate={defaultDates.tournamentDate || dayjs()}
+                                  minDate={dayjs()}
+                                  maxDate={defaultDates.tournamentDate || dayjs()}
                                 />
                               </LocalizationProvider>
                             </Grid>
@@ -110,6 +111,7 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                                   onChange={handleDateChange('auctionDate')}
                                   sx={{ width: '100%', mb: 2 }}
                                   slotProps={{ textField: { required: true } }}
+                                  maxDate={defaultDates.tournamentDate || dayjs()}
                                   minDate={defaultDates.registrationDeadline || dayjs()}
                                 />
                               </LocalizationProvider>

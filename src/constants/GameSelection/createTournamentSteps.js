@@ -19,7 +19,7 @@ const createTournamentSteps = [
       options: [
         { value: "cricket", label: "Cricket", icon: <SportsCricket /> },
         { value: "football", label: "Football", icon: <SportsSoccer /> },
-        { value: "badminton", label: "Badminton", icon: <SportsTennis /> }
+        // { value: "badminton", label: "Badminton", icon: <SportsTennis /> }
       ]
     },
     {

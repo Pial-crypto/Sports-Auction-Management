@@ -27,13 +27,13 @@ const {updatedUser} = data;
       
 
       storage.set("user", updatedUser);
-      setForceRender(true);
+      //setForceRender(true);
       // Handle success (e.g., redirect or clear form)
     } else {
       alert(data.error || 'Failed to create tournament');
     }
   } catch (error) {
-    console.error('Error creating tournament:', error);
+  //  console.error('Error creating tournament:', error);
     alert('An error occurred. Please try again.');
   }
 };

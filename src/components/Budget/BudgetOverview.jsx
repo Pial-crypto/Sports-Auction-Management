@@ -17,9 +17,9 @@ import { COLORS } from '@/style/Budget';
 const BudgetOverview = ({budgetData}) => (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
+        {/* <Typography variant="h5" fontWeight="bold" gutterBottom>
           Budget Overview
-        </Typography>
+        </Typography> */}
       </Grid>
       <Grid item xs={12} md={4}>
         <StyledCard>

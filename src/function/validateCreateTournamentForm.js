@@ -20,25 +20,25 @@ export const validateForm = (formData, setError, MIN_REGISTRATION_FEE) => {
   const auctionDate = new Date(formData.auctionDate);
 
   // Check if tournament start date is in future
-  if (startDate <= today) {
-    setError("The tournament start date should be in the future");
-    return false;
-  }
+  // if (startDate <= today) {
+  //   setError("The tournament start date should be in the future");
+  //   return false;
+  // }
 
   // Check if registration deadline is before tournament start date
-  if (regDeadline >= startDate) {
+  if (regDeadline > startDate) {
     setError("Registration deadline must be before tournament start date");
     return false;
   }
 
   // Check if auction date is after registration deadline
-  if (auctionDate <= regDeadline) {
+  if (auctionDate < regDeadline) {
     setError("Auction date must be after registration deadline");
     return false;
   }
 
   // Check if auction date is before tournament start date
-  if (auctionDate >= startDate) {
+  if (auctionDate > startDate) {
     setError("Auction date must be before tournament start date");
     return false;
   }

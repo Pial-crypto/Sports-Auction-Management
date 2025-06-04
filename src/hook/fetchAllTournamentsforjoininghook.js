@@ -17,17 +17,17 @@ export const fetchAllTournamentsforjoininghook=(setTournaments,setFilteredTourna
 
 
               fetchAllReq().then((data)=>{
-                console.log(data,"data from fetch all requests")
+              //  console.log(data,"data from fetch all requests")
                 const allReq=data.allPlayerReq;
-                console.log(allReq,"allReq")
-                console.log(response,"I am the response")
+             //   console.log(allReq,"allReq")
+               // console.log(response,"I am the response")
                 const formattedData = response.map(tournament =>{
                   const hasRequested=allReq.find(req => req.tournamentId === tournament.id  && req.playerId===storage.get("user").id);
                   const isRejected=allReq.find(req => req.tournamentId === tournament.id && req.rejected===true && req.playerId===storage.get("user").id);
                   const isApproved=allReq.find(req => req.tournamentId === tournament.id && req.approved===true && req.playerId===storage.get("user").id);
-                  console.log(isApproved,"isApproved")
-                  console.log(isRejected,"isRejected")
-                  console.log(hasRequested,"hasRequested")
+                //  console.log(isApproved,"isApproved")
+                  //console.log(isRejected,"isRejected")
+                  //console.log(hasRequested,"hasRequested")
                  return {
                   ...tournament,
                   startDate: formatDateWithTime(tournament.tournamentDate),

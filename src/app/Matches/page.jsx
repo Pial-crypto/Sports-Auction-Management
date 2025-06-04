@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
+  Typography,
 } from '@mui/material';
 import { Header } from '@/components/Matches/header';
 import { MatchTab } from '@/components/Matches/Tabs';
@@ -27,7 +28,11 @@ import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTour
 import storage from '@/class/storage';
 import { getAllPlayerPerformance } from '@/function/fetchAllPlayerPerformance';
 import { fetchPlayerPerformancesHook } from '@/hook/fetchPlayerPerformancesHook';
-
+import dayjs from 'dayjs';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TournamentNotStarted from '@/components/Common/tournamentNotStarted';
+import EndTournament from '@/components/Matches/EndTournament';
+import { CommonSnackBar } from '@/components/SnackBar';
 
 
 
@@ -51,6 +56,11 @@ const MatchesPage = () => {
 const [tournament,setTournament] = useState(null);
 const [tournamentTeams,setTournamentTeams] = useState(null);
 const [playerPerformances,setPlayerPerformances]=useState([])
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info', // can be 'success', 'error', 'warning', 'info'
+  });
   // New Match Template
   const newMatchTemplate = {
     team1: {
@@ -116,20 +126,44 @@ fetchPlayerPerformancesHook(setPlayerPerformances,tournament)
 
 //console.log('Player performances',playerPerformances)
 
+//console.log("dats",tournament.tournamentDate,new Date)
 
+//  tournament && console.log(      new Date(tournament.tournamentDate)<new Date(),"The date")
+  //console.log(new Date(tournament.tournamentDate),"  ",new Date())
 
-  
-
-
+if(!tournament){
+  return(
+    <Typography>
+      No tournament available
+    </Typography>
+  )
+}
 
   return (
 
-    tournament &&
+    <>{
+    tournament &&(
+      new Date(tournament.tournamentDate)<new Date() ?
+
+(
     <MainContainer>
       <Box sx={{ mb: 4 }}>
       <Header handleCreateMatch={()=>handleCreateMatch(setEditMatch,setCreateDialogOpen,newMatchTemplate)}></Header>
-
+         {storage.get("user").role === "organizer" && (
+              <Box
+                sx={{
+                  justifyContent:'center',
+                  transform: 'translateY(-4px)', 
+                  marginBottom:'10px'
+                  // Align with Create Match button
+                }}
+              >
+                <EndTournament tournament={tournament} setSnackbar={setSnackbar} />
+              </Box>
+            )}
         <MatchStatistics matches={matches} tournament={tournament}/>
+
+
 
 <MatchTab handleTabChange={handleTabChange} tabValue={tabValue}></MatchTab>
       </Box>
@@ -195,6 +229,18 @@ handleEditMatch={(match)=>handleEditMatch(
        
   ></CreateNewMatchDialog>
     </MainContainer>
+):
+
+
+<TournamentNotStarted></TournamentNotStarted>
+
+
+    )
+    
+  }
+<CommonSnackBar snackbar={snackbar} setSnackbar={setSnackbar}></CommonSnackBar>
+    </>
+
   );
 };
 

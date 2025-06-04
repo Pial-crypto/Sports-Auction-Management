@@ -29,6 +29,7 @@ export const handleSubmitRequest = async (
   setOpenDialog,
   setSelectedTournament,
   setError,
+  setSnackbar
   
 ) => {
   try {
@@ -44,7 +45,13 @@ export const handleSubmitRequest = async (
 
     // Update tournaments state
     if(data){
-      alert("Request submitted successfully");
+    //  alert("Request submitted successfully");
+    setSnackbar({
+  open: true,
+  message: 'Request submitted successfully',
+  severity: 'success',
+});
+
       const updateTournamentState = (tournaments) =>
         tournaments.map(tournament =>
           tournament.id === selectedTournament.id
@@ -78,6 +85,7 @@ export const handleSubmitTeamRequest = async (
   setOpenDialog,
   setSelectedTournament,
   setError,
+  setSnackbar
 ) => {
   try {
     const request = {
@@ -94,7 +102,12 @@ export const handleSubmitTeamRequest = async (
     
     if(data){
       console.log('Team request submitted successfully:', data);
-      alert("Team registration request submitted successfully");
+     // alert("Team registration request submitted successfully");
+     setSnackbar({
+  open: true,
+  message: 'Team registration request submitted successfully',
+  severity: 'success',
+});
       
       const updateTournamentState = (tournaments) =>
         tournaments.map(tournament =>

@@ -14,14 +14,17 @@ const DEFAULT_TOURNAMENT_ICON = "https://images.unsplash.com/photo-1522778119026
 const HeaderComponents = ({ selectedView, formData }) => {
   const [error, setError] = useState(null);
 const user = storage.get("user");
-const [forceRender,setForceRender] = useState(false);
+let [forceRender,setForceRender] = useState(false);
 const {activeStatus} = storage.get("user");
+const [alreadyCreated,setAlreadyCreated]=useState(activeStatus)
 
+console.log(activeStatus,alreadyCreated,"Active states")
   const handlePublishCall = async () => {
    
-    if(!activeStatus){
+    if(!alreadyCreated){
       handlePublish(formData,setError,MIN_REGISTRATION_FEE,setForceRender)
-    }else{
+ setAlreadyCreated(true)
+    }else {
       setError("Finish your current tournament to create a new one");
     }
   };

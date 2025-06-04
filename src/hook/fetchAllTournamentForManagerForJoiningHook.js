@@ -29,9 +29,9 @@ export const fetchAllTournamentForManagerForJoiningHook=(setTournaments,setFilte
                   const hasRequested=allReq.find(req => req.tournamentId === tournament.id  && req.managerId===storage.get("user").id);
                   const isRejected=allReq.find(req => req.tournamentId === tournament.id && req.rejected===true && req.managerId===storage.get("user").id);
                   const isApproved=allReq.find(req => req.tournamentId === tournament.id && req.approved===true && req.managerId===storage.get("user").id);
-                  console.log(isApproved,"isApproved")
-                  console.log(isRejected,"isRejected")
-                  console.log(hasRequested,"hasRequested")
+                  // console.log(isApproved,"isApproved")
+                  // console.log(isRejected,"isRejected")
+                  // console.log(hasRequested,"hasRequested")
                  return {
                   ...tournament,
                   startDate: formatDateWithTime(tournament.tournamentDate),

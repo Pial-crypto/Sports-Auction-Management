@@ -10,6 +10,7 @@ import {
   Avatar,
   LinearProgress,
   Tooltip,
+  IconButton,
 } from '@mui/material';
 import { styled, alpha, keyframes } from '@mui/material/styles';
 import {
@@ -35,6 +36,8 @@ import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 // import { Header } from '@/components/OverView/Header';
 //import {COLORS} from '@/style/OverView';
 import { fetchCurrentTournamentMatchesHook } from '@/hook/fetchCurrentTournamentMatchesHook';
+import TournamentNotStarted from '@/components/Common/tournamentNotStarted';
+import { NoMatchStarted } from '@/components/Common/NoMatchStarted';
 ChartJS.register(
   ArcElement,
   ChartTooltip,
@@ -191,8 +194,14 @@ const ptsArray = Object.entries(teamPoints).map(
 );
 
 ptsArray.sort((a, b) => b.totalPoints - a.totalPoints);
+console.log(tournament)
+console.log(new Date(tournament?.tournamentDate),"ballllll")
 
-
+if(new Date(tournament?.tournamentDate)<=new Date() && matches.length==0){
+  return(
+<NoMatchStarted></NoMatchStarted>
+  )
+}
 
 
 
@@ -200,8 +209,15 @@ ptsArray.sort((a, b) => b.totalPoints - a.totalPoints);
 
 
   return (
-    matches && tournament && tournamentTeams && matches.length>0 &&
-    <MainContainer>
+          new Date(tournament?.tournamentDate)<new Date()? 
+(
+
+
+    matches && tournament && tournamentTeams && matches.length>0 &&(
+   
+   (
+   
+   <MainContainer>
 
    {/* <Header phase={tournamentStage}></Header> */}
       
@@ -596,6 +612,16 @@ ptsArray.sort((a, b) => b.totalPoints - a.totalPoints);
         </Grid>
       </Grid>
     </MainContainer>
+
+    
+    )
+  )
+
+  
+):
+
+
+<TournamentNotStarted></TournamentNotStarted>
   );
 };
 

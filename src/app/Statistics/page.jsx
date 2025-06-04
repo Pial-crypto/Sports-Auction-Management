@@ -23,6 +23,8 @@ import { TrendsChart } from '@/components/Statistics/TrendsChart';
 import { RecentMatchScore } from '@/components/Statistics/RecentMatchScore';
 import storage from '@/class/storage';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
+import TournamentNotStarted from '@/components/Common/tournamentNotStarted';
+import NoMatchStarted from '@/components/Common/NoMatchStarted';
 // Recharts dynamic imports
 
 // Register ChartJS components
@@ -61,12 +63,18 @@ const Statistics = () => {
   fetchCurrentTournamentMatchesHook(tournament,setMatches)
 
 
+if(new Date(tournament?.tournamentDate)<=new Date() && matches.length==0){
+  return(
+<NoMatchStarted></NoMatchStarted>
+  )
+}
 
 
 
  
   return (
-    <Box sx={{ 
+       new Date(tournament?.tournamentDate)<new Date()?( 
+   matches && <Box sx={{ 
       p: 3, 
       background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
       minHeight: '100vh',
@@ -156,6 +164,8 @@ const Statistics = () => {
 
       </Grid>
     </Box>
+
+        ) :<TournamentNotStarted></TournamentNotStarted>
   );
 };
 

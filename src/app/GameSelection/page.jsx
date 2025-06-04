@@ -20,21 +20,20 @@ export default function TournamentManagement() {
   const [formData, setFormData] = useState({
     gameType: '',
     rules: '',
-    registrationFee: '',
+    registrationFee: 0, // Changed from empty string to 0
     name: '',
-    prizeMoney: '',
-    numberOfTeams: '',
-    tournamentDate: dayjs(),
+    prizeMoney: 0, // Changed from empty string to 0
+    numberOfTeams: 6, // Changed from empty string to minimum value
+    playersPerTeam: 11, // Added missing field with default value
+    tournamentDate: null, // Changed from dayjs() to null
     tournamentIcon: null,
     budget: 5000,
-    venueBudget:1000,
-    equipmentBudget:1000,
-    staffBudget:1000,
-    registrationDeadline: dayjs(),
-    auctionDate: dayjs(),
-    
+    venueBudget: 1000,
+    equipmentBudget: 1000,
+    staffBudget: 1000,
+    registrationDeadline: null, // Changed from dayjs() to null
+    auctionDate: null, // Changed from dayjs() to null
   });
-
   const renderActiveTournaments = (sportType) => (
     <ActiveTournaments activeTournaments={activeTournaments} sportType={sportType}></ActiveTournaments>
   );

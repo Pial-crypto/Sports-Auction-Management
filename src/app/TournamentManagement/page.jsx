@@ -20,6 +20,9 @@ import scheduleCardsDisabled from '@/constants/TournamentManagement/scheduleCard
 import teamManagerCardInactive from '@/constants/TournamentManagement/TeamManagerCardsInactive';
 import Footer from '@/components/Footer/Footer';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
+import fetchCurrentTournament from '@/function/fetchCurrentTournament';
+import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
+import { updateTournamentInfo } from '@/function/updateTournamentInfo';
 
 const TournamentManagement = () => {
   const user=storage.get("user")
@@ -27,6 +30,20 @@ const TournamentManagement = () => {
   //const {activeStatus}=user
   const [activeStatus,setActiveStatus]=useState(user.activeStatus);
  
+  const [tournament,setTournament]=useState(null)
+
+  if(role==='manager')
+fetchCurrentTournamentHook(setTournament)
+
+   if(storage.get("user").role==="player" || storage.get("user").role==="manager"){
+  useFetchLatestApprovedTournamentHook(undefined,role,setTournament)
+  }
+
+
+  storage.set('user',{...user,activeStatus:activeStatus})
+
+
+
   if(role==="player"){
 
 useFetchLatestApprovedTournamentHook(setActiveStatus,role)
@@ -35,11 +52,15 @@ useFetchLatestApprovedTournamentHook(setActiveStatus,role)
   if(role==="manager"){
     useFetchLatestApprovedTournamentHook(setActiveStatus,role)
   }
-
-  console.log("activeStatus",activeStatus);
-  console.log(user,"I am the user","My role is ",role)
+if(tournament && new Date(tournament.tournamentDate)>=new Date() && tournament.status.toLowerCase()!='completed'){
+  tournament && updateTournamentInfo({...tournament,status:'live'})
+}
+//if(tournament){
+  useEffect(()=>{
+ tournament && setActiveStatus(tournament.status.toLowerCase()==='completed'?false:true)
+  },[tournament])
   
-
+//}
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
