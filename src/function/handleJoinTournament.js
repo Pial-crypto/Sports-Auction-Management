@@ -2,15 +2,23 @@ import storage from "@/class/storage";
 import { savePlayerRequest } from "./savePlayerRequest";
 import fetchAllReq from "./getAllreq";
 import { saveTeamRequest } from "./saveTeamRequest";
+import { formatDateOnly } from "./formatDateOnly";
 
 // Check tournament status
 export const getStatus = (tournament) => {
   if (!tournament.registrationDeadline || isNaN(new Date(tournament.registrationDeadline))) {
     return "active";
   }
-  const deadline = new Date(tournament.registrationDeadline).toISOString();
-  const now = new Date().toISOString();
-  return deadline > now ? "active" : "completed";
+  const deadline = new Date(tournament.registrationDeadline)
+  const now = new Date()
+
+
+const isSameOrFutureDay = formatDateOnly(deadline) >= formatDateOnly(now);
+
+console.log("Date only comparison:", isSameOrFutureDay);
+console.log(formatDateOnly(deadline),"Time and date",formatDateOnly(now)," " ,tournament.name)
+
+  return (isSameOrFutureDay && tournament.status.toLowerCase()!='completed') ? "active" : "completed";
 };
 
 // Handle join request click

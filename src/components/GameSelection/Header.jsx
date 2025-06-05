@@ -16,14 +16,21 @@ const HeaderComponents = ({ selectedView, formData }) => {
 const user = storage.get("user");
 let [forceRender,setForceRender] = useState(false);
 const {activeStatus} = storage.get("user");
-const [alreadyCreated,setAlreadyCreated]=useState(activeStatus)
+const [alreadyCreated,setAlreadyCreated]=useState(false)
 
 console.log(activeStatus,alreadyCreated,"Active states")
   const handlePublishCall = async () => {
    
+
+    if(activeStatus){
+      console.log("ARe you active bruh")
+      setError("Finish your current tournament to create a new one");
+      return
+    }
     if(!alreadyCreated){
-      handlePublish(formData,setError,MIN_REGISTRATION_FEE,setForceRender)
- setAlreadyCreated(true)
+   
+      handlePublish(formData,setError,MIN_REGISTRATION_FEE,setAlreadyCreated)
+ //setAlreadyCreated(true)
     }else {
       setError("Finish your current tournament to create a new one");
     }

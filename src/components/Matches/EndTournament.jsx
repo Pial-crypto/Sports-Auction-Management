@@ -4,10 +4,10 @@ import { GiTrophyCup } from 'react-icons/gi';
 import { useState } from 'react';
 import { updateTournamentInfo } from '@/function/updateTournamentInfo';
 import storage from '@/class/storage';
-import { useRouter } from 'next/router';
+
 //import { toast } from 'react-hot-toast';
 
-const EndTournament = ({ tournament,setSnackbar}) => {
+const EndTournament = ({ tournament,setSnackbar,router}) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => setOpen(true);
@@ -23,16 +23,22 @@ const EndTournament = ({ tournament,setSnackbar}) => {
         activeStatus: false
       });
       
-      setSnackbar({
-  open: true,
-  message: 'Tournament ended successfylly',
-  severity: 'success',
-});
-      handleClose();
-      useRouter().push('/TournamentManagement')
+//       setSnackbar({
+//   open: true,
+//   message: 'Tournament ended successfylly',
+//   severity: 'success',
+// });
+     // handleClose();
+     router.push("/TournamentManagement")
     }
     } catch (error) {
      // toast.error('Failed to end tournament');
+           
+      setSnackbar({
+  open: true,
+  message: 'Failed to end the tournament',
+  severity: 'error',
+});
       console.error(error);
     }
   };

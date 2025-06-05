@@ -41,17 +41,17 @@ console.log(createdBy,"createdBy")
         numberOfTeams:numberOfTeams||0,
         rules:rules||"N/A",
         tournamentIcon:tournamentIcon||"",
-        gameType:gameType||"",
+        gameType:gameType||"N/A",
         match:match||0,
         status:"Upcoming",
-        winner:winner||"",
-        createdBy:createdBy||"",
+        winner:winner||"not decided yet now",
+        createdBy:createdBy||"N/A",
         budget:budget||5000,
         venueBudget:venueBudget||0,
         equipmentBudget:equipmentBudget||0,
         staffBudget:staffBudget||0,
-        registrationDeadline:registrationDeadline||new Date(),
-        auctionDate:auctionDate||new Date()
+        registrationDeadline:new Date(registrationDeadline)||new Date(),
+        auctionDate:new Date(auctionDate)||new Date()
       }
     });
 

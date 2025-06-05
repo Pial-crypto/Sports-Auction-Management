@@ -1,6 +1,6 @@
 import storage from '@/class/storage';
 const DEFAULT_TOURNAMENT_ICON = "https://images.unsplash.com/photo-1522778119026-d647f0596c20";
-const createTournament = async (formData) => {
+const createTournament = async (formData,setIsAlreadyCreated) => {
   try {
     const user = storage.get("user");
     console.log(user.id, "userid");
@@ -27,6 +27,7 @@ const {updatedUser} = data;
       
 
       storage.set("user", updatedUser);
+      setIsAlreadyCreated(true)
       //setForceRender(true);
       // Handle success (e.g., redirect or clear form)
     } else {

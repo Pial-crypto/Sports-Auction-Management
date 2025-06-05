@@ -29,14 +29,20 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
     auctionDate: formData.auctionDate || null
   };
 
-  const handleDateChange = (field) => (newValue) => {
-    if (newValue && dayjs.isDayjs(newValue)) {
-      setFormData(prev => ({
-        ...prev,
-        [field]: newValue
-      }));
-    }
-  };
+const handleDateChange = (field) => (newValue) => {
+  if (newValue && dayjs.isDayjs(newValue)) {
+    // Normalize the date to avoid timezone issues
+    const normalizedDate = newValue
+      .startOf('day')  // Set to start of day
+      .add(12, 'hour') // Add 12 hours to ensure proper date handling
+      .format('YYYY-MM-DD');  // Format as YYYY-MM-DD
+    
+    setFormData(prev => ({
+      ...prev,
+      [field]: normalizedDate
+    }));
+  }
+};
 
   return (
     <Fade in={true} timeout={500}>
@@ -80,40 +86,58 @@ const CreateTournament = ({ createTournamentSteps, formData, setFormData }) => {
                           <Grid container spacing={2}>
                             <Grid item xs={12}>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                  label="Tournament Start Date"
-                                  value={defaultDates.tournamentDate}
-                                  onChange={handleDateChange('tournamentDate')}
-                                  sx={{ width: '100%', mb: 2 }}
-                                  slotProps={{ textField: { required: true } }}
-                                  minDate={dayjs()}
-                                />
+  <DatePicker
+                  label="Tournament Start Date"
+                  value={dayjs(defaultDates.tournamentDate)}
+                  onChange={handleDateChange('tournamentDate')}
+                  sx={{ width: '100%', mb: 2 }}
+                  slotProps={{ 
+                    textField: { 
+                      required: true,
+                      helperText: "Select when the tournament will start"
+                    } 
+                  }}
+                  minDate={dayjs()}
+                  format="DD/MM/YYYY"
+                />
                               </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12}>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                  label="Registration Deadline"
-                                  value={defaultDates.registrationDeadline}
-                                  onChange={handleDateChange('registrationDeadline')}
-                                  sx={{ width: '100%', mb: 2 }}
-                                  slotProps={{ textField: { required: true } }}
-                                  minDate={dayjs()}
-                                  maxDate={defaultDates.tournamentDate || dayjs()}
-                                />
+   <DatePicker
+                  label="Registration Deadline"
+                  value={dayjs(defaultDates.registrationDeadline)}
+                  onChange={handleDateChange('registrationDeadline')}
+                  sx={{ width: '100%', mb: 2 }}
+                  slotProps={{ 
+                    textField: { 
+                      required: true,
+                      helperText: "Must be before tournament start date"
+                    } 
+                  }}
+                  minDate={dayjs()}
+                  maxDate={dayjs(defaultDates.tournamentDate)}
+                  format="DD/MM/YYYY"
+                />
                               </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12}>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                  label="Auction Date"
-                                  value={defaultDates.auctionDate}
-                                  onChange={handleDateChange('auctionDate')}
-                                  sx={{ width: '100%', mb: 2 }}
-                                  slotProps={{ textField: { required: true } }}
-                                  maxDate={defaultDates.tournamentDate || dayjs()}
-                                  minDate={defaultDates.registrationDeadline || dayjs()}
-                                />
+   <DatePicker
+                  label="Auction Date"
+                  value={dayjs(defaultDates.auctionDate)}
+                  onChange={handleDateChange('auctionDate')}
+                  sx={{ width: '100%', mb: 2 }}
+                  slotProps={{ 
+                    textField: { 
+                      required: true,
+                      helperText: "Must be after registration and before tournament"
+                    } 
+                  }}
+                  minDate={dayjs(defaultDates.registrationDeadline)}
+                  maxDate={dayjs(defaultDates.tournamentDate)}
+                  format="DD/MM/YYYY"
+                />
                               </LocalizationProvider>
                             </Grid>
                           </Grid>

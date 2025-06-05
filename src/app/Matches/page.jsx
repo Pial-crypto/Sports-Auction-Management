@@ -34,6 +34,7 @@ import TournamentNotStarted from '@/components/Common/tournamentNotStarted';
 import EndTournament from '@/components/Matches/EndTournament';
 import { CommonSnackBar } from '@/components/SnackBar';
 import NoTeamAvailable from '@/components/Common/NoTeamAvailable';
+import { useRouter } from "next/navigation"; // ✅ correct import for app router
 
 
 
@@ -62,6 +63,8 @@ const [playerPerformances,setPlayerPerformances]=useState([])
     message: '',
     severity: 'info', // can be 'success', 'error', 'warning', 'info'
   });
+
+  const router=useRouter();
   // New Match Template
   const newMatchTemplate = {
     team1: {
@@ -128,12 +131,7 @@ const [playerPerformances,setPlayerPerformances]=useState([])
 
 fetchPlayerPerformancesHook(setPlayerPerformances,tournament)
 
-//console.log('Player performances',playerPerformances)
 
-//console.log("dats",tournament.tournamentDate,new Date)
-
-//  tournament && console.log(      new Date(tournament.tournamentDate)<new Date(),"The date")
-  //console.log(new Date(tournament.tournamentDate),"  ",new Date())
 
 if(!tournament){
   return(
@@ -166,7 +164,7 @@ if(!tournamentTeams || tournamentTeams.length==0){
                   // Align with Create Match button
                 }}
               >
-                <EndTournament tournament={tournament} setSnackbar={setSnackbar} />
+                <EndTournament tournament={tournament} setSnackbar={setSnackbar} router={router}/>
               </Box>
             )}
         <MatchStatistics matches={matches} tournament={tournament}/>

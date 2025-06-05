@@ -10,10 +10,10 @@ export async function POST(req) {
 
     const { title, description, category, tournamentId } = body;
 
-    console.log(tournamentId, "tournamentId");
-    console.log(category, "category");
-    console.log(title, "title");
-    console.log(description, "description");
+    // console.log(tournamentId, "tournamentId");
+    // console.log(category, "category");
+    // console.log(title, "title");
+    // console.log(description, "description");
 
     // Ensure the data contains the necessary fields
     if (!title || !description || !category || !tournamentId) {

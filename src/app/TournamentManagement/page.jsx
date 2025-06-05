@@ -22,6 +22,7 @@ import Footer from '@/components/Footer/Footer';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 import { updateTournamentInfo } from '@/function/updateTournamentInfo';
+import { formatDateOnly } from '@/function/formatDateOnly';
 
 const TournamentManagement = () => {
   const user = storage.get("user");
@@ -48,18 +49,21 @@ const TournamentManagement = () => {
  // }, [role]);
 
   // ✅ Update activeStatus from role
-  useEffect(() => {
-    if (role === "player" || role === "manager") {
-      useFetchLatestApprovedTournamentHook(setActiveStatus, role);
-    }
-  }, [role]);
+ // useEffect(() => {
+  //  if (role === "player" || role === "manager") {
+     // useFetchLatestApprovedTournamentHook(setActiveStatus, role);
+   // }
+  //}, [role]);
+
+  tournament && console.log("tournamet",tournament)
 
   // ✅ Tournament status logic
   useEffect(() => {
     if (!tournament) return;
 
     console.log("Balllllldsfasdfasdfsadfdsfa");
-    const tournamentDate = new Date(tournament.tournamentDate);
+    
+    const tournamentDate =    new Date(tournament.tournamentDate)
     const now = new Date();
     const isTournamentStarted = !isNaN(tournamentDate) && tournamentDate <= now;
 
