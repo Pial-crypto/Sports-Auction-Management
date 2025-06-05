@@ -66,20 +66,22 @@ user.role==='organizer'|| user.role==='manager'  ?  (
 
 
   export  const handleLogout = (setLoading,setTimeout,setSnackbar,setLogoutDialog,router) => {
-    setLoading(true);
-    setTimeout(() => {
-      storage.clear();
-      setSnackbar({
-        open: true,
-        message: "Successfully logged out!",
-        severity: "success",
-      });
-      setLogoutDialog(false);
-      setLoading(false);
+    // setLoading(true);
+    // setTimeout(() => {
+    //   storage.clear();
+    //   setSnackbar({
+    //     open: true,
+    //     message: "Successfully logged out!",
+    //     severity: "success",
+    //   });
+    //   //setLogoutDialog(false);
+    //   //setLoading(false);
+    
+    // }, 1000);
+
       storage.clear()
     
       router.push("/auth/login");
-    }, 1000);
   };
 
   export  const handleSectionChange = (section,setLogoutDialog,setSelectedSection) => {

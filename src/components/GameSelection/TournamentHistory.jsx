@@ -11,6 +11,10 @@ const TournamentHistory = ({ tournamentHistory }) => {
   fetchAllTournamentsHook(setAllTournamentHistory,undefined,allTournamentHistory)
 
   console.log(allTournamentHistory,"i am inside my tournament history")
+
+  
+
+
   return (
     <Fade in={true} timeout={500}>
       <Grid container spacing={3}>

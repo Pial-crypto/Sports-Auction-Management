@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Container,
@@ -20,47 +20,70 @@ import scheduleCardsDisabled from '@/constants/TournamentManagement/scheduleCard
 import teamManagerCardInactive from '@/constants/TournamentManagement/TeamManagerCardsInactive';
 import Footer from '@/components/Footer/Footer';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
-import fetchCurrentTournament from '@/function/fetchCurrentTournament';
 import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 import { updateTournamentInfo } from '@/function/updateTournamentInfo';
 
 const TournamentManagement = () => {
-  const user=storage.get("user")
-  const {role}=user
-  //const {activeStatus}=user
-  const [activeStatus,setActiveStatus]=useState(user.activeStatus);
- 
-  const [tournament,setTournament]=useState(null)
+  const user = storage.get("user");
+  const { role } = user;
 
-  if(role==='manager')
-fetchCurrentTournamentHook(setTournament)
+  const [tournament, setTournament] = useState(null);
+  const [activeStatus, setActiveStatus] = useState(user.activeStatus);
 
-   if(storage.get("user").role==="player" || storage.get("user").role==="manager"){
-  useFetchLatestApprovedTournamentHook(undefined,role,setTournament)
-  }
+  // ✅ Use effect to fetch tournament
+ // useEffect(() => {
 
+    if(role=='organizer'){
+       fetchCurrentTournamentHook(setTournament);
+    }
+  else  if (role === "manager") {
+     
+      useFetchLatestApprovedTournamentHook(undefined, role, setTournament);
+    }
 
-  storage.set('user',{...user,activeStatus:activeStatus})
+  else  if (role === "player") {
+      useFetchLatestApprovedTournamentHook(undefined, role, setTournament);
+    }
 
+ // }, [role]);
 
+  // ✅ Update activeStatus from role
+  useEffect(() => {
+    if (role === "player" || role === "manager") {
+      useFetchLatestApprovedTournamentHook(setActiveStatus, role);
+    }
+  }, [role]);
 
-  if(role==="player"){
+  // ✅ Tournament status logic
+  useEffect(() => {
+    if (!tournament) return;
 
-useFetchLatestApprovedTournamentHook(setActiveStatus,role)
-  }
+    console.log("Balllllldsfasdfasdfsadfdsfa");
+    const tournamentDate = new Date(tournament.tournamentDate);
+    const now = new Date();
+    const isTournamentStarted = !isNaN(tournamentDate) && tournamentDate <= now;
 
-  if(role==="manager"){
-    useFetchLatestApprovedTournamentHook(setActiveStatus,role)
-  }
-if(tournament && new Date(tournament.tournamentDate)>=new Date() && tournament.status.toLowerCase()!='completed'){
-  tournament && updateTournamentInfo({...tournament,status:'live'})
-}
-//if(tournament){
-  useEffect(()=>{
- tournament && setActiveStatus(tournament.status.toLowerCase()==='completed'?false:true)
-  },[tournament])
-  
-//}
+    console.log("IS started", isTournamentStarted);
+
+    if (!isTournamentStarted && tournament.status.toLowerCase() !== 'completed') {
+      updateTournamentInfo({ ...tournament, status: 'UPCOMING' });
+    }
+
+    if (isTournamentStarted && tournament.status.toLowerCase() !== 'completed') {
+      console.log("Bal falai");
+      updateTournamentInfo({ ...tournament, status: 'LIVE' });
+    }
+
+    setActiveStatus(tournament.status.toLowerCase() !== 'completed');
+
+  }, [tournament]);
+
+  // ✅ Update local storage when activeStatus changes
+  useEffect(() => {
+    storage.set('user', { ...user, activeStatus });
+  }, [activeStatus]);
+
+  // UI part
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -78,45 +101,35 @@ if(tournament && new Date(tournament.tournamentDate)>=new Date() && tournament.s
       case "manager":
         return activeStatus ? teamManagerCards : teamManagerCardInactive;
       default:
-        return activeStatus?scheduleCards:scheduleCardsDisabled;
+        return activeStatus ? scheduleCards : scheduleCardsDisabled;
     }
   };
-  
-  const cardItems = getCardItems(role);
-  
 
+  const cardItems = getCardItems(role);
 
   return (
-  <>
-  <StyledContainer>
-    <NavBar activePage={"Tournaments"}></NavBar>
-    <Container>
-      <ContentWrapper>
-    <Box sx={{ position: 'relative' }}>
-     
-      
-        <Container maxWidth="xl">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {/* Header Card */}
-          <HeaderCard></HeaderCard>
-
-            {/* Stats Cards */}
-         <StatsCards activeStatus={activeStatus} cardItems={cardItems}></StatsCards>
-
-            {/* Player Cards */}
-           <PlayerCards></PlayerCards>
-          </motion.div>
+    <>
+      <StyledContainer>
+        <NavBar activePage={"Tournaments"} />
+        <Container>
+          <ContentWrapper>
+            <Box sx={{ position: 'relative' }}>
+              <Container maxWidth="xl">
+                <motion.div
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <HeaderCard />
+                  <StatsCards activeStatus={activeStatus} cardItems={cardItems} />
+                  <PlayerCards />
+                </motion.div>
+              </Container>
+            </Box>
+          </ContentWrapper>
         </Container>
-    
-    </Box>
-    </ContentWrapper>
-    </Container>
-    </StyledContainer>
-    <Footer></Footer>
+      </StyledContainer>
+      <Footer />
     </>
   );
 };

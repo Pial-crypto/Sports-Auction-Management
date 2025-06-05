@@ -74,10 +74,16 @@ export const StatusChip = styled(Chip)(({ status }) => {
     UPCOMING: '#f59e0b',
     COMPLETED: '#6366f1',
     CANCELLED: '#ef4444',
+      live: '#10b981',
+    active: '#10b981',
+    upcoming: '#f59e0b',
+    completed: '#6366f1',
+    cancelled: '#ef4444',
+
   };
   
   return {
-    backgroundColor: alpha(colors[status], 0.1),
+   // backgroundColor: alpha(colors[status], 0.1),
     color: colors[status],
     fontWeight: 'bold',
   };

@@ -41,6 +41,10 @@ import { fetchPlayerForSpecificTeamHook } from '@/hook/fetchSpecificTeamPlayersH
 import getAllAuction from '@/function/getAllAuction';
 import { data } from 'react-router-dom';
 import { fetchCurrentTeamForPlayerHook } from '@/hook/fetchTeamForPlayerHook';
+import NoMatchStarted from '@/components/Common/NoMatchStarted';
+import NoTeamForYou from '@/components/Common/NoTeamForYou';
+import { myTeamPlayerPerformances } from '@/function/handlePlayerManagement';
+import NoMatchOfYourTeam from '@/components/Common/NoMatchOfYourTeam';
 
 
 // Register ChartJS components
@@ -264,8 +268,18 @@ const chartOptions = {
     },
   },
 };
+console.log()
+
+  if(!myTeam){
+    return <NoTeamForYou></NoTeamForYou>
+  }
+//console.log("myteam",myTeam)
+if(!myMatches || myMatches.length==0){
+  return <NoMatchOfYourTeam></NoMatchOfYourTeam>
+}
 
   return (
+    
     <MainContainer>
       <Fade in={!loading} timeout={1000}>
         <Box>
@@ -309,6 +323,7 @@ loading={loading}
       <LoadingStage></LoadingStage>
       )}
     </MainContainer>
+    
   );
 };
 

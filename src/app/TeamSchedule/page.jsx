@@ -23,6 +23,7 @@ import { SessionCard } from '@/components/TeamSchedule/SessionCard';
 import { fetchPracticeSessionsForTeamTheTournamentAndTeamHook } from '@/hook/fetchPracticeSessionForTheTournamentAndTeamHook';
 import { DeleteConfirmDialog } from '@/components/TeamSchedule/DeleteConfirmDialog';
 import { fetchCurrentTeamForPlayerHook } from '@/hook/fetchTeamForPlayerHook';
+import NoTeamForYou from '@/components/Common/NoTeamForYou';
 
 
 const TeamSchedule = () => {
@@ -64,7 +65,9 @@ if(user.role==='player'){
 
 
   
-  
+  if(!myTeam){
+    return <NoTeamForYou></NoTeamForYou>
+  }
 
 
 
@@ -73,8 +76,7 @@ if(user.role==='player'){
 
 
   return (
-
-    matches.length>0 && tournament && myTeam &&
+ tournament && myTeam &&
     <MainContainer>
       <Box sx={{ maxWidth: 1200, margin: '0 auto' }}>
        <Header></Header>

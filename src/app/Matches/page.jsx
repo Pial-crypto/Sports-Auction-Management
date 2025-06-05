@@ -33,6 +33,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TournamentNotStarted from '@/components/Common/tournamentNotStarted';
 import EndTournament from '@/components/Matches/EndTournament';
 import { CommonSnackBar } from '@/components/SnackBar';
+import NoTeamAvailable from '@/components/Common/NoTeamAvailable';
 
 
 
@@ -122,6 +123,9 @@ const [playerPerformances,setPlayerPerformances]=useState([])
 },[tournament]);
 
 
+
+
+
 fetchPlayerPerformancesHook(setPlayerPerformances,tournament)
 
 //console.log('Player performances',playerPerformances)
@@ -139,6 +143,10 @@ if(!tournament){
   )
 }
 
+
+if(!tournamentTeams || tournamentTeams.length==0){
+  return <NoTeamAvailable></NoTeamAvailable>
+}
   return (
 
     <>{

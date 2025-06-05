@@ -9,7 +9,7 @@ const fetchCurrentTournament = async () => {
     //console.log(id, "id");
     return data.find((item) => {
         const status = item.status.toLowerCase();
-        return (status === "active" || status === "upcoming" || status === "live") && item.createdBy === id;
+        return (status.toLowerCase() === "active" || status.toLowerCase() === "upcoming" || status.toLowerCase() === "live") && item.createdBy === id;
     });
 };
 export default fetchCurrentTournament;
