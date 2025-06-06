@@ -29,4 +29,4 @@ async def predict_rf_cric(input_data: dict):
     prediction = float(prediction)
 
     # Return the prediction in a JSON response
-    return JSONResponse(content={"prediction": prediction})
+    return JSONResponse(content={"Base value": float(prediction)})
