@@ -5,7 +5,24 @@ import pandas as pd
 
 router = APIRouter()
 
-# Load your trained model
+## api endpoint http://127.0.0.1:8000/predict/rf_cric
+# form for json 
+# {
+#   'mat',
+#  'runs',
+#  'hs',
+#  'avg',
+#  '50',
+#  '100',
+#  'balls',
+#  'wkt',
+#  'bbi',
+#  'ave',
+#  '5wi',
+#  'ca',
+#  'st',
+# }
+#
 rfr_model = joblib.load('models/rf_Cric.pkl')
 feature_names = joblib.load('models/cric_feature_names.pkl')
 
