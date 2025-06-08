@@ -71,6 +71,10 @@ const Login = () => {
     { Icon: Sports, delay: 0.6, color: '#95E1D3' },
   ];
 
+  const handleGoogleSignIn = () => {
+    signIn('google', { callbackUrl: '/' });
+  };
+
   return (
     <Box
       sx={containerStyles}
@@ -131,6 +135,17 @@ const Login = () => {
             setShowPassword={setShowPassword}
           />
           <SocialOptions></SocialOptions>
+
+          {/* Google Sign-In Button */}
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Google />}
+            onClick={handleGoogleSignIn}
+            sx={{ mt: 2, width: '100%' }}
+          >
+            Sign in with Google
+          </Button>
 
         <AuthFooter></AuthFooter>
 
