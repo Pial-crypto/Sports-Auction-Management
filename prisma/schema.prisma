@@ -22,6 +22,7 @@ model User {
   role         String   
   activeStatus Boolean      @default(false)
   tournaments  Tournament[] // Relation field
+  player       Player?
 }
 
 model Tournament {
@@ -246,4 +247,11 @@ model PlayerPerformance {
   goals        Int    @default(0)
   assists      Int    @default(0)
   cards        String @default("none")
+}
+model Player {
+  id        String   @id
+  basePrice Float?
+
+  // Relation to User
+  user      User     @relation(fields: [id], references: [id], onDelete: Cascade)
 }
