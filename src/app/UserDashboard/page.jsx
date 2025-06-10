@@ -295,6 +295,14 @@ export default function Page() {
                       >
                         Edit
                       </Button>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() => router.push("/predict-options")}
+                        sx={{ ml: 1, borderRadius: 2, textTransform: "none", bgcolor: "#4caf50" }}
+                      >
+                        Predict Base Price
+                      </Button>
                     </Box>
                   ) : (
                     <Box sx={{ mt: 1, display: "flex", gap: 1, width: "100%", justifyContent: "center" }}>
