@@ -11,12 +11,12 @@ export async function GET(_req) {
     });
    
     // If no biddings exist
-    if (!allBiddings || allBiddings.length === 0) {
-      return NextResponse.json(
-        { error: "No biddings found" },
-        { status: 404 }
-      );
-    }
+    // if (!allBiddings || allBiddings.length === 0) {
+    //   return NextResponse.json(
+    //     { error: "No biddings found" },
+    //     { status: 404 }
+    //   );
+    // }
 
     // Return a success response with biddings data
     return NextResponse.json(

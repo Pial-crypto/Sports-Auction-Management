@@ -9,7 +9,9 @@ export default async function getAllBidding() {
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.message || 'Failed to fetch biddings');
+
+           // console.log('Error fetching biddings:', error);
+            //throw new Error(error);
         }
 
         const data = await response.json();

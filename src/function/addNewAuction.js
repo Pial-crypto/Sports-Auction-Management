@@ -15,7 +15,7 @@ export const addNewAuction = async (auctionData) => {
     console.log(data, "Response from addAuction");
 
     if (response.ok) {
-      alert("Auction added successfully!");
+      //alert("Auction added successfully!");
       
     } else {
       alert(data.error || "Failed to add auction");

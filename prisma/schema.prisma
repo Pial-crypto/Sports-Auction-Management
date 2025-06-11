@@ -172,6 +172,7 @@ model Auction{
   teamId String @default("N/A")
   teamName String @default("N/A")
   soldStatus Boolean @default(false)
+  amount Int @default(0)
 }
 
 model tournamentAuctionStatus{
