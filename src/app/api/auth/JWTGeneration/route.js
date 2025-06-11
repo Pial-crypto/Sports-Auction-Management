@@ -16,7 +16,7 @@ export async function POST(req) {
 
   // Generate JWT token
   try {
-    console.log(process.env.JWT_SECRET,"Pppppp0pp")
+    console.log(process.env.JWT_SECRET,"json declared")
     const token = jwt.sign({ email }, process.env.JWT_SECRET , {
       expiresIn: '7d', // Token expiration time
     });
