@@ -1,7 +1,7 @@
 import React, {  } from "react";
 import { Box, Button, Divider, Grid } from "@mui/material";
 import { Google, Facebook } from '@mui/icons-material';
-import { supabase } from '@/utils/supabaseClient';
+// import { supabase } from '@/utils/supabaseClient';
 
 const SocialOptions=()=>{
     return(

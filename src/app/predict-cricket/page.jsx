@@ -106,6 +106,7 @@ export default function PredictCricket() {
                     value={formData.mat}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -117,6 +118,7 @@ export default function PredictCricket() {
                     value={formData.runs}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -128,6 +130,7 @@ export default function PredictCricket() {
                     value={formData.hs}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -139,6 +142,7 @@ export default function PredictCricket() {
                     value={formData.avg}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -150,6 +154,7 @@ export default function PredictCricket() {
                     value={formData["50"]}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -161,6 +166,7 @@ export default function PredictCricket() {
                     value={formData["100"]}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -172,6 +178,7 @@ export default function PredictCricket() {
                     value={formData.balls}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -183,6 +190,7 @@ export default function PredictCricket() {
                     value={formData.wkt}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -194,6 +202,7 @@ export default function PredictCricket() {
                     value={formData.bbi}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -205,6 +214,7 @@ export default function PredictCricket() {
                     value={formData.ave}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -216,6 +226,7 @@ export default function PredictCricket() {
                     value={formData["5wi"]}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -227,6 +238,7 @@ export default function PredictCricket() {
                     value={formData.ca}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -238,6 +250,7 @@ export default function PredictCricket() {
                     value={formData.st}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
               </Grid>

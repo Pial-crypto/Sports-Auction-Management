@@ -1,5 +1,5 @@
 "use client";
-import { supabase } from '@/utils/supabaseClient';
+// import { supabase } from '@/utils/supabaseClient';
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Divider, Grid, Snackbar, Alert } from "@mui/material";
 import LoginForm from "@/components/LoginForm/LoginForm";

@@ -39,7 +39,7 @@ export default function PredictFootball() {
     games_injured: "",
     award: "",
     highest_value: "",
-    position: "",
+    position_encoded: "",
   });
 
   const positions = [
@@ -81,34 +81,44 @@ export default function PredictFootball() {
     setError("");
     setPrediction(null);
 
-    // Convert position to one-hot encoding
-    const positionData = {};
-    positions.forEach((pos) => {
-      positionData[pos] = pos === formData.position ? 1 : 0;
-    });
-
     const requestData = {
-      ...formData,
-      ...positionData,
-      position_encoded: positions.indexOf(formData.position),
+      ...formData
     };
 
     try {
-      const response = await fetch("/api/predict/xgboost", {
+      // Convert all form values to numbers
+      const numericData = Object.fromEntries(
+        Object.entries(requestData).map(([key, value]) => [key, Number(value)])
+      );
+
+      console.log('Sending request data:', numericData);
+
+      const response = await fetch("http://127.0.0.1:8000/predict/xgboost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(numericData),
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error("Failed to get prediction");
+        const errorData = await response.json().catch(() => null);
+        console.error('Error response:', errorData);
+        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Success response:', data);
+
+      if (!data.prediction && data.prediction !== 0) {
+        throw new Error("Invalid prediction response from server");
+      }
       setPrediction(data.prediction);
     } catch (err) {
+      console.error('Fetch error:', err);
       setError(err.message || "An error occurred while getting the prediction");
     } finally {
       setLoading(false);
@@ -140,6 +150,7 @@ export default function PredictFootball() {
                     value={formData.height}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -151,6 +162,7 @@ export default function PredictFootball() {
                     value={formData.age}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -162,6 +174,7 @@ export default function PredictFootball() {
                     value={formData.appearance}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -173,6 +186,7 @@ export default function PredictFootball() {
                     value={formData.goals}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -184,6 +198,7 @@ export default function PredictFootball() {
                     value={formData.assists}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -195,6 +210,7 @@ export default function PredictFootball() {
                     value={formData.yellow_cards}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -206,6 +222,7 @@ export default function PredictFootball() {
                     value={formData.second_yellow_cards}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -217,6 +234,7 @@ export default function PredictFootball() {
                     value={formData.red_cards}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -228,6 +246,7 @@ export default function PredictFootball() {
                     value={formData.clean_sheets}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -239,6 +258,7 @@ export default function PredictFootball() {
                     value={formData.minutes_played}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -250,6 +270,7 @@ export default function PredictFootball() {
                     value={formData.days_injured}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -261,6 +282,7 @@ export default function PredictFootball() {
                     value={formData.games_injured}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -272,6 +294,7 @@ export default function PredictFootball() {
                     value={formData.award}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -283,24 +306,21 @@ export default function PredictFootball() {
                     value={formData.highest_value}
                     onChange={handleInputChange}
                     required
+                    inputProps={{ min: 0 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl fullWidth required>
-                    <InputLabel>Position</InputLabel>
-                    <Select
-                      name="position"
-                      value={formData.position}
-                      onChange={handleInputChange}
-                      label="Position"
-                    >
-                      {positions.map((pos) => (
-                        <MenuItem key={pos} value={pos}>
-                          {pos.split("_").join(" ").toUpperCase()}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <TextField
+                    fullWidth
+                    label="Number of Positions"
+                    name="position_encoded"
+                    type="number"
+                    value={formData.position_encoded}
+                    onChange={handleInputChange}
+                    required
+                    inputProps={{ min: 0, max: 13 }}
+                    helperText="Enter the number of positions the player can play (0-13)"
+                  />
                 </Grid>
               </Grid>
 
