@@ -2,7 +2,42 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 import joblib
 import pandas as pd
-
+## api endpoint http://127.0.0.1:8000/predict/xgboost
+# form for json 
+#  {
+#   "height": 189,
+#   "age": 32,
+#   "appearance": 104,
+#   "goals": 0,
+#   "assists": 0,
+#   "yellow_cards": 0,
+#   "second_yellow_cards": 0,
+#   "red_cards": 0,
+#   "clean_sheets": 25,
+#   "minutes_played": 9390,
+#   "days_injured": 30,
+#   "games_injured": 4,
+#   "award": 2,
+#   "highest_value": 70000000,
+#   "position_encoded": 1,
+#   "winger": 0,
+#   "attack": 0,
+#   "attack_leftwinger": 0,
+#   "attack_rightwinger": 0,
+#   "attack_secondstriker": 0,
+#   "attack_centre_forward": 0,
+#   "defender_centre_back": 0,
+#   "defender_left_back": 0,
+#   "defender_right_back": 0,
+#   "goalkeeper": 1,
+#   "midfield": 0,
+#   "midfield_attackingmidfield": 0,
+#   "midfield_centralmidfield": 0,
+#   "midfield_defensivemidfield": 0,
+#   "midfield_leftmidfield": 0,
+#   "midfield_rightmidfield": 0
+# }
+#
 router = APIRouter()
 
 # Load your trained model

@@ -12,6 +12,7 @@ const COLORS = {
 };
 
 const PlayerCard = ({ player }) => (
+  player &&
   <Box sx={{ p: 3, bgcolor: 'white', borderRadius: 2, boxShadow: 1 }}>
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 4 }}>
       <Avatar 

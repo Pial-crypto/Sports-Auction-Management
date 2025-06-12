@@ -34,6 +34,9 @@ const JoinTournament = () => {
     severity: 'info', // can be 'success', 'error', 'warning', 'info'
   });
 
+
+
+
   const role=storage.get('user').role;
   //console.log(role,"role")
   // Fetch tournaments

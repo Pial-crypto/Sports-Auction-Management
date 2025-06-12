@@ -1,4 +1,5 @@
 "use client";
+// import { supabase } from '@/utils/supabaseClient';
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Divider, Grid, Snackbar, Alert } from "@mui/material";
 import LoginForm from "@/components/LoginForm/LoginForm";
@@ -15,6 +16,18 @@ import AuthHeader from "@/components/LoginForm/AuthHeader";
 import FloatingIcons from "@/components/SignUp/FloatingSportsIcons";
 import { ValidateLogin } from "@/function/validateLogin";
 import SnackbarAlert from "@/components/LoginForm/SnackBarComponent";
+const handleGoogleSignIn = async () => {
+  await supabase.auth.signInWithOAuth({ provider: 'google' });
+};
+<Button
+  variant="contained"
+  color="primary"
+  startIcon={<Google />}
+  onClick={handleGoogleSignIn}
+  sx={{ mt: 2, width: '100%' }}
+>
+  Sign in with Google
+</Button>
 
 const Login = () => {
   console.log(process.env.GOOGLE_CLIENT_ID,"process.env.GOOGLE_CLIENT_ID")

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import {
   Box,
   Grid,
@@ -12,7 +12,6 @@ import storage from '@/class/storage';
 import { fetchPlayerQueueForAuctionHook } from '@/hook/fetchPlayerQueueForAuctionHook';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import AuctionPhaseProgress from './AuctionPhaseProgress';
 import AvailablePlayerQueue from './AvailablePlayerQueue';
 import SoldPlayers from './SoldPlayers';
@@ -22,12 +21,15 @@ import BidDialog from './BidDialog';
 import PlayerSelectionDialog from './PlayerSelectionDialog';
 import { io } from 'socket.io-client';
 import BidChart from './BidChart';
-import fetchAllTeamReq from '@/function/getAllTeamReq';
 import { addNewAuction } from '@/function/addNewAuction';
-import { markAuctionStatus } from '@/function/markAuctionStatusFinished';
-import { pl } from 'date-fns/locale';
 import saveBidding from '@/function/saveBidding';
 import getAllBidding from '@/function/getAllBidding';
+import { fetchCurrentTeamForManagerHook } from '@/hook/fetchCurrentTeamForManagerHook';
+import { useFetchApprovedTeamOfTournament } from '@/hook/fetchAllTeamReqHookOfTournament';
+import { isToday } from '@/function/isToday';
+import { fetchAuctionState } from '@/function/fetchAuctionState';
+import { fetchAuctionStateHook } from '@/hook/fetchAuctionStateHook';
+
 
 // Socket instance
 let socket;
@@ -44,52 +46,38 @@ const AuctionMain = () => {
   const [selectPlayerDialog, setSelectPlayerDialog] = useState(false);
   const [tournament, setTournament] = useState(null);
   const [bidHistory, setBidHistory] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [isBiddingActive, setIsBiddingActive] = useState(false);
-  const [players, setPlayers] = useState(DUMMY_PLAYERS);
+  const [players, setPlayers] = useState([]);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(null);
   const [callPlayerHook,setCallPlayerHook]=useState(true)
-  //const [tournamentIdFromServer,settournamentIdFromServer]=useState(null)
-  // Snackbar for notifications
+  const [teamList,setTeamList]=useState([])
+  
+
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success'
   });
 
-  const allTeamReq=async()=>{
-    const allTeamReqResponse=await fetchAllTeamReq();
-    const allTeamReqList=allTeamReqResponse.allTeamReq;
-
-    console.log(allTeamReqList,"Here is all of the team requests")
-    if(tournament){
-      console.log("Tournament id",tournament.id,"Userid",user.id)
-      
-    const myownTeam=allTeamReqList.find((item)=>item.managerId==user.id && item.tournamentId==tournament.id && item.approved)
-    setMyTeam(myownTeam)
-    console.log("This is my team",myTeam)
-  }
-}
-useEffect(()=>{
-allTeamReq()
-},[tournament])
  
 
-if (tournament) {
-  getAllBidding().then((data) => {
-    if(data){
-    const currentAvailableBidding = data
-      .filter(item => item.tournamentId === tournament.id)
-      .map(item => ({
-        ...item,
-        team: item.teamName,
-        time: new Date(item.createdAt).toLocaleTimeString(),
-      }));
+if(userRole === 'organizer' ){
+useFetchApprovedTeamOfTournament(tournament,setTeamList)
 
-    setBidHistory(currentAvailableBidding);
-    }
-  });
 }
+
+if(userRole === 'manager'){
+ fetchCurrentTeamForManagerHook(tournament,setMyTeam)
+}
+
+
+
+
+fetchAuctionStateHook(tournament,setCurrentPlayerIndex,setBidHistory)
+
+
 
 
 
@@ -98,11 +86,6 @@ if (tournament) {
   // Function to end bidding
   const endBidding = () => {
 
-  //  if (!isBiddingActive) return;
-  
-    
-
-   // console.log(bidHistory,"inside end bidding why i am being cleared")
     if (bidHistory.length > 0) {
 
      
@@ -116,14 +99,12 @@ if (tournament) {
         soldTo: winner.team
       };
 
-      //console.log("before emitting updated players",updatedPlayers)
-     //const currentPlayer=players[currentPlayerIndex]
-      //console.log(players[currentPlayerIndex],"The current player")
+
       socket.emit('current_queue',updatedPlayers)
       setPlayers(updatedPlayers);
       console.log("I am the winner",winner)
       if(userRole=='organizer'){
-        //console.log(myTeam,"My team is here")
+       
         const currentPlayer= players[currentPlayerIndex]
         const auctionData = {
           playerId: currentPlayer.playerId,
@@ -132,7 +113,8 @@ if (tournament) {
          createdAt: new Date(),        // optional, default: now()
           teamId: winner.id,            // optional, default: "N/A"
           teamName: winner.team,         // optional, default: "N/A"
-         soldStatus:true   // optional, default: "Unsold"
+         soldStatus:true,   // optional, default: "Unsold"
+         amount: winner.amount, // optional, default: 0
         };
     
         addNewAuction(auctionData)
@@ -152,110 +134,91 @@ if (tournament) {
       });
     }
 
-    setIsBiddingActive(false);
+    
+  
   };
  
 
   useEffect(() => {
+
+    if (!tournament || !user || players.length==0) return;
     socket = io("http://localhost:3001");
-    //socket.emit('current_queue',players);
+    socket.emit("join_tournament", tournament.id);
+    const playersObj={
+      players: players,
+      tournamentId: tournament.id,
+    }
+    socket.emit("players", playersObj);
+    console.log("This is the players in the auction main component",players)
+  
 
-    socket.on("initial_state", (state) => {
-      
-      if (state.msg === 0 || state.msg !== null) {
-        setCallPlayerHook(false)
-        setCurrentPlayerIndex(state.msg);
-        if (state.timeLeft >= 0) setTimeLeft(state.timeLeft);
-        setIsBiddingActive(true);
-        setCurrentBid(players[state.msg]?.basePrice || 5000);
-        setSelectPlayerDialog(false);
-        //console.log("After reloading the current queue",state.currentQueue)
-        setPlayers(state.currentQueue)
-      //  console.log("There is the initial state",)
-        
+  socket.on("receiveTimeLeft", (serverTimeLeft) => {
+  setTimeLeft(serverTimeLeft);
+});
 
-        if (state.bidHistory?.length > 0) {
-          if(state.timeLeft >= 0){
-          setBidHistory(state.bidHistory);
-          setCurrentBid(state.bidHistory[0].amount)
-          }
-           
-              
-          
-        }
-      }
-      else{
-        setCallPlayerHook(true)
-      }
-      
-        // Fetch player queue
-  // fetchPlayerQueueForAuctionHook(tournament, setPlayers,);
-      
-      if (state.End) {
-        endBidding();
-        state.End!=state.End
-      }
-    });
+    socket.on("receive_message", (msg) => {
 
-    socket.on("receive_message", (index) => {
+   
+    
+      if(msg.tournament.id == tournament?.id ) { 
+      const index=msg.message;
       setCurrentPlayerIndex(index);
-      setTimeLeft(60);
-      setIsBiddingActive(true);
-      setCurrentBid(players[index]?.basePrice || 5000);
+       setCurrentBid(players[index]?.basePrice || 5000);
       setBidHistory([]);
       setSelectPlayerDialog(false);
+
+          
+    setSnackbar({
+      open: true,
+      message: `${players[index]?.name} is up for bidding! Starting price: $${players[index]?.basePrice || 5000}`,
+      severity: 'info'
+    });
+      }
     });
 
     socket.on("receiveIsBidEnd", (End) => {
-      if (End) {
+      if(tournament.id===End.tournament.id){
+      if (End.isEnd) {
         endBidding();
       }
+    }
     });
 
     socket.on("receiveNewBid", (bidData) => {
+      if(bidData.tournament.id===tournament.id){
+        console.log("Received new bid:", bidData);
       const newBid = {
-        team: bidData.team,
-        amount: bidData.amount,
+        team: bidData.bidData.team,
+        amount: bidData.bidData.amount,
         time: new Date().toLocaleTimeString()
       };
       setBidHistory(prevHistory => [newBid, ...prevHistory]);
-      setCurrentBid(bidData.amount);
+      setCurrentBid(bidData.bidData.amount);
+
+          setBidDialog(false);
+    setBidAmount('');
+
+    }
     });
 
     return () => socket.disconnect();
-  }, []);
+  }, [tournament,players]);
 
 
-  // Update server with current bid history when it changes
-  useEffect(() => {
-    if (isBiddingActive && bidHistory.length > 0) {
-      socket.emit('bid_history', bidHistory);
-    }
-  }, [bidHistory, isBiddingActive]);
 
-  // Update server with time left
-  useEffect(() => {
-    if (isBiddingActive) {
-      socket.emit('time_left', timeLeft);
-    }
-  }, [timeLeft, isBiddingActive]);
 
   // Timer effect
   useEffect(() => {
-    if (isBiddingActive && timeLeft > 0) {
-      socket.emit('current_queue',players)
-      const timer = setInterval(() => {
-        setTimeLeft(prev => prev - 1);
-      }, 1000);
-      return () => clearInterval(timer);
-    } else if (timeLeft === 0 && isBiddingActive) {
+    if ( timeLeft > 0) {
+   ///nothing to do here
+    } else if (timeLeft <= 0 ) {
     //  console.log("Before ending the bid")
       endBidding();
     }
   }, [timeLeft, isBiddingActive]);
   
   const sendMessage = (message) => {
-    socket.emit("send_message", message);
+    socket.emit("send_message", {message, tournament:tournament,senderId:user.id});
   };
 
 
@@ -264,7 +227,7 @@ if (tournament) {
   if (userRole === "player" || userRole === "manager") {
 
     useFetchLatestApprovedTournamentHook(undefined, userRole, setTournament, undefined);
-
+    
   }
   
   if (userRole === "organizer") {
@@ -275,20 +238,9 @@ if (tournament) {
  
 
   const handleSelectPlayer = (index) => {
-    setCurrentPlayerIndex(index);
-    setTimeLeft(60);
-    setIsBiddingActive(true);
-    setCurrentBid(players[index]?.basePrice || 5000);
-    setBidHistory([]);
-    setSelectPlayerDialog(false);
-    
+
     sendMessage(index);
-    
-    setSnackbar({
-      open: true,
-      message: `${players[index]?.name} is up for bidding! Starting price: $${players[index]?.basePrice || 5000}`,
-      severity: 'info'
-    });
+
   };
 
   const sendBidInfo = () => {
@@ -318,34 +270,29 @@ if (tournament) {
       
     };
 
+console.log("This is my team" ,myTeam,"This is the bid data",bidData)
 
-
-    saveBidding({teamId:myTeam.teamId,teamName:myTeam.teamName,amount:bidValue,playerId:players[currentPlayerIndex].playerId,tournamentId:tournament.id})
+    saveBidding({teamId:myTeam.id,teamName:myTeam.teamName,amount:bidValue,playerId:players[currentPlayerIndex].playerId,tournamentId:tournament.id})
     .then((response) => {
-      console.log("Bidding saved successfully:", response);
+     // alert("Bidding saved successfully:", response);
+      //console.log("Bidding saved successfully:", response);
     })
 
-    socket.emit("sendNewBid", bidData);
-    setBidDialog(false);
-    setBidAmount('');
+    socket.emit("sendNewBid", {bidData:bidData,tournament:tournament});
+
   };
 
   const handleEndBidding = () => {
 
    
 
-    console.log("Before going to endBidding", bidHistory);
-    
-     socket.emit("bid_history", bidHistory);
     if (userRole === "organizer" && isBiddingActive) {
       console.log("inside organizer bidder");
-      socket.emit("sendIsBidEnd", true);
+      socket.emit("sendIsBidEnd", {isEnd:true,tournament:tournament});
     }
   };
 
-  if (!tournament) {
-    return <Box sx={{ p: 4 }}>Unfortunately you are not accepted in any tournament...</Box>;
-  }
+
 
   return (
     <Box sx={{ 
@@ -354,7 +301,9 @@ if (tournament) {
       minHeight: '100vh'
     }}>
       <AuctionPhaseProgress 
-        isBiddingActive={isBiddingActive}
+   activePhase={players.every(player => player.status === 'sold') ? 2 : 1}
+
+        isBiddingActive={timeLeft<=0 ? false : true}
         timeLeft={timeLeft}
         players={players}
       />
@@ -370,7 +319,7 @@ if (tournament) {
 
         <Grid item xs={12} md={6}>
           <CurrentAuctionSection 
-            isBiddingActive={isBiddingActive}
+            isBiddingActive={timeLeft<=0 ? false : true}
             timeLeft={timeLeft}
             currentPlayerIndex={currentPlayerIndex}
             players={players}

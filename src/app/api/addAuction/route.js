@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 export async function POST(request) {
   try {
     const data = await request.json();
+    console.log("Received data:", data);
 
     console.log(data,"Here is the auction data")
 
@@ -16,7 +17,7 @@ export async function POST(request) {
         teamId: data.teamId || "N/A",
         teamName: data.teamName || "N/A",
         soldStatus: data.soldStatus || false,
-        
+        amount: parseInt(data.amount) || 0,
 
       },
     });
