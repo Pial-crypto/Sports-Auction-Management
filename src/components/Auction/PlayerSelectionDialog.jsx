@@ -7,7 +7,6 @@ import { COLORS } from './AuctionConstants';
 import { PersonAdd, SportsCricket } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Close } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
 
 
 const getInitials = (name) => {
