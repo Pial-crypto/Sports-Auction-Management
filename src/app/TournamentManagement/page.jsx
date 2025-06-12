@@ -61,7 +61,7 @@ const TournamentManagement = () => {
   useEffect(() => {
     if (!tournament) return;
 
-    console.log("Balllllldsfasdfasdfsadfdsfa");
+    //console.log("Balllllldsfasdfasdfsadfdsfa");
     
     const tournamentDate =    new Date(tournament.tournamentDate)
     const now = new Date();
@@ -69,11 +69,11 @@ const TournamentManagement = () => {
 
     console.log("IS started", isTournamentStarted);
 
-    if (!isTournamentStarted && tournament.status.toLowerCase() !== 'completed') {
+    if (!isTournamentStarted && tournament.status.toLowerCase() !== 'completed' && tournament.status.toLowerCase() !== 'upcoming') {
       updateTournamentInfo({ ...tournament, status: 'UPCOMING' });
     }
 
-    if (isTournamentStarted && tournament.status.toLowerCase() !== 'completed') {
+    if (isTournamentStarted && tournament.status.toLowerCase() !== 'completed' && tournament.status.toLowerCase()!='live') {
       console.log("Bal falai");
       updateTournamentInfo({ ...tournament, status: 'LIVE' });
     }

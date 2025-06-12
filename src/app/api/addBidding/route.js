@@ -5,6 +5,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const { teamId, playerId, teamName, amount, tournamentId } = body;
+    console.log("Received data:", body);
 
     // Validate required fields
     if (!teamId || !playerId || !teamName || !amount || !tournamentId) {

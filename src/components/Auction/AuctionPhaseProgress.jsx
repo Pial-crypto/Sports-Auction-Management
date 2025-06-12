@@ -18,7 +18,6 @@ import {
 } from '@mui/icons-material';
 import { AUCTION_PHASES, COLORS, PHASE_DETAILS } from './AuctionConstants';
 
-
 const getIconComponent = (iconName) => {
   switch (iconName) {
     case 'PersonAdd': return <PersonAdd />;
@@ -30,26 +29,34 @@ const getIconComponent = (iconName) => {
   }
 };
 
-const AuctionPhaseProgress = ({ isBiddingActive, timeLeft,players }) => {
-  if(players.length === 0){
-    PHASE_DETAILS['Complete'].color=COLORS.success;
-    PHASE_DETAILS['Bidding'].color=COLORS.secondary
-  }
+const AuctionPhaseProgress = ({ isBiddingActive, timeLeft, players, activePhase }) => {
+  // Get current phase color based on index
+  const getPhaseColor = (phaseIndex) => {
+    if (phaseIndex < activePhase) {
+      return COLORS.success; // completed phases in green
+    } else if (phaseIndex === activePhase) {
+      return COLORS.primary; // active phase in blue
+    }
+    return COLORS.secondary; // upcoming phases in gray
+  };
+
   return (
     <Box sx={{ mb: 4 }}>
-      <Stepper activeStep={isBiddingActive ? 2 : 1}>
-        {AUCTION_PHASES.map((phase) => (
-          
+      <Stepper activeStep={activePhase}>
+        {AUCTION_PHASES.map((phase, index) => (
           <Step key={phase}>
             <StepLabel
               StepIconProps={{
                 sx: {
-                  color: PHASE_DETAILS[phase].color,
+                  color: getPhaseColor(index)
                 }
               }}
               icon={getIconComponent(PHASE_DETAILS[phase].icon)}
             >
-              <Typography sx={{ color: PHASE_DETAILS[phase].color }}>
+              <Typography sx={{ 
+                color: getPhaseColor(index),
+                fontWeight: activePhase === index ? 600 : 400 
+              }}>
                 {PHASE_DETAILS[phase].title}
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -68,9 +75,9 @@ const AuctionPhaseProgress = ({ isBiddingActive, timeLeft,players }) => {
           mt: 2,
           height: 6,
           borderRadius: 3,
-          bgcolor: alpha(PHASE_DETAILS[isBiddingActive ? 'Bidding' : 'Registration'].color, 0.1),
+          bgcolor: alpha(COLORS.success, 0.1),
           '& .MuiLinearProgress-bar': {
-            bgcolor: PHASE_DETAILS[isBiddingActive ? 'Bidding' : 'Registration'].color,
+            bgcolor: COLORS.success
           }
         }}
       />
@@ -78,4 +85,4 @@ const AuctionPhaseProgress = ({ isBiddingActive, timeLeft,players }) => {
   );
 };
 
-export default AuctionPhaseProgress; 
+export default AuctionPhaseProgress;
