@@ -1,31 +1,22 @@
-import prisma from "@/lib/prisma";
-import bcrypt from "bcryptjs";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { register } from '@/controllers/authController';
+
 export async function POST(req) {
-    try{
-        console.log("requst is going on")
-const body=await req.json();
-const {name,email,password,role,activeStatus}=body;
-const existingUser=await prisma.user.findUnique({where:{email}})
-
-if(existingUser){
-    return NextResponse.json({error:"User already exist"},{status:400})
-
-}
-
-const hashedPassowrd=await bcrypt.hash(password,10);
-
-const newUser=await prisma.user.create(
-    {
-        data:{
-            name,email,password:hashedPassowrd,role,activeStatus
-        }
-    }
-)
-return NextResponse.json({message:"Registration successfull",user:{newUser,id:newUser.id}},{status:201});
-
-     }catch(error){
-        console.log(error)
-        return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
-     }
+  try {
+    const body = await req.json();
+    const mockRes = {
+      status: (statusCode) => ({
+        json: (data) => {
+          return NextResponse.json(data, { status: statusCode });
+        },
+        send: (message) => {
+          return NextResponse.json({ message }, { status: statusCode });
+        },
+      }),
+    };
+    
+    return await register(req, mockRes);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

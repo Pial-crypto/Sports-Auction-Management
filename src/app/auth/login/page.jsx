@@ -18,7 +18,7 @@ import { ValidateLogin } from "@/function/validateLogin";
 import SnackbarAlert from "@/components/LoginForm/SnackBarComponent";
 
 const Login = () => {
-  console.log(process.env.GOOGLE_CLIENT_ID,"process.env.GOOGLE_CLIENT_ID")
+  // console.log(process.env.GOOGLE_CLIENT_ID,"process.env.GOOGLE_CLIENT_ID")
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);

@@ -1,4 +1,6 @@
 "use client";
+import { useState } from 'react';
+
 import React from "react";
 import { motion } from "framer-motion";
 import { Grid, Container } from "@mui/material";
@@ -13,7 +15,17 @@ import { BoxContainer } from "@/style/SignUp";
 const Register = () => {
 
  
-
+  const [preview, setPreview] = useState(null);
+  const [file, setFile] = useState(null);
+  
+  const handleImageChange = (e) => {
+    const selected = e.target.files[0];
+    if (selected) {
+      setFile(selected);
+      setPreview(URL.createObjectURL(selected));
+    }
+  };
+  
   return (
     <BoxContainer
       component={motion.div}
