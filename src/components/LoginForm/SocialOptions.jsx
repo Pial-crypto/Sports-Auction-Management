@@ -1,7 +1,6 @@
-import React, {  } from "react";
+import React from "react";
 import { Box, Button, Divider, Grid } from "@mui/material";
 import { Google, Facebook } from '@mui/icons-material';
-import { supabase } from '@/utils/supabaseClient';
 
 const SocialOptions=()=>{
     return(
@@ -18,7 +17,7 @@ const SocialOptions=()=>{
         
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
-                        <Button onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
+                        <Button 
                           variant="outlined" 
                           fullWidth
                           startIcon={<Google />}
