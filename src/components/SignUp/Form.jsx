@@ -112,7 +112,7 @@ const RegisterFormComponent = () => {
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               
               {/* Profile Picture Upload */}
-              <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              {/* <div style={{ textAlign: 'center', marginBottom: '20px' }}>
                 <label htmlFor="profilePic" style={{ cursor: 'pointer' }}>
                   {preview ? (
                     <img
@@ -152,7 +152,7 @@ const RegisterFormComponent = () => {
                   onChange={handleImageChange}
                   style={{ display: 'none' }}
                 />
-              </div>
+              </div> */}
 
               {/* Full Name Field */}
               <Controller

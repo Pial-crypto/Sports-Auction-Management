@@ -18,12 +18,12 @@ export async function register(req) {
   try {
     const { email, password } = await req.json();
 
-    if (!email.endsWith('@sust.edu')) {
-      return new Response(JSON.stringify({ error: 'Only SUST emails allowed' }), { 
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    // if (!email.endsWith('@sust.edu')) {
+    //   return new Response(JSON.stringify({ error: 'Only SUST emails allowed' }), { 
+    //     status: 400,
+    //     headers: { 'Content-Type': 'application/json' }
+    //   });
+    // }
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
