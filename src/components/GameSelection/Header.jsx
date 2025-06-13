@@ -9,11 +9,9 @@ import { validateForm } from '@/function/validateCreateTournamentForm';
 import { handlePublish } from '@/function/handleTournamentPublicaiton';
 import storage from '@/class/storage';
 const MIN_REGISTRATION_FEE = 100;
-const DEFAULT_TOURNAMENT_ICON = "https://images.unsplash.com/photo-1522778119026-d647f0596c20";
 
 const HeaderComponents = ({ selectedView, formData }) => {
   const [error, setError] = useState(null);
-const user = storage.get("user");
 let [forceRender,setForceRender] = useState(false);
 const {activeStatus} = storage.get("user");
 const [alreadyCreated,setAlreadyCreated]=useState(false)

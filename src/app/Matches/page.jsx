@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -21,20 +21,18 @@ import { handleConfirmDelete,
   handleMatchDetails, 
   handleSaveEdit, 
   handleViewDetails } from '@/function/handleMatchesPage';
-import fetchAllTeamReq from '@/function/getAllTeamReq';
 import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 import { fetchCurrentTournamentMatchesHook } from '@/hook/fetchCurrentTournamentMatchesHook';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 import storage from '@/class/storage';
-import { getAllPlayerPerformance } from '@/function/fetchAllPlayerPerformance';
 import { fetchPlayerPerformancesHook } from '@/hook/fetchPlayerPerformancesHook';
 import dayjs from 'dayjs';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TournamentNotStarted from '@/components/Common/tournamentNotStarted';
 import EndTournament from '@/components/Matches/EndTournament';
 import { CommonSnackBar } from '@/components/SnackBar';
 import NoTeamAvailable from '@/components/Common/NoTeamAvailable';
 import { useRouter } from "next/navigation"; // ✅ correct import for app router
+import { fetchAllTeamsForTheTournamentHook } from '@/hook/fetchAllTeamsForTheTournamentHook';
 
 
 
@@ -112,18 +110,7 @@ const [playerPerformances,setPlayerPerformances]=useState([])
 
  fetchCurrentTournamentMatchesHook(tournament,setMatches,undefined);
    
-  useEffect(() => {
-
-      fetchAllTeamReq().then(teamData => 
-        {
-          console.log(teamData, "teamData from ");
-      if(tournament){
-      const thisTournamentTeam= teamData.allTeamReq.filter(team => team.tournamentId === tournament.id && team.approved  );
-      console.log(thisTournamentTeam, "thisTournamentTeam");
-      setTournamentTeams(thisTournamentTeam);
-      }
-    });
-},[tournament]);
+fetchAllTeamsForTheTournamentHook(tournament,setTournamentTeams)
 
 
 

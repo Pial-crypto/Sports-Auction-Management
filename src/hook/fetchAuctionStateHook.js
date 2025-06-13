@@ -5,7 +5,8 @@ export const fetchAuctionStateHook = (tournament,setCurrentPlayerIndex,setBidHis
     useEffect(() => {
 fetchAuctionState(tournament?.id).then((data) => {
   if (data) {
-    setCurrentPlayerIndex(data.currentPlayerIndex || 0);
+    console.log("Fetching auction state for tournament:", data);
+    setCurrentPlayerIndex(data.currentPlayerIndex || null);
     setBidHistory(data.bidHistory || []);
     
     console.log("✅ Auction state fetched:", data);

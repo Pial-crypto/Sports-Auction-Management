@@ -15,6 +15,7 @@ import {
 } from '@mui/icons-material';
 import { StyledCard, PriorityChip, COLORS } from '@/style/Announcements';
 import formatDateWithTime from '@/function/formateDatewithTime';
+import storage from '@/class/storage';
 
 const AnnouncementCard = ({ announcement, onEdit, onDelete }) => {
   const isValidDate = (dateString) => {
@@ -69,12 +70,13 @@ const AnnouncementCard = ({ announcement, onEdit, onDelete }) => {
         >
           {announcement.content}
         </Typography>
-
+{ storage.get('user').role!=='player' &&( 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="caption" color="text.secondary">
             Posted by {announcement.author} • {isValidDate(announcement.timestamp) ? formatDateWithTime(announcement.timestamp) : announcement.timestamp}
           </Typography>
           <Box sx={{ display: 'flex', gap: 1 }}>
+            
             <Tooltip title="Edit">
               <IconButton
                 size="medium"
@@ -90,7 +92,7 @@ const AnnouncementCard = ({ announcement, onEdit, onDelete }) => {
               </IconButton>
             </Tooltip>
             <Tooltip title="Delete">
-              <IconButton
+            <IconButton
                 size="medium"
                 sx={{ 
                   bgcolor: alpha(COLORS.error, 0.08),
@@ -102,9 +104,14 @@ const AnnouncementCard = ({ announcement, onEdit, onDelete }) => {
               >
                 <Delete sx={{ color: COLORS.error, fontSize: 22 }} />
               </IconButton>
+          
+
+
             </Tooltip>
           </Box>
         </Box>
+)
+}
       </CardContent>
     </StyledCard>
   );

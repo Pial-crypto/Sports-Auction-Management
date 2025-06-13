@@ -301,7 +301,12 @@ const savePlayerPerformance = async (editMatchPerf, tournament, teamId, matchId)
 
 
 
-
+    const stagePriority={
+      'League Match':1,
+     'Quarter Final':2,
+     'Semi Final':3,
+     'Final':4,
+    }
 
 
 
@@ -361,12 +366,7 @@ else{
 
 
   export const getCurrentStage=(matches)=>{
-      const stagePriority={
-      'League Match':1,
-     'Quarter Final':2,
-     'Semi Final':3,
-     'Final':4,
-    }
+  
 
      let maxStage= 'League Match';
 
@@ -544,7 +544,7 @@ export const getAvgScore = (matches, tournament) => {
     });
   }
 
-  return count > 0 ? (total / count).toFixed(2) : "N/A";
+  return count > 0 ? (total / count).toFixed(2) : 0;
 };
 
 
@@ -586,7 +586,7 @@ export const getHighestScore = (matches, tournament) => {
 
   console.log("Highest score found:", highest); 
 
-  return highest > 0 ? highest : "N/A";
+  return highest > 0 ? highest : 0;
 };
 
 
@@ -620,6 +620,6 @@ export const getAvgWicket = (matches, tournament) => {
 
 
 
-  return count > 0 ? (total / count).toFixed(2) : "N/A";
+  return count > 0 ? (total / count).toFixed(2) : 0;
 };
 

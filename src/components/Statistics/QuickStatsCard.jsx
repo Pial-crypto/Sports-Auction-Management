@@ -18,7 +18,7 @@ import {
 import { StyledCard } from '@/style/statistics';
 import { getCurrentStage, getHighestScore } from '@/function/handleMatchesPage';
 
-export const QuickStatsCard=({tournament,matches})=>{
+export const QuickStatsCard=({tournament,matches,tournamentTeams})=>{
 
    // console.log("QuickStatsCard",tournament,matches)
      return(
@@ -30,14 +30,14 @@ export const QuickStatsCard=({tournament,matches})=>{
           {
             icon: <People sx={{ fontSize: 40 }} />,
             label: 'Participating Teams',
-            value: tournament?.numberOfTeams,
+            value: tournamentTeams.length,
             color: '#3b82f6',
             subText: 'Active Teams in Tournament'
           },
           {
             icon: <SportsCricket sx={{ fontSize: 40 }} />,
             label: 'Total Matches',
-          value: `${matches?.filter(match => match.status?.toLowerCase() === 'completed').length}/${matches.length}`,
+          value: matches?.filter(match => match.status?.toLowerCase() === 'completed').length/matches.length,
 
             color: '#10b981',
             subText: 'Matches Completed'
@@ -45,7 +45,7 @@ export const QuickStatsCard=({tournament,matches})=>{
           {
             icon: <TrendingUp sx={{ fontSize: 40 }} />,
             label: 'Highest Score',
-            value: getHighestScore(matches,tournament && tournament),
+            value: getHighestScore(matches,tournament && tournament) || 0,
             color: '#f59e0b',
             subText: 'Tournament Best'
           },

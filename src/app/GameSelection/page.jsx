@@ -13,7 +13,6 @@ import TournamentHistory from '@/components/GameSelection/TournamentHistory';
 import CreateTournament from '@/components/GameSelection/CreateTournament';
 import SideBarItem from '@/components/GameSelection/SideBarItem';
 import HeaderComponents from '@/components/GameSelection/Header';
-import dayjs from 'dayjs';
 
 export default function TournamentManagement() {
   const [selectedView, setSelectedView] = useState('CREATE');
