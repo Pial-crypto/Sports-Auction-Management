@@ -285,7 +285,7 @@ export default function Page() {
                           transition: "color 0.3s",
                         }}
                       >
-                        ${marketValue}
+                        ৳{(parseFloat(marketValue) / 1).toFixed(2)} L
                       </Typography>
                       <Button
                         size="small"

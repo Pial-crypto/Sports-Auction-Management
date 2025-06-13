@@ -1,5 +1,5 @@
 "use client";
-import { supabase } from '@/utils/supabaseClient';
+// import { supabase } from '@/utils/supabaseClient';
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Divider, Grid, Snackbar, Alert } from "@mui/material";
 import LoginForm from "@/components/LoginForm/LoginForm";
@@ -16,21 +16,9 @@ import AuthHeader from "@/components/LoginForm/AuthHeader";
 import FloatingIcons from "@/components/SignUp/FloatingSportsIcons";
 import { ValidateLogin } from "@/function/validateLogin";
 import SnackbarAlert from "@/components/LoginForm/SnackBarComponent";
-const handleGoogleSignIn = async () => {
-  await supabase.auth.signInWithOAuth({ provider: 'google' });
-};
-<Button
-  variant="contained"
-  color="primary"
-  startIcon={<Google />}
-  onClick={handleGoogleSignIn}
-  sx={{ mt: 2, width: '100%' }}
->
-  Sign in with Google
-</Button>
 
 const Login = () => {
-  console.log(process.env.GOOGLE_CLIENT_ID,"process.env.GOOGLE_CLIENT_ID")
+  // console.log(process.env.GOOGLE_CLIENT_ID,"process.env.GOOGLE_CLIENT_ID")
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -83,6 +71,10 @@ const Login = () => {
     { Icon: SportsVolleyball, delay: 0.4, color: '#FFD93D' },
     { Icon: Sports, delay: 0.6, color: '#95E1D3' },
   ];
+
+  const handleGoogleSignIn = () => {
+    signIn('google', { callbackUrl: '/' });
+  };
 
   return (
     <Box
@@ -144,6 +136,17 @@ const Login = () => {
             setShowPassword={setShowPassword}
           />
           <SocialOptions></SocialOptions>
+
+          {/* Google Sign-In Button */}
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Google />}
+            onClick={handleGoogleSignIn}
+            sx={{ mt: 2, width: '100%' }}
+          >
+            Sign in with Google
+          </Button>
 
         <AuthFooter></AuthFooter>
 

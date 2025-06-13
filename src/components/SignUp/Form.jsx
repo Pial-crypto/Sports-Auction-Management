@@ -51,6 +51,17 @@ const RegisterFormComponent = () => {
    const [message, setMessage] = useState(null); // Alert message
    const [severity, setSeverity] = useState("success"); // "success" | "error"
    const [loading, setLoading] = useState(false); // Loading state
+   const [preview, setPreview] = useState(null);
+   const [file, setFile] = useState(null);
+
+   const handleImageChange = (e) => {
+     const selected = e.target.files[0];
+     if (selected) {
+       setFile(selected);
+       setPreview(URL.createObjectURL(selected));
+     }
+   };
+
    const onSubmit = async (data) => {
     console.log("inside submit",data);
     const newUser = {
@@ -59,6 +70,7 @@ const RegisterFormComponent = () => {
       password: data.password,
       role: data.role,
       activeStatus:false,
+      profilePicture: file,
     };
   
    
@@ -99,6 +111,49 @@ const RegisterFormComponent = () => {
    <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               
+              {/* Profile Picture Upload */}
+              <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                <label htmlFor="profilePic" style={{ cursor: 'pointer' }}>
+                  {preview ? (
+                    <img
+                      src={preview}
+                      alt="Profile"
+                      style={{
+                        width: '100px',
+                        height: '100px',
+                        objectFit: 'cover',
+                        borderRadius: '50%',
+                        border: '2px solid #ccc'
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: '100px',
+                        height: '100px',
+                        backgroundColor: '#eee',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: '12px',
+                        border: '2px dashed #aaa',
+                        margin: '0 auto'
+                      }}
+                    >
+                      Upload Photo
+                    </div>
+                  )}
+                </label>
+                <input
+                  id="profilePic"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                />
+              </div>
+
               {/* Full Name Field */}
               <Controller
                 name="fullName"
