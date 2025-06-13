@@ -14,20 +14,19 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  role      String   @default("user")
-  name      String?
-
-  // Relations
-  teamId    Int?
-  team      Team?    @relation(fields: [teamId], references: [id])
-  bids      Bid[]
-  tournaments Tournament[]
-  players   Player[]
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  password     String
+  createdAt    DateTime     @default(now())
+  role         String       @default("user")
+  activeStatus Boolean      @default(false)
+  verified     Boolean      @default(false)
+  teamId       Int?
+  team         Team?        @relation(fields: [teamId], references: [id])
+  tournaments  Tournament[]
+  player       Player?
+  bids         Bid[]
 }
 
 model Team {
@@ -55,19 +54,15 @@ model Tournament {
 }
 
 model Auction {
-  id          Int      @id @default(autoincrement())
-  playerName  String
-  basePrice   Float
-  currentBid  Float?
-  status      String   @default("active") // active, sold, cancelled
-  createdAt   DateTime @default(now())
-  
-  // Relations
-  teamId      Int?
-  team        Team?    @relation(fields: [teamId], references: [id])
-  tournamentId Int
-  tournament  Tournament @relation(fields: [tournamentId], references: [id])
-  bids        Bid[]
+  id String @id @default(cuid())
+  playerId String
+  tournamentId String
+  createdAt DateTime @default(now())
+  managerId String @default("N/A")
+  teamId String @default("N/A")
+  teamName String @default("N/A")
+  soldStatus Boolean @default(false)
+  amount Int @default(0)
 }
 
 model Bid {
@@ -266,4 +261,11 @@ model PlayerPerformance {
   goals        Int    @default(0)
   assists      Int    @default(0)
   cards        String @default("none")
+}
+model Player {
+  id        String   @id
+  basePrice Float?
+
+  // Relation to User
+  user      User     @relation(fields: [id], references: [id], onDelete: Cascade)
 }

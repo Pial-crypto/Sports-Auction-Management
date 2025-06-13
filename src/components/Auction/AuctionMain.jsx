@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import {
   Box,
   Grid,
@@ -26,8 +26,11 @@ import { fetchAuctionStateHook } from '@/hook/fetchAuctionStateHook';
 import useSocketHook from '@/hook/socketHook';
 import { timeLeftHook } from '@/hook/timeLeftHook';
 import { endBidding, handleSelectPlayer, sendBidInfo } from '@/function/handleAuctionPage';
-
-
+import { addNewAuction } from '@/function/addNewAuction';
+import saveBidding from '@/function/saveBidding';
+import getAllBidding from '@/function/getAllBidding';
+import { isToday } from '@/function/isToday';
+import { fetchAuctionState } from '@/function/fetchAuctionState';
 
 // Socket instance
 let socket;
@@ -63,32 +66,19 @@ const AuctionMain = () => {
 
 if(userRole === 'organizer' ){
 useFetchApprovedTeamOfTournament(tournament,setTeamList)
-
 }
 
 if(userRole === 'manager'){
  fetchCurrentTeamForManagerHook(tournament,setMyTeam)
 }
 
-
-
-
 fetchAuctionStateHook(tournament,setCurrentPlayerIndex,setBidHistory)
 
+useEffect(() => {
+  socket = io("http://localhost:3001")
+}  ,[tournament,players])
 
-
-
-
-
-
-
-
-
-  useEffect(() => {
-    socket = io("http://localhost:3001")
-  }  ,[tournament,players])
-
-  useSocketHook({
+useSocketHook({
   tournament,
   user,
   players,
@@ -102,25 +92,16 @@ fetchAuctionStateHook(tournament,setCurrentPlayerIndex,setBidHistory)
   setBidDialog,
   setBidAmount,
   socket
-  
 });
- 
 
-
-
-
-timeLeftHook(timeLeft,isBiddingActive,  bidHistory,
+timeLeftHook(timeLeft,isBiddingActive, bidHistory,
   players,
   currentPlayerIndex,
   setPlayers,
   setSnackbar,
   userRole,socket);
 
-
-  
- 
 console.log(players,"This is the players in the auction main component",players)
-
 
   // Fetch tournament data
   if (userRole === "player" || userRole === "manager") {
@@ -136,46 +117,50 @@ console.log(players,"This is the players in the auction main component",players)
   fetchPlayerQueueForAuctionHook(tournament,setPlayers,callPlayerHook)
  
 
- 
+  const handleSelectPlayer = (index) => {
 
-//   const sendBidInfo = () => {
-//     console.log("Before sending bit info",myTeam)
-//     const bidValue = Number(bidAmount);
-//     if (bidValue <= currentBid) {
-//       setSnackbar({
-//         open: true,
-//         message: 'Bid amount must be higher than current bid',
-//         severity: 'error'
-//       });
-//       return;
-//     }
- 
-//     console.log("This is my team",myTeam)
+    sendMessage(index);
+
+  };
+
+  const sendBidInfo = () => {
+    console.log("Before sending bit info",myTeam)
+    const bidValue = Number(bidAmount);
+    if (bidValue <= currentBid) {
+      setSnackbar({
+        open: true,
+        message: 'Bid amount must be higher than current bid',
+        severity: 'error'
+      });
+      return;
+    }
+
+    console.log("This is my team",myTeam)
   
-//     const bidData = {
-//       amount: bidValue,
-//       team: myTeam.teamName,
-//       managerId:myTeam.managerId,
-//       teamId:myTeam.teamId,
+    const bidData = {
+      amount: bidValue,
+      team: myTeam.teamName,
+      managerId:myTeam.managerId,
+      teamId:myTeam.teamId,
 
 
-//       //user.teamName || 'Team ' + user.name || 'Unknown Team',
-//       time: new Date().toLocaleTimeString(),
+      //user.teamName || 'Team ' + user.name || 'Unknown Team',
+      time: new Date().toLocaleTimeString(),
 
       
-//     };
+    };
 
-// console.log("This is my team" ,myTeam,"This is the bid data",bidData)
+    console.log("This is my team" ,myTeam,"This is the bid data",bidData)
 
-//     saveBidding({teamId:myTeam.id,teamName:myTeam.teamName,amount:bidValue,playerId:players[currentPlayerIndex].playerId,tournamentId:tournament.id})
-//     .then((response) => {
-//      // alert("Bidding saved successfully:", response);
-//       //console.log("Bidding saved successfully:", response);
-//     })
+    saveBidding({teamId:myTeam.id,teamName:myTeam.teamName,amount:bidValue,playerId:players[currentPlayerIndex].playerId,tournamentId:tournament.id})
+    .then((response) => {
+     // alert("Bidding saved successfully:", response);
+      //console.log("Bidding saved successfully:", response);
+    })
 
-//     socket.emit("sendNewBid", {bidData:bidData,tournament:tournament});
+    socket.emit("sendNewBid", {bidData:bidData,tournament:tournament});
 
-//   };
+  };
 
   const handleEndBidding = () => {
 
@@ -183,7 +168,7 @@ console.log(players,"This is the players in the auction main component",players)
 
     if (userRole === "organizer" && isBiddingActive) {
       console.log("inside organizer bidder");
-      socket && socket.emit("sendIsBidEnd", {isEnd:true,tournament:tournament});
+      socket.emit("sendIsBidEnd", {isEnd:true,tournament:tournament});
     }
   };
 
