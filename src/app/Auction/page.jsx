@@ -27,17 +27,17 @@ const {role}=user;
 
 if (isToday(tournament?.auctionDate)) {
 
-  //console.log("Auction is today!");
+  console.log("Auction is today!");
 } else {
-  //return <NoAuctionAvailable tournament={tournament}></NoAuctionAvailable>
- // console.log("Auction is not today.");
+  return <NoAuctionAvailable tournament={tournament}></NoAuctionAvailable>
+ console.log("Auction is not today.");
 }
-
+//  if(!tournament) 
 
   //console.log(tournament, "tournament");
-  if(!tournament) {
+   if(!tournament) {
     return <TournamentNotStarted tournament={tournament} />;
-  }
+   }
   return <AuctionMain />;
 };
 

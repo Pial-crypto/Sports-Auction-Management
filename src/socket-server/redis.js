@@ -10,3 +10,19 @@ redisClient.connect().then(() => {
 });
 
 module.exports = redisClient;
+// const { createClient } = require("redis");
+
+// const redisClient = createClient();
+
+// // ❗ Handle errors gracefully
+// redisClient.on("error", (err) => {
+//   if (err?.code === "ECONNREFUSED") {
+//     // Suppress or log once if needed
+//     // console.warn("Redis connection refused. Is the Redis server running?");
+//   } else {
+//     console.error("Unexpected Redis error:", err);
+//   }
+// });
+
+
+// module.exports = redisClient;
