@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import BidHistory from './BidHistory';
 import storage from '@/class/storage';
-import { fetchPlayerQueueForAuctionHook } from '@/hook/fetchPlayerQueueForAuctionHook';
+import { fetchPlayerQueueForAuctionHook, useFetchPlayerQueueForAuctionHook } from '@/hook/fetchPlayerQueueForAuctionHook';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 import AuctionPhaseProgress from './AuctionPhaseProgress';
@@ -73,34 +73,34 @@ if(userRole === 'manager'){
  fetchCurrentTeamForManagerHook(tournament,setMyTeam)
 }
 
-fetchAuctionStateHook(tournament,setCurrentPlayerIndex,setBidHistory)
+// fetchAuctionStateHook(tournament,setCurrentPlayerIndex,setBidHistory)
 
-useEffect(() => {
-  socket = io("http://localhost:3001")
-}  ,[tournament,players])
+// useEffect(() => {
+//   socket = io("http://localhost:3001")
+// }  ,[tournament,players])
 
-useSocketHook({
-  tournament,
-  user,
-  players,
-  setCurrentPlayerIndex,
-  setCurrentBid,
-  setBidHistory,
-  setSelectPlayerDialog,
-  setSnackbar,
-  setTimeLeft,
-  endBidding,
-  setBidDialog,
-  setBidAmount,
-  socket
-});
+// useSocketHook({
+//   tournament,
+//   user,
+//   players,
+//   setCurrentPlayerIndex,
+//   setCurrentBid,
+//   setBidHistory,
+//   setSelectPlayerDialog,
+//   setSnackbar,
+//   setTimeLeft,
+//   endBidding,
+//   setBidDialog,
+//   setBidAmount,
+//   socket
+// });
 
-timeLeftHook(timeLeft,isBiddingActive, bidHistory,
-  players,
-  currentPlayerIndex,
-  setPlayers,
-  setSnackbar,
-  userRole,socket);
+// timeLeftHook(timeLeft,isBiddingActive, bidHistory,
+//   players,
+//   currentPlayerIndex,
+//   setPlayers,
+//   setSnackbar,
+//   userRole,socket);
 
 console.log(players,"This is the players in the auction main component",players)
 
@@ -115,7 +115,7 @@ console.log(players,"This is the players in the auction main component",players)
     fetchCurrentTournamentHook(setTournament, undefined);
   }
   
-  fetchPlayerQueueForAuctionHook(tournament,setPlayers,callPlayerHook)
+  useFetchPlayerQueueForAuctionHook(tournament,setPlayers,callPlayerHook)
  
 
   // const handleSelectPlayer = (index) => {

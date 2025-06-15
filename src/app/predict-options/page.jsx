@@ -32,14 +32,14 @@ export default function PredictOptions() {
               }
             }}
           >
-            <CardActionArea onClick={() => router.push("/predict-cricket")}>
+            <CardActionArea onClick={() => router.push("/predict-football")}>
               <CardContent sx={{ textAlign: "center", p: 4 }}>
-                <SportsCricket sx={{ fontSize: 80, color: "#4caf50", mb: 2 }} />
+                <SportsSoccer sx={{ fontSize: 80, color: "#2196f3", mb: 2 }} />
                 <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
-                  Cricket Player
+                  Football Player
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  Predict base price for cricket players based on their performance statistics
+                  Predict base price for football players based on their performance statistics
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -57,14 +57,14 @@ export default function PredictOptions() {
               }
             }}
           >
-            <CardActionArea onClick={() => router.push("/predict-football")}>
+            <CardActionArea onClick={() => router.push("/predict-cricket")}>
               <CardContent sx={{ textAlign: "center", p: 4 }}>
-                <SportsSoccer sx={{ fontSize: 80, color: "#2196f3", mb: 2 }} />
+                <SportsCricket sx={{ fontSize: 80, color: "#4caf50", mb: 2 }} />
                 <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
-                  Football Player
+                  Cricket Player
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  Predict base price for football players based on their performance statistics
+                  Predict base price for cricket players based on their performance statistics
                 </Typography>
               </CardContent>
             </CardActionArea>

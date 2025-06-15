@@ -2,6 +2,7 @@
 import storage from '@/class/storage';
 import NoAuctionAvailable from '@/components/Auction/NoAuctionAvailable';
 import TournamentNotStarted from '@/components/Common/tournamentNotStarted';
+import fetchbasePrice from '@/function/fetchbasePrice';
 import { isToday } from '@/function/isToday';
 import { fetchCurrentTournamentHook } from '@/hook/fetchCurrentTournament';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
@@ -24,7 +25,7 @@ const {role}=user;
   if(role=='player' || role=='manager'){
       useFetchLatestApprovedTournamentHook(undefined,role,setTournament)
   }
-
+fetchbasePrice()
 if (isToday(tournament?.auctionDate)) {
 
   //console.log("Auction is today!");

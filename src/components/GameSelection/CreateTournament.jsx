@@ -143,7 +143,7 @@ const handleDateChange = (field) => (newValue) => {
                           </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                          {/* <Typography variant="subtitle1" color="primary" gutterBottom>
+                          <Typography variant="subtitle1" color="primary" gutterBottom>
                             Tournament Media
                           </Typography> */}
                           <Grid container spacing={2}>
@@ -200,8 +200,8 @@ const handleDateChange = (field) => (newValue) => {
                               />
                             </Grid>
                           </Grid>
-                        </Grid>
-                      </Grid>
+                      //    </Grid>
+                      //  </Grid>
                     )}
                     {step.component === 'BudgetPlanner' && (
                       <Grid container spacing={2}>

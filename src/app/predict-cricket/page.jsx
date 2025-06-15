@@ -142,7 +142,10 @@ export default function PredictCricket() {
                     value={formData.avg}
                     onChange={handleInputChange}
                     required
-                    inputProps={{ min: 0 }}
+                    inputProps={{ 
+                      min: 0,
+                      step: "0.01"
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -214,7 +217,10 @@ export default function PredictCricket() {
                     value={formData.ave}
                     onChange={handleInputChange}
                     required
-                    inputProps={{ min: 0 }}
+                    inputProps={{ 
+                      min: 0,
+                      step: "0.01"
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>

@@ -150,7 +150,10 @@ export default function PredictFootball() {
                     value={formData.height}
                     onChange={handleInputChange}
                     required
-                    inputProps={{ min: 0 }}
+                    inputProps={{ 
+                      min: 0,
+                      step: "0.01"
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -306,7 +309,10 @@ export default function PredictFootball() {
                     value={formData.highest_value}
                     onChange={handleInputChange}
                     required
-                    inputProps={{ min: 0 }}
+                    inputProps={{ 
+                      min: 0,
+                      step: "0.01"
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12}>
