@@ -18,12 +18,12 @@ let tournaments = await prisma.tournament.findMany({
 
     console.log(tournaments, "tournament");
 
-    if (!tournaments || tournaments.length == 0) {
-      return NextResponse.json(
-        { error: "No tournament exists" },
-        { status: 400 }
-      );
-    }
+    // if (!tournaments || tournaments.length == 0) {
+    //   return NextResponse.json(
+    //     { error: "No tournament exists" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // // ডাটাবেস আপডেট করার জন্য
     // await prisma.tournament.updateMany({

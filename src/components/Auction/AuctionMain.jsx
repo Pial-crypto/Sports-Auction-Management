@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import {
   Box,
   Grid,
@@ -25,8 +25,13 @@ import { useFetchApprovedTeamOfTournament } from '@/hook/fetchAllTeamReqHookOfTo
 import { fetchAuctionStateHook } from '@/hook/fetchAuctionStateHook';
 import useSocketHook from '@/hook/socketHook';
 import { timeLeftHook } from '@/hook/timeLeftHook';
-import { endBidding } from '@/function/handleAuctionPage';
+import { endBidding, handleSelectPlayer, sendBidInfo,sendMessage } from '@/function/handleAuctionPage';
+import { addNewAuction } from '@/function/addNewAuction';
 import saveBidding from '@/function/saveBidding';
+import getAllBidding from '@/function/getAllBidding';
+import { isToday } from '@/function/isToday';
+import { fetchAuctionState } from '@/function/fetchAuctionState';
+import { fetchBasPriceHook } from '@/hook/fetchBasePriceHook';
 
 // Socket instance
 let socket;
@@ -49,8 +54,8 @@ const AuctionMain = () => {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(null);
   const [callPlayerHook,setCallPlayerHook]=useState(true)
   const [teamList,setTeamList]=useState([])
-  
 
+  fetchBasPriceHook(players,setPlayers)
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -154,7 +159,7 @@ console.log(players,"This is the players in the auction main component",players)
   //     //console.log("Bidding saved successfully:", response);
   //   })
 
-  //   socket.emit("sendNewBid", {bidData:bidData,tournament:tournament});
+  //  socket &&  socket.emit("sendNewBid", {bidData:bidData,tournament:tournament});
 
   // };
 

@@ -13,7 +13,12 @@ import {
 } from '@mui/icons-material';
 import { GlassCard } from '@/style/PlayerManagement';
 import { PlayerAvatar } from '@/style/PlayerManagement';
-export const PlayersGrid=({finalPlayers,tournament})=>(
+import { players } from '@/constants/Players/playersData';
+export const PlayersGrid=({finalPlayers,tournament})=>{
+   console.log(players,"player")
+
+
+  return((
       <Grid container spacing={3}>
             {finalPlayers.map((player, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
@@ -100,4 +105,5 @@ export const PlayersGrid=({finalPlayers,tournament})=>(
               </Grid>
             )}
           </Grid>
-)
+))
+}

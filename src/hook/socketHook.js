@@ -21,7 +21,7 @@ const useSocketHook = ({
     if (!tournament || !user || players.length === 0) return;
 
    // socket = io("http://localhost:3001"); // initialize
-    socket.emit("join_tournament", tournament.id);
+    socket &&   socket.emit("join_tournament", tournament.id);
 
     const playersObj = {
       players: players,
@@ -31,7 +31,7 @@ const useSocketHook = ({
 
     console.log("This is the players in the auction main component", players);
 
-    socket.on("receiveTimeLeft", (serverTimeLeft) => {
+     socket &&  socket.on("receiveTimeLeft", (serverTimeLeft) => {
       setTimeLeft(serverTimeLeft);
     });
 
@@ -39,25 +39,25 @@ const useSocketHook = ({
       if (msg.tournament.id === tournament?.id) {
         const index = msg.message;
         setCurrentPlayerIndex(index);
-        setCurrentBid(players[index]?.basePrice || 5000);
+        setCurrentBid(players[index]?.basePrice || 0);
         setBidHistory([]);
         setSelectPlayerDialog(false);
 
         setSnackbar({
           open: true,
-          message: `${players[index]?.name} is up for bidding! Starting price: $${players[index]?.basePrice || 5000}`,
+          message: `${players[index]?.name} is up for bidding! Starting price: $${players[index]?.basePrice || 0}`,
           severity: 'info'
         });
       }
     });
 
-    socket.on("receiveIsBidEnd", (End) => {
+   socket && socket.on("receiveIsBidEnd", (End) => {
       if (tournament.id === End.tournament.id && End.isEnd) {
         endBidding();
       }
     });
 
-    socket.on("receiveNewBid", (bidData) => {
+     socket &&  socket.on("receiveNewBid", (bidData) => {
       if (bidData.tournament.id === tournament.id) {
         console.log("Received new bid:", bidData);
         const newBid = {

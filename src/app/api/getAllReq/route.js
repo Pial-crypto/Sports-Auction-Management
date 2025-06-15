@@ -10,12 +10,12 @@ export async function GET(_req) {
    
 
     // If user doesn't exist
-    if (!allPlayerReq) {
-      return NextResponse.json(
-        { error: "No req found" },
-        { status: 400 }
-      );
-    }
+    // if (!allPlayerReq) {
+    //   return NextResponse.json(
+    //     { error: "No req found" },
+    //     { status: 400 }
+    //   );
+    // }
 
  
    

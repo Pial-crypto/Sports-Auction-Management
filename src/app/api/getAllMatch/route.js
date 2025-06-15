@@ -17,12 +17,12 @@ export async function GET(_req) {
     console.log('allmatch',allMatch)
 
     // If no matches found
-    if (!allMatch || allMatch.length === 0) {
-      return NextResponse.json(
-        { error: "No matches found" },
-        { status: 404 }
-      );
-    }
+    // if (!allMatch || allMatch.length === 0) {
+    //   return NextResponse.json(
+    //     { error: "No matches found" },
+    //     { status: 404 }
+    //   );
+    // }
 
     // Return a success response
     return NextResponse.json(

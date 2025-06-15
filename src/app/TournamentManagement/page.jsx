@@ -126,7 +126,7 @@ const TournamentManagement = () => {
                 >
                   <HeaderCard />
                   <StatsCards activeStatus={activeStatus} cardItems={cardItems} />
-                  <PlayerCards />
+                  {/* <PlayerCards /> */}
                 </motion.div>
               </Container>
             </Box>

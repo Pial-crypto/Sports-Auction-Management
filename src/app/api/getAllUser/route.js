@@ -7,12 +7,12 @@ export async function GET(_req) {
     const allUsers = await prisma.user.findMany();
 
     // If no users exist
-    if (!allUsers || allUsers.length === 0) {
-      return NextResponse.json(
-        { error: "No users found" },
-        { status: 400 }
-      );
-    }
+    // if (!allUsers || allUsers.length === 0) {
+    //   return NextResponse.json(
+    //     { error: "No users found" },
+    //     { status: 400 }
+    //   );
+    // }
 
    
     // Return a success response with users data

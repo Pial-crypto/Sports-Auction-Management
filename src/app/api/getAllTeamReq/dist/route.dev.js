@@ -14,20 +14,20 @@ var _server = require("next/server");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function GET(_req) {
-  var allPlayerReq;
+  var allTeamReq;
   return regeneratorRuntime.async(function GET$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return regeneratorRuntime.awrap(_prisma["default"].playerRequest.findMany());
+          return regeneratorRuntime.awrap(_prisma["default"].teamRequest.findMany());
 
         case 3:
-          allPlayerReq = _context.sent;
+          allTeamReq = _context.sent;
           return _context.abrupt("return", _server.NextResponse.json({
             message: "All req fetched successfully",
-            allPlayerReq: allPlayerReq
+            allTeamReq: allTeamReq
           }, {
             status: 200
           }));

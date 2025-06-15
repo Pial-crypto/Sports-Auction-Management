@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(_req) {
   try {
     // Find all auctions
-    const allAuctions = await prisma.auction.findMany();
+    const allbaseprice = await prisma.player.findMany();
    
     // If no auctions exist
     // if (!allAuctions || allAuctions.length === 0) {
@@ -17,8 +17,8 @@ export async function GET(_req) {
     // Return a success response with auctions data
     return NextResponse.json(
       {
-        message: "Auctions fetched successfully",
-        auctions: allAuctions
+        message: "base price fetched successfully",
+       allbaseprice: allbaseprice
       },
       { status: 200 }
     );

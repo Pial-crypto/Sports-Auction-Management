@@ -13,12 +13,12 @@ export async function GET(req) {
 
 
     // If user doesn't exist
-    if (!transactionList || transactionList.length === 0) {
-      return NextResponse.json(
-        { error: "No transaction found" },
-        { status: 400 }
-      );
-    }
+    // if (!transactionList || transactionList.length === 0) {
+    //   return NextResponse.json(
+    //     { error: "No transaction found" },
+    //     { status: 400 }
+    //   );
+    // }
 
  
    

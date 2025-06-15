@@ -5,29 +5,32 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.GET = GET;
 
-var _prisma = _interopRequireDefault(require("@/lib/prisma"));
-
-var _bcryptjs = _interopRequireDefault(require("bcryptjs"));
-
 var _server = require("next/server");
+
+var _prisma = _interopRequireDefault(require("@/lib/prisma"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function GET(_req) {
-  var allPlayerReq;
+// ✅ Correct Import
+function GET() {
+  var announcements;
   return regeneratorRuntime.async(function GET$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return regeneratorRuntime.awrap(_prisma["default"].playerRequest.findMany());
+          return regeneratorRuntime.awrap(_prisma["default"].announcement.findMany({
+            orderBy: {
+              timestamp: 'desc'
+            }
+          }));
 
         case 3:
-          allPlayerReq = _context.sent;
+          announcements = _context.sent;
           return _context.abrupt("return", _server.NextResponse.json({
-            message: "All req fetched successfully",
-            allPlayerReq: allPlayerReq
+            message: 'Announcements fetched successfully',
+            announcements: announcements
           }, {
             status: 200
           }));
@@ -35,13 +38,15 @@ function GET(_req) {
         case 7:
           _context.prev = 7;
           _context.t0 = _context["catch"](0);
+          console.error('Failed to fetch announcements:', _context.t0);
           return _context.abrupt("return", _server.NextResponse.json({
-            error: "Something went wrong"
+            message: 'Failed to fetch announcements',
+            announcements: []
           }, {
             status: 500
           }));
 
-        case 10:
+        case 11:
         case "end":
           return _context.stop();
       }

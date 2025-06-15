@@ -10,9 +10,9 @@ export async function GET() {
     });
 
     return NextResponse.json({
-      message: announcements.length ? 'Announcements fetched successfully' : 'No announcements found',
+      message: 'Announcements fetched successfully',
       announcements,
-    }, { status: announcements.length ? 200 : 400 });
+    }, { status: 200 });
 
   } catch (error) {
     console.error('Failed to fetch announcements:', error);

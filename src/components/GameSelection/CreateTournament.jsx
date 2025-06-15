@@ -143,11 +143,11 @@ const handleDateChange = (field) => (newValue) => {
                           </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                          <Typography variant="subtitle1" color="primary" gutterBottom>
+                          {/* <Typography variant="subtitle1" color="primary" gutterBottom>
                             Tournament Media
-                          </Typography>
+                          </Typography> */}
                           <Grid container spacing={2}>
-                            <Grid item xs={12} md={4}>
+                            {/* <Grid item xs={12} md={4}>
                               <input
                                 type="file"
                                 accept="image/*"
@@ -186,7 +186,7 @@ const handleDateChange = (field) => (newValue) => {
                                   )}
                                 </UploadBox>
                               </label>
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={12} md={8}>
                               <TextField
                                 fullWidth
