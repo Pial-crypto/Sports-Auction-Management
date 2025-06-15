@@ -3,6 +3,7 @@ import { Box, Button, Typography, alpha } from '@mui/material';
 import { Gavel, PersonAdd, Stop } from '@mui/icons-material';
 import AuctionTimer from './AuctionTimer';
 import PlayerCard from './PlayerCard';
+import BidDecisionModel from './BidDecisionModel';
 import { COLORS } from './AuctionConstants';
 
 const CurrentAuctionSection = ({ 
@@ -15,6 +16,20 @@ const CurrentAuctionSection = ({
   handleSelectPlayerDialog,
   handleEndBidding
 }) => {
+  // Mock data for the decision model - replace with actual data from your backend
+  const decisionModelData = {
+    predictedPrice: 84,
+    actualPrice: 79,
+    valueDiff: 5,
+    budget: 150,
+    positionNeeded: 0.8,
+    popularity: 0.27,
+    performance: 0.5,
+    compositionMatch: 92,
+    age: 24,
+    injuryRisk: 0.27
+  };
+
   return (
     <Box sx={{ 
       p: 3, 
@@ -83,7 +98,14 @@ const CurrentAuctionSection = ({
         )}
       </Box>
       
-      {currentPlayerIndex !== null && <PlayerCard player={players[currentPlayerIndex]} />}
+      {currentPlayerIndex !== null && (
+        <>
+          <PlayerCard player={players[currentPlayerIndex]} />
+          {userRole === "manager" && (
+            <BidDecisionModel {...decisionModelData} />
+          )}
+        </>
+      )}
       
       {/* No player selected message */}
       {currentPlayerIndex === null && (

@@ -5,16 +5,7 @@ import pandas as pd
 ## api endpoint http://127.0.0.1:8000/predict/passbuy
 # form for json 
 # {
-#   "predicted_price": 84,
-#   "actual_price": 79,
-#   "value_diff": 5,
-#   "budget": 150,
-#   "position_needed": 0,
-#   "popularity": 0.27,
-#   "performance":0.5 ,
-#   "composition_match": 92,
-#   "age": 24,
-#   "injury_risk": 0.27
+#   mv src/app/api/getbaseprice/route.js src/app/api/getbaseprice/route_backup.js
 # }
 #
 
