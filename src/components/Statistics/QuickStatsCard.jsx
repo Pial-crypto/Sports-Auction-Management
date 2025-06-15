@@ -18,7 +18,7 @@ import {
 import { StyledCard } from '@/style/statistics';
 import { getCurrentStage, getHighestScore } from '@/function/handleMatchesPage';
 
-export const QuickStatsCard=({tournament,matches})=>{
+export const QuickStatsCard=({tournament,matches,tournamentTeams})=>{
 
    // console.log("QuickStatsCard",tournament,matches)
      return(
@@ -30,7 +30,7 @@ export const QuickStatsCard=({tournament,matches})=>{
           {
             icon: <People sx={{ fontSize: 40 }} />,
             label: 'Participating Teams',
-            value: tournament?.numberOfTeams,
+            value: tournamentTeams?.length || 0,
             color: '#3b82f6',
             subText: 'Active Teams in Tournament'
           },

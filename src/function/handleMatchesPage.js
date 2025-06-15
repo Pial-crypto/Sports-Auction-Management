@@ -150,16 +150,19 @@ export const handleSaveEdit = async (
       return;
     }
   }
+  console.log("Edit match data before saving:", editMatch);
 
   // Team performance validations
   if (!editMatch.team1Perf || Object.keys(editMatch.team1Perf).length === 0) {
     alert("Enter Team 1's performance.");
     return;
   }
-  handleTeamPerformanceSave(editMatch.team1Perf, tournament, editMatch.team1Id, editMatch.id);
+  // handleTeamPerformanceSave(editMatch.team1Perf, tournament, editMatch.team1Id, editMatch.id);
 
   if (!editMatch.team2Perf || Object.keys(editMatch.team2Perf).length === 0) {
+    console.log("Team 2 performance is empty:", editMatch.team2Perf);
     alert("Enter Team 2's performance.");
+
     return;
   }
   handleTeamPerformanceSave(editMatch.team2Perf, tournament, editMatch.team2Id, editMatch.id);

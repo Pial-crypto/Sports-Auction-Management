@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Grid,
@@ -25,6 +25,8 @@ import storage from '@/class/storage';
 import useFetchLatestApprovedTournamentHook from '@/hook/fetchLatestApprovedTournamentHook';
 import TournamentNotStarted from '@/components/Common/tournamentNotStarted';
 import NoMatchStarted from '@/components/Common/NoMatchStarted';
+import fetchAllTeamReq from '@/function/getAllTeamReq';
+import { fetchAllTeamsForTheTournamentHook } from '@/hook/fetchAllTeamsForTheTournamentHook';
 // Recharts dynamic imports
 
 // Register ChartJS components
@@ -46,7 +48,10 @@ const Statistics = () => {
 
   const [tournament,setTournamet]=useState(null);
   const [matches,setMatches]=useState([])
+const [tournamentTeams,setTournamentTeams]=useState([])
 
+
+fetchAllTeamsForTheTournamentHook(tournament,setTournamentTeams)
 
   if(storage.get("user").role==="organizer"){
   
@@ -85,7 +90,7 @@ if(new Date(tournament?.tournamentDate)<=new Date() && matches.length==0){
 
 
       {/* Quick Stats Cards */}
- <QuickStatsCard tournament={tournament} matches={matches} />
+ <QuickStatsCard tournament={tournament} matches={matches} tournamentTeams={tournamentTeams} />
 
     
       <Grid container spacing={3}>

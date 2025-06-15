@@ -160,14 +160,14 @@ const scheduleCards = [
     icon: <EmojiEventsIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
     color: '#2563eb'
   },
-  { 
-    title: 'Overview',
-    path: '/Overview',
-    value: '🔍 Snapshot',
-    subtitle: 'Quick tournament overview and highlights',
-    icon: <DashboardIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
-    color: '#2563eb'
-  },
+  // { 
+  //   title: 'Overview',
+  //   path: '/Overview',
+  //   value: '🔍 Snapshot',
+  //   subtitle: 'Quick tournament overview and highlights',
+  //   icon: <DashboardIcon sx={{ fontSize: 32, color: '#2563eb' }} />,
+  //   color: '#2563eb'
+  // },
   { 
     title: 'Approval System',
     path: '/Approval',
